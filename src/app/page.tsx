@@ -13,7 +13,7 @@ export default function Home() {
       <Features />
       <HowItWorks />
       <Testimonials />
-      <CallToAction />S
+      <CallToAction />
       <Footer />
     </main>
   );

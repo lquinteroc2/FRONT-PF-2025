@@ -1,5 +1,8 @@
+import Carousel from "@/components/Home/carousel/Carousel";
+
+
 const ContactUsPage = () => {
-  return <div>Contact</div>;
+  return <Carousel/>
 };
 
 export default ContactUsPage;
