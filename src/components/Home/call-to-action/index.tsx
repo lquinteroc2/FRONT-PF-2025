@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 export default function CallToAction() {
   return (
-    <section className="bg-gradient-to-r from-teal-500 to-teal-600 py-20 text-white md:py-32">
+    <section className="bg-gradient-to-r from-primary  to-neutro-dark to-primary-dark py-20 text-white md:py-32">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -22,10 +22,10 @@ export default function CallToAction() {
             importante.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="bg-white text-teal-600 hover:bg-teal-50">
+            <Button size="lg" className="bg-neutro-light  text-primary hover:bg-primary-dark">
               Registrarse gratis
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-teal-600">
+            <Button size="lg" variant="outline" className="border-white text-primary hover:bg-primary-dark">
               Conocer más
             </Button>
           </div>

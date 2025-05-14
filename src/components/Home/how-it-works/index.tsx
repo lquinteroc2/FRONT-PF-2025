@@ -6,7 +6,7 @@ import { CheckCircle2 } from "lucide-react"
 const steps = [
   {
     title: "Regístrate y crea tu perfil",
-    description: "Crea una cuenta en MindMap para comenzar tu viaje de bienestar emocional.",
+    description: "Crea una cuenta en Séntia para comenzar tu viaje de bienestar emocional.",
   },
   {
     title: "Registra tu estado emocional",

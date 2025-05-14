@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import Navbar from "@/components/Navbar";
 
 
 const geistSans = Geist({
@@ -24,7 +25,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MindMap - Tu red de bienestar emocional local",
+  title: "Séntia - Tu red de bienestar emocional local",
   description:
     "Plataforma donde puedes registrar tu estado emocional, encontrar recursos de salud mental y conectar con grupos de apoyo cercanos.",
 };
@@ -41,6 +42,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
+        <Navbar />
         <AuthProviderGoogle session={session}>{children}</AuthProviderGoogle>
         <Toaster />
       </body>

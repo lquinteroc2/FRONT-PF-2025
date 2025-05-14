@@ -10,21 +10,21 @@ const testimonials = [
     name: "María G.",
     role: "Usuaria desde 2023",
     content:
-      "MindMap me ha ayudado a entender mis patrones emocionales y encontrar recursos que realmente funcionan para mí. El chatbot es como tener un amigo que siempre está disponible.",
+      "Séntia me ha ayudado a entender mis patrones emocionales y encontrar recursos que realmente funcionan para mí. El chatbot es como tener un amigo que siempre está disponible.",
     avatar: "MG",
   },
   {
     name: "Carlos R.",
     role: "Usuario desde 2022",
     content:
-      "Gracias a MindMap encontré un grupo de apoyo cerca de mi casa que ha sido fundamental en mi proceso. La aplicación es intuitiva y realmente útil.",
+      "Gracias a Séntia encontré un grupo de apoyo cerca de mi casa que ha sido fundamental en mi proceso. La aplicación es intuitiva y realmente útil.",
     avatar: "CR",
   },
   {
     name: "Laura P.",
     role: "Psicóloga colaboradora",
     content:
-      "Como profesional, valoro mucho la forma en que MindMap conecta a las personas con recursos locales. Es una herramienta que recomiendo a todos mis pacientes.",
+      "Como profesional, valoro mucho la forma en que Séntia conecta a las personas con recursos locales. Es una herramienta que recomiendo a todos mis pacientes.",
     avatar: "LP",
   },
 ]
@@ -42,7 +42,7 @@ export default function Testimonials() {
         >
           <h2 className="mb-4 text-3xl font-bold text-gray-900 sm:text-4xl">Lo que dicen nuestros usuarios</h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-600">
-            Descubre cómo MindMap está ayudando a personas como tú a mejorar su bienestar emocional
+            Descubre cómo Séntia está ayudando a personas como tú a mejorar su bienestar emocional
           </p>
         </motion.div>
 
