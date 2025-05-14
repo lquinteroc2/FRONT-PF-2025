@@ -3,6 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
+import { getServerSession, Session } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,17 +29,19 @@ export const metadata: Metadata = {
     "Plataforma donde puedes registrar tu estado emocional, encontrar recursos de salud mental y conectar con grupos de apoyo cercanos.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session: Session | null = await getServerSession(authOptions);
+
   return (
     <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
-        {children}
+        <AuthProviderGoogle session={session}>{children}</AuthProviderGoogle>
         <Toaster />
       </body>
     </html>
