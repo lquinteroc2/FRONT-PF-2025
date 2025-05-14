@@ -7,6 +7,7 @@ import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Home/footer";
 
 
 const geistSans = Geist({
@@ -45,6 +46,7 @@ export default async function RootLayout({
         <AuthProviderGoogle session={session}>
         <Navbar />
         {children}</AuthProviderGoogle>
+        <Footer/>
         <Toaster />
       </body>
     </html>

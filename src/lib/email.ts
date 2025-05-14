@@ -15,13 +15,9 @@ export const sendContactEmails = async (formValues: ContactFormValues) => {
     const templateIdClient = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_CLIENT_ID as string; 
     const templateIdAdmin = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ADMIN_ID as string; 
 
-    // Enviar correo al cliente
-    const responseClient = await emailjs.send(serviceId, templateIdClient, formValues, userId);
+    await emailjs.send(serviceId, templateIdClient, formValues, userId);
 
-    // Enviar correo a ti (el dueño del sitio)
-    const responseAdmin = await emailjs.send(serviceId, templateIdAdmin, formValues, userId);
-
-    console.log('Correo enviado:', responseClient, responseAdmin); 
+    await emailjs.send(serviceId, templateIdAdmin, formValues, userId);
     
     return { success: true };
   } catch (error) {
