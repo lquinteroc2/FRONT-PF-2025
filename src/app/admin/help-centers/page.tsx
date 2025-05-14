@@ -126,9 +126,9 @@ export default function AdminHelppointsPage() {
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               <Alert className="bg-teal-50 border-teal-200">
-                <Info className="h-4 w-4 text-teal-600" />
+                <Info className="h-4 w-4 text-primary" />
                 <AlertTitle className="text-teal-700">Información importante</AlertTitle>
-                <AlertDescription className="text-teal-600">
+                <AlertDescription className="text-primary">
                   Todos los puntos de ayuda son revisados antes de ser publicados. Asegúrate de proporcionar información precisa.
                 </AlertDescription>
               </Alert>
@@ -248,7 +248,7 @@ export default function AdminHelppointsPage() {
                     <Map onSelect={handleMapSelect} selectedPosition={formData.coordinates?.coordinates} />
                   </motion.div>
                   {formData.coordinates && (
-                    <p className="text-sm text-teal-600 mt-2 flex items-center">
+                    <p className="text-sm text-primary mt-2 flex items-center">
                       <MapPin className="h-4 w-4 mr-1" />
                       Ubicación seleccionada: {formData.coordinates.coordinates[1].toFixed(6)}, {formData.coordinates.coordinates[0].toFixed(6)}
                     </p>

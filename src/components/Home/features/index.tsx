@@ -6,25 +6,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 const features = [
   {
-    icon: <BarChart4 className="h-10 w-10 text-teal-600" />,
+    icon: <BarChart4 className="h-10 w-10 text-primary" />,
     title: "Diario emocional",
     description:
       "Registra cómo te sientes cada día y visualiza tu progreso emocional a través del tiempo con gráficos intuitivos.",
   },
   {
-    icon: <MapPin className="h-10 w-10 text-teal-600" />,
+    icon: <MapPin className="h-10 w-10 text-primary" />,
     title: "Mapa de bienestar",
     description:
       "Encuentra centros de ayuda, terapeutas y grupos de apoyo cercanos a ti, filtrados según tus necesidades específicas.",
   },
   {
-    icon: <MessageSquareText className="h-10 w-10 text-teal-600" />,
+    icon: <MessageSquareText className="h-10 w-10 text-primary" />,
     title: "Chatbot de apoyo",
     description:
       "Un compañero virtual que te escucha, ofrece consejos y te guía con ejercicios de respiración y meditación.",
   },
   {
-    icon: <BookHeart className="h-10 w-10 text-teal-600" />,
+    icon: <BookHeart className="h-10 w-10 text-primary" />,
     title: "Recursos personalizados",
     description: "Accede a artículos, meditaciones y podcasts seleccionados según tu estado emocional y necesidades.",
   },
@@ -62,7 +62,7 @@ export default function Features() {
         >
           <h2 className="mb-4 text-3xl font-bold text-gray-900 sm:text-4xl">Funcionalidades principales</h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-600">
-            MindMap te ofrece herramientas completas para cuidar tu bienestar emocional y conectarte con recursos
+            Séntia te ofrece herramientas completas para cuidar tu bienestar emocional y conectarte con recursos
             locales.
           </p>
         </motion.div>

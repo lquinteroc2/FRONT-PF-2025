@@ -1,16 +1,17 @@
-import { Heart } from "lucide-react"
-import Link from "next/link"
+import { Brain, Heart, Heater } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 py-12 text-gray-300">
+    <footer className="bg-neutro-dark py-12 text-gray-300">
       <div className="container mx-auto px-4">
         <div className="grid gap-8 md:grid-cols-4">
-          <div className="md:col-span-1">
-            <h3 className="mb-4 text-xl font-bold text-white">MindMap</h3>
-            <p className="mb-4">Tu red de bienestar emocional local</p>
+          <div className="container flex flex-col items-center justify-center md:col-span-1 text-center ">
+          <Brain className="text-rose-400"/>
+            <h3 className="mb-4 text-xl font-bold text-white">  Séntia</h3>
+            <p className="mb-4 ">Tu red de bienestar emocional local</p>
             <div className="flex items-center">
-              <Heart className="mr-2 h-4 w-4 text-teal-400" />
+              <Brain className="mr-2 h-4 w-4 text-rose-400" />
               <span className="text-sm">Cuidando tu mente desde 2023</span>
             </div>
           </div>
@@ -19,22 +20,22 @@ export default function Footer() {
             <h4 className="mb-4 font-semibold text-white">Plataforma</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Diario emocional
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Mapa de bienestar
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Chatbot
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Recursos
                 </Link>
               </li>
@@ -45,22 +46,22 @@ export default function Footer() {
             <h4 className="mb-4 font-semibold text-white">Compañía</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Sobre nosotros
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Contacto
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Colabora
                 </Link>
               </li>
@@ -68,25 +69,25 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-4 font-semibold text-white">Legal</h4>
+            <h4 className="mb-4 font-semibold text-neutro-light">Legal</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Términos de uso
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Política de privacidad
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Cookies
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-teal-400">
+                <Link href="#" className="hover:text-primary">
                   Accesibilidad
                 </Link>
               </li>
@@ -95,9 +96,12 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} MindMap. Todos los derechos reservados.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Séntia. Todos los derechos
+            reservados.
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }
