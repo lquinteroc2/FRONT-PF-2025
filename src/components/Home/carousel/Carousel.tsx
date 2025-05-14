@@ -11,7 +11,7 @@ export default function Carousel() {
 
   const productos = Array.from({ length: 20 }, (_, i) => ({
     id: i + 1,
-    nombre: `Producto ${i + 1}`,
+    nombre: `Carousel ${i + 1}`,
   }));
 
   return (
