@@ -20,24 +20,27 @@ const config = {
       },
     },
     extend: {
-      colors: {
+      colors: { 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
+  				DEFAULT:"#22C55E",
+  				light: '#92ecb3',  
+          dark: '#136d34',   
+  			},
+  			secondary: {
+				DEFAULT:"#22C5B0",
+				light: '#92ece1',  
+				dark: '#136d61',
+  			},
+  			neutro: {
+				DEFAULT:"#e2e9e5",
+				light: '#d4ded8',  
+				dark: '#212b26',
+  			},
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",

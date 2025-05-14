@@ -26,7 +26,7 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="mb-2 inline-block rounded-full bg-teal-100 px-4 py-1 text-sm font-medium text-teal-800"
+                className="mb-2 inline-block rounded-full bg-primary-light px-4 py-1 text-sm font-medium text-primary-dark  "
               >
                 Tu red de bienestar emocional local
               </motion.div>
@@ -36,15 +36,15 @@ export default function Hero() {
                 transition={{ delay: 0.3, duration: 0.5 }}
                 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl"
               >
-                <span className="block">Cuida tu mente con</span>
-                <span className="block text-teal-600">MindMap</span>
+                <span className="block ">Cuida tu mente con</span>
+                <span className="block text-primary">Séntia</span>
               </motion.h1>
             </div>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="max-w-md text-lg text-gray-600"
+              className="max-w-md text-lg text-gray-600 font-[100] md:max-w-lg"
             >
               Una plataforma donde puedes registrar tu estado emocional, encontrar recursos de salud mental y conectar
               con grupos de apoyo cercanos.
@@ -55,10 +55,10 @@ export default function Hero() {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="flex flex-wrap gap-4"
             >
-              <Button size="lg" className="bg-teal-600 hover:bg-teal-700">
+              <Button size="lg" className="bg-primary hover:bg-primary-dark">
                 Comenzar ahora
               </Button>
-              <Button size="lg" variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50">
+              <Button size="lg" variant="outline" className="border-teal-600 text-primary hover:bg-primary-light">
                 Saber más
               </Button>
             </motion.div>
@@ -72,7 +72,7 @@ export default function Hero() {
           >
             <Image
               src="/placeholder.svg?height=500&width=400"
-              alt="MindMap App Preview"
+              alt="Séntia App Preview"
               fill
               className="rounded-2xl object-cover"
               priority
