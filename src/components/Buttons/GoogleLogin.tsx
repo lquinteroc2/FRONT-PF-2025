@@ -7,8 +7,8 @@ const GoogleLogin = () => {
     event.preventDefault();
 
     try {
-      const res = await signIn("google", { redirect: false });
-      console.log("signIn result:", res); // Esto debería mostrar más detalles si el flujo funciona correctamente
+      const res = await signIn("google");
+      
       if (res?.error) {
         console.error("Error en la autenticación con Google:", res.error);
       } else {
