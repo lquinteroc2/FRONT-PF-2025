@@ -7,10 +7,11 @@ import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Navbar from "@/components/Navbar/Navbar";
-import Footer from "@/components/Landing/footer";
+// import Footer from "@/components/Landing/footer";
 import Header from "@/components/Header/Header";
 import WrapperHeader from "@/components/ui/wrapperHeader";
-import WrapperNavbar from "@/components/ui/wrapperNavbar";
+import ClientFooter from "@/components/Navigation/ClientFooter";
+import ClientNavbar from "@/components/Navigation/ClientNavbar";
 // import Navbar from "@/components/Navbar";
 // import Footer from "@/components/Home/footer";
 
@@ -49,13 +50,11 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
         <AuthProviderGoogle session={session}>
-        <WrapperNavbar>
-        <Navbar />
-        </WrapperNavbar>
+      
+        <ClientNavbar />
         <WrapperHeader>
         <Header />
         </WrapperHeader>
-
         {children}</AuthProviderGoogle>
         <ClientFooter />
         <Toaster />
