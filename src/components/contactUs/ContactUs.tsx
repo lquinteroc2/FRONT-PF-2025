@@ -84,7 +84,7 @@ const ContactUs = () => {
                   type="text"
                   name="subject"
                   placeholder="Asunto"
-                  className="w-[50%] p-2 border border-neutro-light rounded-md focus:outline-none focus:ring-2 focus:ring-secundary"
+                  className="w-[60%] p-2 border border-neutro-light rounded-md focus:outline-none focus:ring-2 focus:ring-secundary"
                 />
                  <ErrorMessage name="subject" component="div" className="text-sm text-primary-dark font-bold" />
               </div>
