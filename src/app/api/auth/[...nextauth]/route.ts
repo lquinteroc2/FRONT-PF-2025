@@ -10,6 +10,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  
+ callbacks: {
+   async session({ session, token }) {
+  console.log("📦 Session Callback Triggered:");
+  console.log("🪪 Token:", token);
+  console.log("👤 Session:", session);
+  return session;
+}
+  },
 };
 
 const handler = NextAuth(authOptions);
