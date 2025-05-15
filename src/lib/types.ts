@@ -63,3 +63,13 @@ export interface Emotion {
   icon: string
   color: string
 }
+
+export interface ILoginFormData {
+    email: string;
+    password: string;
+};
+
+export interface ILoginFormDto {
+    token: string;
+    user: User;
+};
