@@ -24,6 +24,7 @@
     "clsx": "^2.1.1",
     "emailjs-com": "^3.2.0",
     "formik": "^2.4.6",
+    "framer-motion": "^12.11.4",
     "leaflet": "^1.9.4",
     "lightningcss": "^1.28.0",
     "lucide-react": "^0.510.0",

@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { Button } from "../ui/button";
 
 const GoogleLogin = () => {
   const handleSignIn = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -20,12 +21,12 @@ const GoogleLogin = () => {
   };
 
   return (
-    <button
+    <Button
       onClick={handleSignIn}
-      className="bg-blue-500 text-white px-4 py-2 rounded"
+      variant="google" size="sm" className="w-[40%]"
     >
       Iniciar sesión con Google
-    </button>
+    </Button>
   );
 };
 
