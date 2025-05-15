@@ -20,11 +20,11 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Acerca de Nosotros", href: "/abautMe" },
-    { name: "Recomendaciones", href: "/recomendaciones",hidden:false },
-    { name: "Mis Emociones", href: "/emociones",hidden:false },
-    { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:false },
-    { name: "Registro", href: "/registro",hidden:true },
-    { name: "Iniciar sesión", href: "/login" ,hidden:true },
+    { name: "Recomendaciones", href: "/recomendaciones",hidden:true },
+    { name: "Mis Emociones", href: "/misEmociones",hidden:true },
+    { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:true },
+    { name: "Registro", href: "/registro",hidden:false },
+    { name: "Iniciar sesión", href: "/login" ,hidden:false },
   ]
 
   return (
@@ -55,7 +55,7 @@ export default function Navbar() {
         </div>
 
         {/* User Menu */}
-        <div className="flex  items-center gap-4">
+        <div className="flex md:hidden  items-center gap-4">
           <DropdownMenu >
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full pointer-events-none md:pointer-events-auto md:px-6">

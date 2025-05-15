@@ -10,7 +10,6 @@ import Testimonials from "@/components/Landing/testimonials";
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Header />
       <Hero />
       <Features />
       <HowItWorks />
