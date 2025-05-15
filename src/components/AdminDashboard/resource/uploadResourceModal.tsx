@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -20,86 +20,123 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select"
+import { FileExtension, FileType, Resource } from "@/lib/types"
 
-type UploadResourceModalProps = {
+
+
+  interface Props {
   open: boolean
   onClose: () => void
+  editingResource?: Resource | null
 }
 
-type FileType = "document" | "image" | "audio" | "video" | "other"
-type FileExtension =
-  | "jpg"
-  | "jpeg"
-  | "png"
-  | "webp"
-  | "pdf"
-  | "docx"
-  | "mp4"
-  | "mov"
-  | "mp3"
-  | "wav"
-
-const UploadResourceModal = ({ open, onClose }: UploadResourceModalProps) => {
+const UploadResourceModal = ({ open, onClose, editingResource }: Props) => {
   const [name, setName] = useState("")
   const [fileType, setFileType] = useState<FileType | "">("")
   const [fileExtension, setFileExtension] = useState<FileExtension | "">("")
   const [description, setDescription] = useState("")
-  const [uploadedById, setUploadedById] = useState("c4b3d720-1234-4567-abcd-1234567890ab") // Cambia esto por el user real
+  const [uploadedById, setUploadedById] = useState("c4b3d720-1234-4567-abcd-1234567890ab") // Reemplazar por el ID real
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async () => {
-    if (!file || !name || !fileType || !fileExtension || !uploadedById) {
-      alert("Por favor completa todos los campos obligatorios.")
-      return
-    }
+    useEffect(() => {
+      if (editingResource) {
+        setName(editingResource.name)
+        setFileType(editingResource.fileType.toLowerCase() as FileType)
+        setFileExtension(editingResource.fileExtension.toLowerCase() as FileExtension)
+        setDescription(editingResource.description ?? "")
+      } else {
+        setName("")
+        setFileType("")
+        setFileExtension("")
+        setDescription("")
+        setFile(null)
+      }
+    }, [editingResource])
 
-    setLoading(true)
+const handleSubmit = async () => {
+  if (!name || !fileType || !fileExtension || !uploadedById) {
+    alert("Por favor completa todos los campos obligatorios.")
+    return
+  }
 
-    const formData = new FormData()
-    formData.append("file", file)
-    formData.append("name", name)
-    formData.append("fileType", fileType)
-    formData.append("fileExtension", fileExtension)
-    formData.append("description", description)
-    formData.append("uploadedById", uploadedById)
+  setLoading(true)
+  try {
+    // Si editando
+    if (editingResource) {
+      if (file) {
+        const formData = new FormData()
+        formData.append("file", file)
+        formData.append("name", name)
+        formData.append("fileType", fileType)
+        formData.append("fileExtension", fileExtension)
+        formData.append("description", description)
+        formData.append("uploadedById", uploadedById)
 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${editingResource.id}`, {
+          method: "PATCH",
+          body: formData,
+        })
+      } else {
+        // Si no hay archivo
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${editingResource.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            fileType,
+            fileExtension,
+            description,
+            uploadedById,
+          }),
+        })
+      }
+    } else {
+      if (!file) {
+        alert("Debes seleccionar un archivo para crear un nuevo recurso.")
+        return
+      }
+
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("name", name)
+      formData.append("fileType", fileType)
+      formData.append("fileExtension", fileExtension)
+      formData.append("description", description)
+      formData.append("uploadedById", uploadedById)
+
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`, {
         method: "POST",
         body: formData,
       })
-
-      if (!res.ok) {
-        const errText = await res.text()
-        throw new Error(errText)
-      }
-
-      const createdResource = await res.json()
-      console.log("Recurso creado:", createdResource)
-
-      // Reset form
-      setName("")
-      setFileType("")
-      setFileExtension("")
-      setDescription("")
-      setFile(null)
-
-      onClose()
-    } catch (err) {
-      console.error("Error al crear el recurso:", err)
-      alert("Ocurrió un error al subir el recurso.")
-    } finally {
-      setLoading(false)
     }
+    // Cierra modal y actualiza la lista
+    onClose()
+  } catch (err) {
+    console.error("Error al guardar el recurso:", err)
+    alert("Ocurrió un error.")
+  } finally {
+    setLoading(false)
   }
+}
+
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          onClose()
+        }
+      }}>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>Crear nuevo recurso</DialogTitle>
-          <DialogDescription>Completa los detalles del recurso que deseas añadir al sistema.</DialogDescription>
+          <DialogTitle>{editingResource ? "Editar recurso" : "Crear nuevo recurso"}</DialogTitle>
+          <DialogDescription>
+            {editingResource
+              ? "Modifica los detalles del recurso."
+              : "Completa los detalles del recurso que deseas añadir al sistema."}
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -142,7 +179,6 @@ const UploadResourceModal = ({ open, onClose }: UploadResourceModalProps) => {
                 <SelectItem value="pdf">PDF</SelectItem>
                 <SelectItem value="mp3">MP3</SelectItem>
                 <SelectItem value="wav">WAV</SelectItem>
-                <SelectItem value="txt">TXT</SelectItem>
                 <SelectItem value="md">Markdown</SelectItem>
                 <SelectItem value="jpg">JPG</SelectItem>
                 <SelectItem value="png">PNG</SelectItem>
@@ -173,8 +209,8 @@ const UploadResourceModal = ({ open, onClose }: UploadResourceModalProps) => {
           </div>
         </div>
         <DialogFooter>
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? "Subiendo..." : "Guardar recurso"}
+           <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? "Guardando..." : editingResource ? "Actualizar recurso" : "Guardar recurso"}
           </Button>
         </DialogFooter>
       </DialogContent>
