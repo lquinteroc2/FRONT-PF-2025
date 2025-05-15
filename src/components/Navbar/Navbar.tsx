@@ -22,7 +22,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Acerca de Nosotros", href: "/abautMe" },
     { name: "Recomendaciones", href: "/recomendaciones",hidden:false },
-    { name: "Mis Emociones", href: "/emociones",hidden:false },
+    { name: "Mis Emociones", href: "/misEmociones",hidden:false },
     { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:false },
     { name: "Registro", href: "/registro",hidden:true },
     { name: "Iniciar sesión", href: "/login" ,hidden:true },

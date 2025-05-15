@@ -11,7 +11,6 @@ import { PHASE_DEVELOPMENT_SERVER } from "next/dist/shared/lib/constants";
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Header />
       <Hero />
       <Features />
       <HowItWorks />
