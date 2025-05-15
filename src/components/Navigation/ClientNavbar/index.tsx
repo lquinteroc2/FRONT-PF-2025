@@ -13,8 +13,8 @@ export default function ClientNavbar() {
     return null; 
   }
 
-  if (pathname === '/admin') {
-    return null; 
+ if (pathname.startsWith('/admin')) {
+    return null;
   }
 
   return <Navbar />;

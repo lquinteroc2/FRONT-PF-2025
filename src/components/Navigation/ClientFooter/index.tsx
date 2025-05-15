@@ -7,13 +7,13 @@ import Footer from '../Footer';
 export default function ClientFooter() {
   const pathname = usePathname();
 
-  // Renderizar la navbar solo si no estás en la landing page ('/')
+  
   if (pathname === '/') {
-    return null; // No mostrar navbar en la ruta de la landing page
+    return null; 
   }
 
-  if (pathname === '/admin') {
-    return null; // No mostrar navbar en la ruta de la landing page
+ if (pathname.startsWith('/admin')) {
+    return null;
   }
 
   return <Footer />;
