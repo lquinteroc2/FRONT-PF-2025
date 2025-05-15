@@ -10,17 +10,17 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   BarChart3,
-  FileAudio,
-  FileText,
+  // FileAudio,
+  // FileText,
   HelpCircle,
-  ImageIcon,
+  // ImageIcon,
   LayoutDashboard,
   Library,
-  Music,
+  // Music,
   Settings,
   Smile,
   Users,
-  Video,
+  // Video,
 } from "lucide-react"
 
 
@@ -70,9 +70,9 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
               icon={<Library className="mr-2 h-4 w-4" />}
               isActive={pathname.startsWith("/resources")}
             >
-              Todos los recursos
+              Recursos
             </NavItem>
-            <NavItem
+            {/* <NavItem
               href="/admin/resources/audio"
               icon={<FileAudio className="mr-2 h-4 w-4" />}
               isActive={pathname.startsWith("/resources/audio")}
@@ -106,7 +106,7 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
               isActive={pathname.startsWith("/resources/documents")}
             >
               Documentos
-            </NavItem>
+            </NavItem> */}
           </div>
         </div>
         <div className="py-4">

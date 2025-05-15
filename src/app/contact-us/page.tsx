@@ -1,8 +1,9 @@
-import ContactUs from "@/components/Home/footer/contactUs/ContactUs";
+import ContactUs from "@/components/contactUs/ContactUs";
+
 
 
 const ContactUsPage = () => {
-  return <ContactUs/>
+  return <ContactUs />
 };
 
 export default ContactUsPage;

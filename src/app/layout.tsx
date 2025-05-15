@@ -57,7 +57,7 @@ export default async function RootLayout({
         </WrapperHeader>
 
         {children}</AuthProviderGoogle>
-        <Footer/>
+        <ClientFooter />
         <Toaster />
       </body>
     </html>

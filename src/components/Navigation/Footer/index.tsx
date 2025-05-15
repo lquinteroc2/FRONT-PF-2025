@@ -1,4 +1,4 @@
-import { Brain, Heart, Heater } from "lucide-react";
+import { Brain } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {

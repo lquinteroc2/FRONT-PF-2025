@@ -1,22 +1,22 @@
 export enum FileType {
-  DOCUMENT = "DOCUMENT",
-  IMAGE = "IMAGE",
-  AUDIO = "AUDIO",
-  VIDEO = "VIDEO",
-  OTHER = "OTHER",
+  DOCUMENT = "document",
+  IMAGE = "image",
+  AUDIO = "audio",
+  VIDEO = "video",
+  OTHER = "other",
 }
 
 export enum FileExtension {
-  JPG = "JPG",
-  JPEG = "JPEG",
-  PNG = "PNG",
-  WEBP = "WEBP",
-  PDF = "PDF",
-  DOCX = "DOCX",
-  MP4 = "MP4",
-  MOV = "MOV",
-  MP3 = "MP3",
-  WAV = "WAV",
+  JPG = "jpg",
+  JPEG = "jpeg",
+  PNG = "png",
+  WEBP = "webp",
+  PDF = "pdf",
+  DOCX = "docx",
+  MP4 = "mp4",
+  MOV = "mov",
+  MP3 = "mp3",
+  WAV = "wav",
 }
 
 // Interfaces
