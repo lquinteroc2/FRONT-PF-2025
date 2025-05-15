@@ -1,8 +1,8 @@
-import Carousel from "@/components/Landing/carousel/Carousel";
+import ContactUs from "@/components/Home/footer/contactUs/ContactUs";
 
 
 const ContactUsPage = () => {
-  return <Carousel/>
+  return <ContactUs/>
 };
 
 export default ContactUsPage;

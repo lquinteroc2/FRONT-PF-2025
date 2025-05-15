@@ -6,7 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Navbar from "@/components/Navbar/Navbar";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Home/footer";
 
 
 const geistSans = Geist({
@@ -42,8 +43,10 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
+        <AuthProviderGoogle session={session}>
         <Navbar />
-        <AuthProviderGoogle session={session}>{children}</AuthProviderGoogle>
+        {children}</AuthProviderGoogle>
+        <Footer/>
         <Toaster />
       </body>
     </html>
