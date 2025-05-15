@@ -1,15 +1,17 @@
-import CallToAction from "@/components/Home/call-to-action";
-import Features from "@/components/Home/features";
-import Footer from "@/components/Home/footer";
-import Hero from "@/components/Home/hero";
-import HowItWorks from "@/components/Home/how-it-works";
-import Testimonials from "@/components/Home/testimonials";
+import Header from "@/components/Header/Header";
+import CallToAction from "@/components/Landing/call-to-action";
+import Features from "@/components/Landing/features";
+import Footer from "@/components/Landing/footer";
+import Hero from "@/components/Landing/hero";
+import HowItWorks from "@/components/Landing/how-it-works";
+import Testimonials from "@/components/Landing/testimonials";
 import { PHASE_DEVELOPMENT_SERVER } from "next/dist/shared/lib/constants";
 
 
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <Header />
       <Hero />
       <Features />
       <HowItWorks />

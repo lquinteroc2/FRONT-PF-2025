@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/Navbar/Navbar";
 
 
 const geistSans = Geist({

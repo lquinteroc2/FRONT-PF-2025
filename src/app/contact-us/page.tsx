@@ -1,4 +1,4 @@
-import Carousel from "@/components/Home/carousel/Carousel";
+import Carousel from "@/components/Landing/carousel/Carousel";
 
 
 const ContactUsPage = () => {
