@@ -10,6 +10,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -20,16 +21,16 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Acerca de Nosotros", href: "/abautMe" },
-    { name: "Recomendaciones", href: "/recomendaciones",hidden:true },
-    { name: "Mis Emociones", href: "/emociones",hidden:true },
-    { name: "Centros de Apoyo", href: "/centros",hidden:true },
-    { name: "Registro", href: "/registro" },
-    { name: "Inicio de sección", href: "/login" },
+    { name: "Recomendaciones", href: "/recomendaciones",hidden:false },
+    { name: "Mis Emociones", href: "/emociones",hidden:false },
+    { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:false },
+    { name: "Registro", href: "/registro",hidden:true },
+    { name: "Iniciar sesión", href: "/login" ,hidden:true },
   ]
 
   return (
-    <nav className="border-b bg-white">
-      <div className="relative container flex h-16 items-center  px-4 md:px-6">
+    <nav className="overflow-hidden min-w-[100vw] border-b bg-neutro-light fixed top-0 w-full z-50">
+      <div className="relative overflow-hidden container flex justify-between h-16 items-center  px-7 md:flex md:justify-evenly md:px-40"> 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <span className=" text-xl font-bold text-primary"><Brain className="absolute ml-5 -mt-3 w-5"/>Séntia</span>
@@ -40,11 +41,10 @@ export default function Navbar() {
           <ul className="flex gap-6">
             {
             navLinks.filter(link=>!link.hidden).map((link) => (
-              
               <li key={link.name}>
                 <Link
                   href={link.href}
-                  className="text-sm font-medium text-gray-700 transition-colors hover:text-primary"
+                  className="text-sm font-medium text-neutro-dark transition-colors hover:text-primary"
                 >
                   {link.name}
                 </Link>
@@ -56,17 +56,17 @@ export default function Navbar() {
         </div>
 
         {/* User Menu */}
-        <div className="flex md:hidden items-center gap-4">
+        <div className="flex  items-center gap-4">
           <DropdownMenu >
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full pointer-events-none md:pointer-events-auto md:px-6">
+                <Avatar className="hidden md:block h-8 w-8">
                   <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Avatar" />
-                  <AvatarFallback className="bg-teal-100 text-teal-800">US</AvatarFallback>
+                  <AvatarFallback className="bg-primary-light text-primary-dark">US</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="center" className="w-36">
               <DropdownMenuItem asChild>
                 <Link href="/perfil" className="cursor-pointer">
                   Perfil
@@ -81,7 +81,7 @@ export default function Navbar() {
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
+                <Menu className=" h-5 w-5" />
                 <span className="sr-only">Abrir menú</span>
               </Button>
             </SheetTrigger>
@@ -91,7 +91,7 @@ export default function Navbar() {
                   <span className="text-xl font-bold text-primary">Séntia</span>
                 </Link>
                 <nav className="flex flex-col gap-4">
-                  {navLinks.map((link) => (
+                  {navLinks.filter(link=>!link.hidden).map((link) => (
                     <Link
                       key={link.name}
                       href={link.href}
