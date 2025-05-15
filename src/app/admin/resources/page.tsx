@@ -9,56 +9,48 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FileAudio, 
-  FilePlus, 
-  FileText, ImageIcon, MoreHorizontal, Search, Video } from "lucide-react"
+import { FileAudio, FilePlus, FileText, ImageIcon, MoreHorizontal, Search, Video } from "lucide-react"
 import UploadResourceModal from "@/components/AdminDashboard/resource/uploadResourceModal"
+import { FileType, Resource } from "@/lib/types"
 
-// Tipos basados en las entidades proporcionadas
-type FileType = "DOCUMENT" | "IMAGE" | "AUDIO" | "VIDEO" | "OTHER"
-type FileExtension = "JPG" | "JPEG" | "PNG" | "WEBP" | "PDF" | "DOCX" | "MP4" | "MOV" | "MP3" | "WAV"
-
-interface Resource {
-  id: string
-  name: string
-  fileType: FileType
-  fileExtension: FileExtension
-  cloudinaryUrl: string
-  description: string | null
-  uploadedBy: {
-    id: string
-    name: string
-  }
-  createdAt: string
-  updatedAt: string
-}
 
 export default function ResourcesPage() {
   const [isUploadOpen, setIsUploadOpen] = useState(false)
   const [resources, setResources] = useState<Resource[]>([])
+  const [editingResource, setEditingResource] = useState<Resource | null>(null)
+
   
-  useEffect(() => {
   const fetchResources = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
       const data = await response.json()
+      console.log('Resources response:', data)
       setResources(data)
     } catch (error) {
       console.error("Error fetching resources:", error)
     }
   }
 
-  fetchResources()
-}, [])
+  useEffect(() => {
+    fetchResources() 
+  }, [])
+
+useEffect(() => {
+  if (!isUploadOpen && !editingResource) {
+    fetchResources()
+  }
+}, [isUploadOpen, editingResource])
+
+
 
   const [searchTerm, setSearchTerm] = useState("")
   const [fileTypeFilter, setFileTypeFilter] = useState<string>("all")
 
+  // Filtrado de recursos
   const filteredResources = resources.filter((resource) => {
     const matchesSearch =
       resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -69,21 +61,23 @@ export default function ResourcesPage() {
     return matchesSearch && matchesFileType
   })
 
+  // Obtener el icono del tipo de archivo
   const getFileIcon = (fileType: FileType) => {
     switch (fileType) {
-      case "AUDIO":
+      case "audio":
         return <FileAudio className="h-4 w-4" />
-      case "DOCUMENT":
+      case "document":
         return <FileText className="h-4 w-4" />
-      case "VIDEO":
+      case "video":
         return <Video className="h-4 w-4" />
-      case "IMAGE":
+      case "image":
         return <ImageIcon className="h-4 w-4" />
       default:
         return <FileText className="h-4 w-4" />
     }
   }
 
+  // Formateo de fechas
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat("es-ES", {
@@ -92,8 +86,37 @@ export default function ResourcesPage() {
       year: "numeric",
     }).format(date)
   }
-  
-  
+
+  // Manejo del cierre del modal
+  const handleModalClose = () => {
+    setIsUploadOpen(false)
+    setEditingResource(null)
+  }
+
+  // Manejo de edición de recursos
+  const handleEdit = (resource: Resource) => {
+    setEditingResource(resource)
+    setIsUploadOpen(true)
+  }
+
+  // Manejo de eliminación de recursos
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Estás seguro de que quieres eliminar este recurso?")) return
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}`, {
+        method: 'DELETE',
+      })
+      setResources((prev) => prev.filter((res) => res.id !== id))
+    } catch (error) {
+      console.error("Error al eliminar el recurso:", error)
+    }
+  }
+   
+  useEffect(() => {
+  console.log("Modal abierto:", isUploadOpen)
+  console.log("Modo edición:", editingResource)
+}, [isUploadOpen, editingResource])
 
   return (
     <motion.div
@@ -104,10 +127,10 @@ export default function ResourcesPage() {
     >
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Recursos</h1>
-        <UploadResourceModal open={isUploadOpen} onClose={() => setIsUploadOpen(false)} />
         <Button onClick={() => setIsUploadOpen(true)}>
           <FilePlus className="mr-2 h-4 w-4" />
-          Subir recurso</Button>
+          Subir recurso
+        </Button>
       </div>
 
       <div className="flex items-center gap-4">
@@ -143,7 +166,6 @@ export default function ResourcesPage() {
               <TableHead>Nombre</TableHead>
               <TableHead>Tipo</TableHead>
               <TableHead>Extensión</TableHead>
-              {/* <TableHead>Subido por</TableHead> */}
               <TableHead>Fecha</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
@@ -166,7 +188,6 @@ export default function ResourcesPage() {
                     </div>
                   </TableCell>
                   <TableCell>{resource.fileExtension}</TableCell>
-                  {/* <TableCell>{resource.uploadedBy ? resource.uploadedBy.name : "Desconocido"}</TableCell> */}
                   <TableCell>{formatDate(resource.createdAt)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -177,9 +198,9 @@ export default function ResourcesPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEdit(resource)}>Editar</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">Eliminar</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDelete(resource.id)} className="text-destructive">Eliminar</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -189,6 +210,14 @@ export default function ResourcesPage() {
           </TableBody>
         </Table>
       </div>
+
+      {isUploadOpen && (
+  <UploadResourceModal
+    open={isUploadOpen}
+    onClose={handleModalClose}
+    editingResource={editingResource}
+  />
+    )}
     </motion.div>
   )
 }

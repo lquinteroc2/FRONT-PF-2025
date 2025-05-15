@@ -2,7 +2,8 @@
 import { Formik, Form, Field, FormikHelpers, ErrorMessage } from 'formik';
 import { ContactFormValues, sendContactEmails } from '@/lib/email';
 import { Button } from '@/components/ui/button';
-import { contactValidationSchema } from '@/components/Home/footer/contactUs/contactValidationSchema';
+import { contactValidationSchema } from './contactValidationSchema';
+
 
 const initialValues: ContactFormValues = {
   name: '',
