@@ -66,7 +66,6 @@ export interface Emotion {
   color: string
 }
 
-<<<<<<< Updated upstream
 export interface ILoginFormData {
     email: string;
     password: string;
@@ -86,7 +85,6 @@ export interface IUserDto {
     address: string;
     profileImage: string;
 }
-=======
 
 export type ResourceFormData = {
   name: string
@@ -108,4 +106,3 @@ export type Props = {
   resource: Resource
   onClose: () => void
 }
->>>>>>> Stashed changes

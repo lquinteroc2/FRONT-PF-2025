@@ -17,6 +17,7 @@ import { FileAudio, FilePlus, FileText, ImageIcon, MoreHorizontal, Search, Video
 import { FileType, Resource } from "@/lib/types"
 import CreateResourceModal from "@/components/AdminDashboard/resource/modals/CreateResourceModal"
 import EditResourceModal from "@/components/AdminDashboard/resource/modals/EditResourceModal"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function ResourcesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -26,15 +27,23 @@ export default function ResourcesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [fileTypeFilter, setFileTypeFilter] = useState<string>("all")
 
-  const fetchResources = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
-      const data = await response.json()
+const fetchResources = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
+    const data = await response.json()
+
+    // Validar que data sea un array
+    if (Array.isArray(data)) {
       setResources(data)
-    } catch (error) {
-      console.error("Error fetching resources:", error)
+    } else {
+      console.error("La respuesta no es un array:", data)
+      setResources([]) // fallback seguro
     }
+  } catch (error) {
+    console.error("Error fetching resources:", error)
+    setResources([]) // fallback en caso de error
   }
+}
 
   useEffect(() => {
     fetchResources()
@@ -140,6 +149,7 @@ export default function ResourcesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Nombre</TableHead>
+              <TableHead>Descripción</TableHead>
               <TableHead>Tipo</TableHead>
               <TableHead>Extensión</TableHead>
               <TableHead>Fecha</TableHead>
@@ -157,6 +167,20 @@ export default function ResourcesPage() {
               filteredResources.map((resource) => (
                 <TableRow key={resource.id}>
                   <TableCell className="font-medium">{resource.name}</TableCell>
+                  <TableCell className="max-w-xs truncate text-sm">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="cursor-default truncate inline-block max-w-[200px]">
+                            {resource.description || "Sin descripción"}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{resource.description}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>    
                   <TableCell>
                     <div className="flex items-center">
                       {getFileIcon(resource.fileType)}

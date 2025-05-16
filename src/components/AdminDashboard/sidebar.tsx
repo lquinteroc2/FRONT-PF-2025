@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
-  BarChart3,
+  // BarChart3,
   // FileAudio,
   // FileText,
   HelpCircle,
@@ -17,7 +17,7 @@ import {
   LayoutDashboard,
   Library,
   // Music,
-  Settings,
+  // Settings,
   Smile,
   Users,
   // Video,
@@ -46,7 +46,7 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
             <NavItem href="/admin/users" icon={<Users className="mr-2 h-4 w-4" />} isActive={pathname.startsWith("/users")}>
               Usuarios
             </NavItem>
-            <NavItem
+            {/* <NavItem
               href="/analytics"
               icon={<BarChart3 className="mr-2 h-4 w-4" />}
               isActive={pathname.startsWith("/analytics")}
@@ -59,7 +59,7 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
               isActive={pathname.startsWith("/settings")}
             >
               Configuración
-            </NavItem>
+            </NavItem> */}
           </div>
         </div>
         <div className="py-4">
