@@ -11,14 +11,23 @@ export const validationSchemaRegister = Yup.object({
 
   password: Yup.string()
     .required("La contraseña es obligatoria")
-    .matches(/[0-9]/, "Debe contener al menos un número")
+    .min(8, "Mínimo 8 caracteres")
+    .max(15, "Máximo 15 caracteres")
+    .matches(/[a-z]/, "Debe contener al menos una minúscula")
     .matches(/[A-Z]/, "Debe contener al menos una mayúscula")
-    .test(
-      "no-espacios",
-      "La contraseña no puede contener espacios",
-      (value) => !/\s/.test(value)
-    ),
-    confirmPassword: Yup.string()
+    .matches(/[0-9]/, "Debe contener al menos un número")
+    .matches(/[!@#$%&*]/, "Debe contener un carácter especial (!@#$%&*)")
+    .test("no-espacios", "La contraseña no puede contener espacios", (value) => !/\s/.test(value)),
+
+  confirmPassword: Yup.string()
     .required("Debes confirmar tu contraseña")
-    .oneOf([Yup.ref("password")],"Las contraseñas no coinciden")
+    .oneOf([Yup.ref("password")],"Las contraseñas no coinciden"),
+
+  address: Yup.string()
+    .required("El campo direccion es requerido")
+    .max(20, "El campo direccion tiene como máximo 30 caracteres"),
+  
+  profileImage: Yup.string()
+    .required("El campo direccion es requerido")
+    .max(100, "El campo direccion tiene como máximo 100 caracteres"),
 });

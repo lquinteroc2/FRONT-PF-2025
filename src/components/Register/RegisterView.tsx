@@ -5,10 +5,12 @@ import { validationSchemaRegister } from "./registervalidationSchema";
 import { IUserDto } from "@/lib/types";
 import { Button } from "../ui/button";
 import { motion } from 'framer-motion';
+import registerHelper from "./registerHelper";
 
 const MotionDiv = motion('div');
 
 const RegisterView = () => {
+
     return (
 <>
 
@@ -38,9 +40,17 @@ const RegisterView = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    address: "",
+    profileImage: "",
   }}
   validationSchema={validationSchemaRegister}
-  onSubmit={(values) => console.log(values)}
+onSubmit={async (values, { resetForm }) => {
+  const result = await registerHelper(values); // Enviamos todo, incluyendo confirmPassword
+  if (result) {
+    alert('Registro exitoso');
+    resetForm();
+  }
+}}
 >  
         <Form className="flex flex-col w-full">
 
@@ -108,6 +118,39 @@ const RegisterView = () => {
     className="text-sm text-primary-dark font-bold"/>
     </div> 
 </div>
+
+        <div className='text-center w-full'><label className="block text-sm font-semibold text-neutro-dark ">
+        Direccion
+        </label>
+        <div className="mx-auto text-center w-[40%]">
+        <Field
+        className="w-full text-center text-sm border border-neutro-dark rounded-sm"
+        type="text"
+        name="address"
+        placeholder="Direccion"/>
+        <ErrorMessage
+    name="address"
+    component="div"
+    className="text-sm text-primary-dark font-bold"/>
+    </div> 
+</div>
+
+        <div className='text-center w-full'><label className="block text-sm font-semibold text-neutro-dark ">
+        Foto
+        </label>
+        <div className="mx-auto text-center w-[40%]">
+        <Field
+        className="w-full text-center text-sm border border-neutro-dark rounded-sm"
+        type="text"
+        name="profileImage"
+        placeholder="Imagen"/>
+        <ErrorMessage
+    name="profileImage"
+    component="div"
+    className="text-sm text-primary-dark font-bold"/>
+    </div> 
+</div>
+
 <Button
                 type="submit"
                 variant="default" size="sm" className="w-[40%] font-bold mt-4 mx-auto"
