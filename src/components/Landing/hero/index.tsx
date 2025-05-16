@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function Hero() {
   return (
@@ -56,10 +57,14 @@ export default function Hero() {
               className="flex flex-wrap gap-4"
             >
               <Button size="lg" className="bg-primary hover:bg-primary-dark">
+                <Link href="/home" >
                 Comenzar ahora
+                </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-teal-600 text-primary hover:bg-primary-light">
+                <Link href="/abautMe" >
                 Saber más
+                </Link>
               </Button>
             </motion.div>
           </motion.div>
@@ -71,7 +76,7 @@ export default function Hero() {
             className="relative mx-auto h-[400px] w-full max-w-md rounded-2xl shadow-xl md:h-[500px]"
           >
             <Image
-              src="/placeholder.svg?height=500&width=400"
+              src="/assets/ejercicios de respiración al aire libre.jpg"
               alt="Séntia App Preview"
               fill
               className="rounded-2xl object-cover"

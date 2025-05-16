@@ -20,11 +20,11 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Acerca de Nosotros", href: "/abautMe" },
-    { name: "Recomendaciones", href: "/recomendaciones",hidden:true },
-    { name: "Mis Emociones", href: "/emotions",hidden:true },
-    { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:true },
-    { name: "Registro", href: "/register",hidden:false },
-    { name: "Iniciar sesión", href: "/login" ,hidden:false },
+    { name: "Recomendaciones", href: "/recomendaciones",hidden:false },
+    { name: "Mis Emociones", href: "/emotions",hidden:false },
+    { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:false },
+    { name: "Registro", href: "/register",hidden:true },
+    { name: "Iniciar sesión", href: "/login" ,hidden:true },
   ]
 
   return (
@@ -55,7 +55,7 @@ export default function Navbar() {
         </div>
 
         {/* User Menu */}
-        <div className="flex md:hidden  items-center gap-4">
+        <div className="flex items-center gap-4">
           <DropdownMenu >
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full pointer-events-none md:pointer-events-auto md:px-6">
@@ -66,6 +66,11 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-36">
+                <DropdownMenuItem asChild>
+                <Link href="/admin" className="cursor-pointer">
+                  Admin
+                </Link>
+              </DropdownMenuItem >
               <DropdownMenuItem asChild>
                 <Link href="/perfil" className="cursor-pointer">
                   Perfil
