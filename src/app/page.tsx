@@ -1,4 +1,3 @@
-import Header from "@/components/Header/Header";
 import CallToAction from "@/components/Landing/call-to-action";
 import Features from "@/components/Landing/features";
 import Footer from "@/components/Navigation/Footer";
