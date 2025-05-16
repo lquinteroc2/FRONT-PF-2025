@@ -44,8 +44,9 @@ export default async function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
-      ><AuthProvider>
+        className={` ${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+      >
+        <AuthProvider>
         <AuthProviderGoogle session={session}>
       
         <ClientNavbar />
