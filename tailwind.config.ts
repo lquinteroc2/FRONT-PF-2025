@@ -39,6 +39,7 @@ const config = {
   			neutro: {
 				DEFAULT:"#e2e9e5",
 				light: '#d4ded8',  
+				ice: '#f1f4f2',
 				dark: '#212b26',
   			},
         muted: {
