@@ -58,7 +58,7 @@ export default function Multimedia() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="relative mx-auto overflow-hidden  h-[200px] w-full max-w-md rounded-2xl md:w-[401px]  md:h-[510px]"
+            className="relative mx-auto overflow-hidden  h-[400px] w-full max-w-md rounded-2xl md:w-[401px]  md:h-[510px]"
           >
             <YouTubePlayer videoId="LzD7Fw18lQI"  />
 

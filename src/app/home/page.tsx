@@ -5,7 +5,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className='container h-auto pt-9 px-40 justify-center flex flex-col items-center flex-1  overflow-y-auto'>
+    <div className='container h-auto pt-9 md:px-40 justify-center flex flex-col items-center flex-1  overflow-y-auto'>
       <CardList/>
       <div className='py-16 flex justify-evenly'>
      <Multimedia/>
