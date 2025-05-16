@@ -33,7 +33,9 @@ interface Emotion {
 }
 
 export default function EmotionsPage() {
-  const [emotions, setEmotions] = useState<Emotion[]>([
+  const [emotions, 
+    // setEmotions
+  ] = useState<Emotion[]>([
     {
       id: "1",
       name: "Alegría",

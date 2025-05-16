@@ -38,7 +38,9 @@ interface User {
 }
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([
+  const [users,
+    //  setUsers
+    ] = useState<User[]>([
     {
       id: "1",
       name: "Carlos Mendez",
