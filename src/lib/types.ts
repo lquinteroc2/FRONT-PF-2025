@@ -83,7 +83,8 @@ export interface IUserDto {
     email: string;
     password: string;
     confirmPassword: string;
-
+    address: string;
+    profileImage: string;
 }
 =======
 

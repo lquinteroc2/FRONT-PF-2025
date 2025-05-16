@@ -8,6 +8,9 @@ import { motion } from 'framer-motion';
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from "formik";
 import { ILoginFormData } from "@/lib/types";
 import { loginValidationSchema } from "./loginvalidationSchema";
+import { loginHelper } from "./loginHelper";
+import { useAuth } from "@/context/Auth";
+import { useRouter } from 'next/navigation';
 
 const initialValues: ILoginFormData = {
   email: '',
@@ -18,22 +21,17 @@ const MotionDiv = motion('div');
 
 
 const LoginView = () => {
-   const onSubmit = async (
+    const { setUser } = useAuth();
+    const router = useRouter();
+    const onSubmit = async (
   values: { email: string; password: string },
   { resetForm, setSubmitting }: FormikHelpers<{ email: string; password: string }>
 ) => {
-  // Simular envío de datos
-  const userData = {
-    email: values.email,
-    password: values.password,
-  };
-
-  // Mostrar en consola (en lugar de enviar al backend)
-  console.log("Datos del usuario:", userData);
-
-  // Finalizar el envío simulado
-  resetForm();
-  setSubmitting(false);
+   const { token, user } = await loginHelper(values);
+      setUser({ token, user });
+      resetForm();
+      setSubmitting(false);
+      router.push('/home');  
 };
 
 return (
@@ -81,7 +79,7 @@ return (
     type="email"
     name="email"
     placeholder="Correo Electronico"
-    className="w-[40%] text-center border border-neutro-dark"/>
+    className="w-[40%] text-center border border-neutro"/>
     <ErrorMessage name="email" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
 
