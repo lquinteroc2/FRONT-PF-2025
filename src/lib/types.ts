@@ -76,6 +76,15 @@ export interface ILoginFormDto {
     token: string;
     user: User;
 };
+
+
+export interface IUserDto {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+
+}
 =======
 
 export type ResourceFormData = {

@@ -81,7 +81,7 @@ return (
     type="email"
     name="email"
     placeholder="Correo Electronico"
-    className="w-[40%] text-center "/>
+    className="w-[40%] text-center border border-neutro-dark"/>
     <ErrorMessage name="email" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
 
@@ -91,7 +91,7 @@ return (
     type="password"
     name="password"
     placeholder="Contraseña"
-    className="w-[40%] text-center"
+    className="w-[40%] text-center border border-neutro-dark"
   />
   <ErrorMessage name="password" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
