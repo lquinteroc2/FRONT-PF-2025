@@ -14,7 +14,9 @@ const registerHelper = async (userData: IUserDto) => {
         alert('Registrado con Exito');
         return res.data;
 
-    }  catch (error: any) {
+    }  
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (error: any) {
   console.error('Error al Registrar:', error);
 
   if (error.response) {

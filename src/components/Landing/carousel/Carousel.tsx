@@ -5,13 +5,14 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { mockCarousel } from "./MockCarousel"
+import Image from "next/image";
 
 export default function Carousel() {
 
-  const productos = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    nombre: `Carousel ${i + 1}`,
-  }));
+  // const productos = Array.from({ length: 20 }, (_, i) => ({
+  //   id: i + 1,
+  //   nombre: `Carousel ${i + 1}`,
+  // }));
 
   return (
      <div className="w-full px-4">
@@ -26,11 +27,14 @@ export default function Carousel() {
         {mockCarousel.map((carousel) => (
           <SwiperSlide key={carousel.id}>
             <div className="bg-white rounded-xl shadow p-2 text-center">
-              <img
-                src={carousel.imagen}
-                alt={carousel.titulo}
-                className="rounded-lg w-full h-40 object-cover"
-              />
+                <Image
+                  src={carousel.imagen}
+                  alt={carousel.titulo}
+                  width={800} // puedes ajustar según tu diseño
+                  height={160} // 40 * 4 (tailwind rem ≈ px)
+                  className="rounded-lg w-full h-40 object-cover"
+                  style={{ objectFit: "cover" }}
+                />
               <h3 className="mt-2 text-sm font-semibold text-gray-700">
                 {carousel.titulo}
               </h3>
