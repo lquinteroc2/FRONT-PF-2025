@@ -1,3 +1,5 @@
+import { FormEvent } from "react"
+
 export enum FileType {
   DOCUMENT = "document",
   IMAGE = "image",
@@ -64,6 +66,7 @@ export interface Emotion {
   color: string
 }
 
+<<<<<<< Updated upstream
 export interface ILoginFormData {
     email: string;
     password: string;
@@ -73,3 +76,36 @@ export interface ILoginFormDto {
     token: string;
     user: User;
 };
+
+
+export interface IUserDto {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    address: string;
+    profileImage: string;
+}
+=======
+
+export type ResourceFormData = {
+  name: string
+  fileType: string
+  fileExtension: string
+  description: string
+  file?: File | null
+}
+
+export type ResourceFormProps = {
+  data: ResourceFormData
+  onChange: (field: keyof ResourceFormData, value: string | File | null) => void
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void
+  isSubmitting?: boolean
+}
+
+
+export type Props = {
+  resource: Resource
+  onClose: () => void
+}
+>>>>>>> Stashed changes

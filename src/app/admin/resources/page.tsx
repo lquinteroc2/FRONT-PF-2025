@@ -14,21 +14,22 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FileAudio, FilePlus, FileText, ImageIcon, MoreHorizontal, Search, Video } from "lucide-react"
-import UploadResourceModal from "@/components/AdminDashboard/resource/uploadResourceModal"
 import { FileType, Resource } from "@/lib/types"
-
+import CreateResourceModal from "@/components/AdminDashboard/resource/modals/CreateResourceModal"
+import EditResourceModal from "@/components/AdminDashboard/resource/modals/EditResourceModal"
 
 export default function ResourcesPage() {
-  const [isUploadOpen, setIsUploadOpen] = useState(false)
-  const [resources, setResources] = useState<Resource[]>([])
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [editingResource, setEditingResource] = useState<Resource | null>(null)
+  const [resources, setResources] = useState<Resource[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [fileTypeFilter, setFileTypeFilter] = useState<string>("all")
 
-  
   const fetchResources = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
       const data = await response.json()
-      console.log('Resources response:', data)
       setResources(data)
     } catch (error) {
       console.error("Error fetching resources:", error)
@@ -36,21 +37,13 @@ export default function ResourcesPage() {
   }
 
   useEffect(() => {
-    fetchResources() 
+    fetchResources()
   }, [])
 
-useEffect(() => {
-  if (!isUploadOpen && !editingResource) {
-    fetchResources()
-  }
-}, [isUploadOpen, editingResource])
+  useEffect(() => {
+    if (!isCreateModalOpen && !editingResource) fetchResources()
+  }, [isCreateModalOpen, editingResource])
 
-
-
-  const [searchTerm, setSearchTerm] = useState("")
-  const [fileTypeFilter, setFileTypeFilter] = useState<string>("all")
-
-  // Filtrado de recursos
   const filteredResources = resources.filter((resource) => {
     const matchesSearch =
       resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,23 +54,16 @@ useEffect(() => {
     return matchesSearch && matchesFileType
   })
 
-  // Obtener el icono del tipo de archivo
   const getFileIcon = (fileType: FileType) => {
     switch (fileType) {
-      case "audio":
-        return <FileAudio className="h-4 w-4" />
-      case "document":
-        return <FileText className="h-4 w-4" />
-      case "video":
-        return <Video className="h-4 w-4" />
-      case "image":
-        return <ImageIcon className="h-4 w-4" />
-      default:
-        return <FileText className="h-4 w-4" />
+      case "audio": return <FileAudio className="h-4 w-4" />
+      case "document": return <FileText className="h-4 w-4" />
+      case "video": return <Video className="h-4 w-4" />
+      case "image": return <ImageIcon className="h-4 w-4" />
+      default: return <FileText className="h-4 w-4" />
     }
   }
 
-  // Formateo de fechas
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat("es-ES", {
@@ -87,36 +73,26 @@ useEffect(() => {
     }).format(date)
   }
 
-  // Manejo del cierre del modal
   const handleModalClose = () => {
-    setIsUploadOpen(false)
+    setIsCreateModalOpen(false)
     setEditingResource(null)
+    setIsEditModalOpen(false)
   }
 
-  // Manejo de edición de recursos
   const handleEdit = (resource: Resource) => {
-    setEditingResource(resource)
-    setIsUploadOpen(true)
+  setEditingResource(resource)
+  setIsEditModalOpen(true)
   }
 
-  // Manejo de eliminación de recursos
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este recurso?")) return
-
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}`, {
-        method: 'DELETE',
-      })
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}`, { method: 'DELETE' })
       setResources((prev) => prev.filter((res) => res.id !== id))
     } catch (error) {
       console.error("Error al eliminar el recurso:", error)
     }
   }
-   
-  useEffect(() => {
-  console.log("Modal abierto:", isUploadOpen)
-  console.log("Modo edición:", editingResource)
-}, [isUploadOpen, editingResource])
 
   return (
     <motion.div
@@ -127,7 +103,7 @@ useEffect(() => {
     >
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Recursos</h1>
-        <Button onClick={() => setIsUploadOpen(true)}>
+        <Button onClick={() => setIsCreateModalOpen(true)}>
           <FilePlus className="mr-2 h-4 w-4" />
           Subir recurso
         </Button>
@@ -167,7 +143,7 @@ useEffect(() => {
               <TableHead>Tipo</TableHead>
               <TableHead>Extensión</TableHead>
               <TableHead>Fecha</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
+              <TableHead className="w-[50px]" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -211,13 +187,13 @@ useEffect(() => {
         </Table>
       </div>
 
-      {isUploadOpen && (
-  <UploadResourceModal
-    open={isUploadOpen}
-    onClose={handleModalClose}
-    editingResource={editingResource}
-  />
-    )}
+      {isCreateModalOpen && (
+        <CreateResourceModal open={isCreateModalOpen} onClose={handleModalClose} />
+      )}
+
+      {isEditModalOpen && editingResource && (
+        <EditResourceModal resource={editingResource} onClose={handleModalClose} />
+      )}
     </motion.div>
   )
 }

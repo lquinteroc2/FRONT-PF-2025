@@ -21,9 +21,9 @@ export default function Navbar() {
   const navLinks = [
     { name: "Acerca de Nosotros", href: "/abautMe" },
     { name: "Recomendaciones", href: "/recomendaciones",hidden:true },
-    { name: "Mis Emociones", href: "/misEmociones",hidden:true },
+    { name: "Mis Emociones", href: "/emotions",hidden:true },
     { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:true },
-    { name: "Registro", href: "/registro",hidden:false },
+    { name: "Registro", href: "/register",hidden:false },
     { name: "Iniciar sesión", href: "/login" ,hidden:false },
   ]
 
@@ -31,7 +31,7 @@ export default function Navbar() {
     <nav className="overflow-hidden min-w-[100vw] border-b bg-neutro-light fixed top-0 w-full z-50">
       <div className="relative overflow-hidden container flex justify-between h-16 items-center  px-7 md:flex md:justify-evenly md:px-40"> 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/home" className="flex items-center gap-2">
           <span className=" text-xl font-bold text-primary"><Brain className="absolute ml-5 -mt-3 w-5"/>Séntia</span>
         </Link>
 

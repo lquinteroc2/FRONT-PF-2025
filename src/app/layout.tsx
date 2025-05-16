@@ -10,6 +10,7 @@ import Header from "@/components/Header/Header";
 import WrapperHeader from "@/components/ui/wrapperHeader";
 import ClientFooter from "@/components/Navigation/ClientFooter";
 import ClientNavbar from "@/components/Navigation/ClientNavbar";
+import { AuthProvider } from "@/context/Auth";
 
 
 const geistSans = Geist({
@@ -54,6 +55,7 @@ export default async function RootLayout({
         {children}</AuthProviderGoogle>
         <ClientFooter />
         <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
