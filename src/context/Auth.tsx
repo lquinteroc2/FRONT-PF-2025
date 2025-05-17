@@ -1,8 +1,9 @@
 "use client"
 
 import { ILoginFormDto, } from "@/lib/types";  
+// import { cookies } from "next/headers";
 import React, { createContext, useContext, useEffect, useState } from "react";
-
+import  Cookies  from "js-cookie"
 
 // Definir el tipo del contexto
 export interface IAuthDto {
@@ -35,7 +36,7 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
     useEffect(() => {
         if (user) {
         localStorage.setItem("loginUser", JSON.stringify(user));
-       // Cookies.set("loginUser", JSON.stringify(user));
+        Cookies.set( "loginUser", JSON.stringify(user), { expires: 7 }); // Guardar en cookies por 7 días
     }
     }, [user]);
 

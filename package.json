@@ -26,6 +26,7 @@
     "emailjs-com": "^3.2.0",
     "formik": "^2.4.6",
     "framer-motion": "^12.11.4",
+    "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
     "lightningcss": "^1.28.0",
     "lucide-react": "^0.510.0",
@@ -43,6 +44,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/js-cookie": "^3.0.6",
     "@types/leaflet": "^1.9.17",
     "@types/next-auth": "^3.13.0",
     "@types/node": "^20",
