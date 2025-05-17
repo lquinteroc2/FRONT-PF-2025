@@ -1,9 +1,9 @@
-import ContactUs from "@/components/contactUs/ContactUs";
+import ContactUsView from "@/components/contactUs/ContactUsView";
 
 
 
 const ContactUsPage = () => {
-  return <ContactUs />
+  return <ContactUsView />
 };
 
 export default ContactUsPage;

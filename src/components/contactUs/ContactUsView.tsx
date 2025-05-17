@@ -3,7 +3,11 @@ import { Formik, Form, Field, FormikHelpers, ErrorMessage } from 'formik';
 import { ContactFormValues, sendContactEmails } from '@/lib/email';
 import { Button } from '@/components/ui/button';
 import { contactValidationSchema } from './contactValidationSchema';
+import { contactHelper } from '@/components/contactUs/contactHelper';
+import { motion } from 'framer-motion';
 
+
+const MotionDiv = motion('div');
 
 const initialValues: ContactFormValues = {
   name: '',
@@ -13,18 +17,21 @@ const initialValues: ContactFormValues = {
 };
 
 const ContactUs = () => {
-  const onSubmit = async (
+ const onSubmit = async (
   values: ContactFormValues,
   { resetForm, setSubmitting }: FormikHelpers<ContactFormValues>
 ) => {
-  const result = await sendContactEmails(values);
+  console.log('Datos del formulario:', values);
 
-  if (result.success) {
-    console.log('Correo enviado con éxito');
-    resetForm();
-  } else {
-    console.log('Error al enviar el correo');
-  }
+  const emailResult = await sendContactEmails(values);
+const contactResult = await contactHelper(values.name, values.email);
+
+if (emailResult.success && contactResult.success) {
+  alert("Datos Enviados con Éxito");
+  resetForm();
+} else {
+  console.error("Error al enviar el correo");
+}
 
   setSubmitting(false);
 };
@@ -37,9 +44,14 @@ const ContactUs = () => {
       onSubmit={onSubmit}
     >
       {() => (
-        <Form className="space-y-4 my-8">
+        <Form className="space-y-4">
           <div className="flex flex-col md:flex-row gap-12">
-            <div className="flex flex-col p-4 w-full md:w-1/2 items-center">
+            <MotionDiv
+        className="flex flex-col p-4 w-full md:w-1/2 items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 3, ease: 'easeOut' }}>
+
               <div className="lg:w-[70%] my-auto">
                 <h1 className="text-center text-4xl font-bold text-neutro-dark mb-6">Contáctanos</h1>
                 <p className="text-center text-3xl text-neutro-dark mb-6">
@@ -50,9 +62,13 @@ const ContactUs = () => {
                   O si lo que deseas es escribir un mensaje a nuestro equipo directivo, utiliza este formulario y nos pondremos en contacto contigo lo antes posible.
                 </p>
               </div>
-            </div>
-
-            <div className="flex flex-col lg:w-1/2 text-center">
+            </MotionDiv>
+<MotionDiv 
+className="fflex flex-col lg:w-1/2 text-center"       
+  initial={{ opacity: 0, y: 100 }} // inicia fuera de pantalla abajo
+  animate={{ opacity: 1, y: 0 }}   // aparece y sube
+  transition={{ duration: 1.5, ease: 'easeOut' }}>
+            
               <div className="block text-xl font-bold my-8 text-neutro-dark">Formulario de Contacto</div>
 
               <div>
@@ -108,8 +124,8 @@ const ContactUs = () => {
                   Enviar
                 </Button>
               </div>
+          </MotionDiv>
             </div>
-          </div>
         </Form>
       )}
     </Formik>

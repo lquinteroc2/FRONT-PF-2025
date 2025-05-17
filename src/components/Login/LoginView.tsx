@@ -36,7 +36,7 @@ const LoginView = () => {
 
 return (
     <>
-<div className="flex flex-col md:flex-row gap-12 justify-evenly my-24">
+<div className="flex flex-col md:flex-row gap-12 justify-evenly">
     <div>
         <RelaxingVideo/>
         <div className="flex flex-row items-center mt-8">
@@ -79,7 +79,7 @@ return (
     type="email"
     name="email"
     placeholder="Correo Electronico"
-    className="w-[40%] text-center border border-neutro"/>
+    className="w-[60%] text-center border border-neutro"/>
     <ErrorMessage name="email" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
 
@@ -89,7 +89,7 @@ return (
     type="password"
     name="password"
     placeholder="Contraseña"
-    className="w-[40%] text-center border border-neutro-dark"
+    className="w-[60%] text-center border border-neutro-dark"
   />
   <ErrorMessage name="password" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
@@ -111,7 +111,7 @@ return (
             </li>
             <Button
                 type="submit"
-                variant="default" size="sm" className="w-[40%] font-bold mt-4"
+                variant="default" size="sm" className="w-[60%] font-bold mt-4"
             >
                 Iniciar Sesion
             </Button>
