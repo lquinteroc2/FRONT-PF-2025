@@ -19,12 +19,13 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   const navLinks = [
+    { name: "Contactanos", href: "/contact-us" ,hidden: false },
     { name: "Acerca de Nosotros", href: "/abautMe" },
     { name: "Recomendaciones", href: "/recomendaciones",hidden:false },
     { name: "Mis Emociones", href: "/emotions",hidden:false },
     { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:false },
-    { name: "Registro", href: "/register",hidden:true },
-    { name: "Iniciar sesión", href: "/login" ,hidden:true },
+    { name: "Registro", href: "/register",hidden:false },
+    { name: "Iniciar sesión", href: "/login" ,hidden: false },
   ]
 
   return (

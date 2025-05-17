@@ -6,8 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
 import { getServerSession, Session } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Header from "@/components/Header/Header";
-import WrapperHeader from "@/components/ui/wrapperHeader";
 import ClientFooter from "@/components/Navigation/ClientFooter";
 import ClientNavbar from "@/components/Navigation/ClientNavbar";
 import { AuthProvider } from "@/context/Auth";
@@ -44,16 +42,15 @@ export default async function RootLayout({
   return (
     <html lang="es">
       <body
-        className={` ${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+        className={` ${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased  bg-secondary-50 flex flex-col min-h-screen`}
       >
         <AuthProvider>
         <AuthProviderGoogle session={session}>
-      
         <ClientNavbar />
-        <WrapperHeader>
-        <Header />
-        </WrapperHeader>
-        {children}</AuthProviderGoogle>
+        <main className="flex-grow flex justify-center items-center pt-16 pb-4">
+          {children}
+        </main>
+        </AuthProviderGoogle>
         <ClientFooter />
         <Toaster />
         </AuthProvider>

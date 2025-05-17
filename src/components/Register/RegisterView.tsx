@@ -14,7 +14,7 @@ const RegisterView = () => {
     return (
 <>
 
-        <div className="flex flex-col md:flex-row gap-1 bg-secondary-50 my-20">
+        <div className="flex flex-col md:flex-row gap-1 bg-secondary-50">
        
         <MotionDiv
         className="flex flex-col p-4 rounded-lg w-full md:w-1/2 items-center justify-center text-center"
@@ -24,9 +24,13 @@ const RegisterView = () => {
 >
         <div className="text-6xl text-neutro-dark font-bold">Conoce tus Emociones</div>
         <div className="text-6xl text-neutro-dark font-bold my-3">con</div>
-  <div>
-        <span className="text-primary-dark font-bold text-7xl">SÉNTIA</span>
-  </div>
+  <MotionDiv
+        className="text-primary-dark font-bold text-7xl"
+        initial={{ opacity: 0, y: 100 }} 
+        animate={{ opacity: 1, y: 0 }}   
+        transition={{ duration: 3.5, ease: 'easeOut' }}>
+        <span>SÉNTIA</span>
+  </MotionDiv>
 </MotionDiv>
 
         <MotionDiv className="flex flex-col p-4 rounded-lg w-full md:w-1/2 items-center"       
