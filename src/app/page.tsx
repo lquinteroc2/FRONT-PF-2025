@@ -1,6 +1,6 @@
 import CallToAction from "@/components/Landing/call-to-action";
 import Features from "@/components/Landing/features";
-import Footer from "@/components/Navigation/Footer";
+import Footer from "@/components/Navigation/Footer/Footer";
 import Hero from "@/components/Landing/hero";
 import HowItWorks from "@/components/Landing/how-it-works";
 import Testimonials from "@/components/Landing/testimonials";

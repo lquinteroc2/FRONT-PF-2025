@@ -52,8 +52,8 @@ if (emailResult.success && contactResult.success) {
         animate={{ opacity: 1 }}
         transition={{ duration: 3, ease: 'easeOut' }}>
 
-              <div className="lg:w-[70%] my-auto">
-                <h1 className="text-center text-4xl font-bold text-neutro-dark mb-6">Contáctanos</h1>
+              <div className="lg:w-[70%]">
+                <h1 className="text-center text-4xl font-bold text-neutro-dark mb-6 mt-8">Contáctanos</h1>
                 <p className="text-center text-3xl text-neutro-dark mb-6">
                   <strong>
                     ¿Quieres ser parte del equipo de <span className="text-primary-dark font-bold">SÉNTIA</span>?
@@ -110,7 +110,7 @@ className="fflex flex-col lg:w-1/2 text-center"
                 <Field
                   as="textarea"
                   name="message"
-                  rows={5}
+                  rows={2}
                   placeholder="Mensaje"
                   className="w-[80%] p-2 border border-neutro-light rounded-md focus:outline-none focus:ring-2 focus:ring-secundary"
                 />

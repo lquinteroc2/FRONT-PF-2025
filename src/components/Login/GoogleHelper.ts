@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/Auth";
 import axios from "axios";
 
 
@@ -18,10 +19,7 @@ const googleHelper = async (userData: {
 
     const { token, user } = response.data;
 
-    // Guardar token y user en localStorage
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
-
+    return response.data;    
     console.log("Login con Google exitoso. Datos guardados.");
   } catch (error: any) {
     console.error(
@@ -32,3 +30,4 @@ const googleHelper = async (userData: {
 };
 
 export default googleHelper;
+
