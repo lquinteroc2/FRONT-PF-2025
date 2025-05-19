@@ -14,25 +14,50 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { useAuth } from "@/context/Auth"
+import  Cookies  from "js-cookie"
+import { useRouter } from "next/navigation"
+import { usePathname } from "next/navigation";
+
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { user, setUser } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const navLinks = [
-    { name: "Contactanos", href: "/contact-us" ,hidden: false },
-    { name: "Acerca de Nosotros", href: "/abautMe" },
-    { name: "Recomendaciones", href: "/recomendaciones",hidden:false },
-    { name: "Mis Emociones", href: "/emotions",hidden:false },
-    { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:false },
-    { name: "Registro", href: "/register",hidden:false },
-    { name: "Iniciar sesión", href: "/login" ,hidden: false },
+    { name: "Contactanos", href: "/contact-us" , showWhen: "always"   },
+    { name: "Acerca de Nosotros", href: "/abautMe" , showWhen: "always"  },
+    { name: "Recomendaciones", href: "/recomendaciones",hidden:false , showWhen: "auth" },
+    { name: "Mis Emociones", href: "/emotions",hidden:false , showWhen: "auth" },
+    { name: "Centros de Apoyo", href: "/centrosApoyo",hidden:false , showWhen: "auth" },
+    { name: "Registro", href: "/register",hidden:false , showWhen: "noAuth"  },
+    { name: "Iniciar Sesión", href: "/login" ,hidden: false , showWhen: "noAuth"  },
   ]
+   const filteredLinks = navLinks.filter((link) => {
+      if (link.href === pathname) return false;
+    if (link.showWhen === "noAuth") return !user;
+    if (link.showWhen === "auth") return !!user;
+     if (link.showWhen === "always") return true;
+    return false;
+  });
+    const handleLogout = () => {
+  setUser(null);
+
+  localStorage.removeItem("loginUser");
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  Cookies.remove("loginUser");
+
+  router.push("/home");
+};
 
   return (
     <nav className="overflow-hidden min-w-[100vw] border-b bg-neutro-light fixed top-0 w-full z-50">
-      <div className="relative overflow-hidden container flex justify-between h-16 items-center  px-7 md:flex md:justify-evenly md:px-40"> 
+      <div className="relative overflow-hidden container flex justify-between h-16 items-center px-7 md:flex md:justify-evenly md:px-40"> 
         {/* Logo */}
-        <Link href="/home" className="flex items-center gap-2">
+        <Link href="/home" className="flex items-center gap-2 lg:pt-2">
           <span className=" text-xl font-bold text-primary"><Brain className="absolute ml-5 -mt-3 w-5"/>Séntia</span>
         </Link>
 
@@ -40,7 +65,7 @@ export default function Navbar() {
         <div className="hidden md:flex md:flex-1 md:justify-end">
           <ul className="flex gap-6">
             {
-            navLinks.filter(link=>!link.hidden).map((link) => (
+            filteredLinks.filter(link=>!link.hidden).map((link) => (
               <li key={link.name}>
                 <Link
                   href={link.href}
@@ -57,6 +82,7 @@ export default function Navbar() {
 
         {/* User Menu */}
         <div className="flex items-center gap-4">
+          {user && (
           <DropdownMenu >
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full pointer-events-none md:pointer-events-auto md:px-6">
@@ -78,9 +104,10 @@ export default function Navbar() {
                 </Link>
               </DropdownMenuItem >
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-red-600">Cerrar sesión</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}
+              className="cursor-pointer text-red-600">Cerrar sesión</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu>)}
 
           {/* Mobile Menu Button */}
           <Sheet open={open} onOpenChange={setOpen}>

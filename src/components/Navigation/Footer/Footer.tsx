@@ -1,10 +1,20 @@
+"use client"
+
 import { Brain } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 
 export default function Footer() {
+  const pathname = usePathname();
+  const hideFullFooterIn = ["/", "/register", "/login", "/contact-us"]; // ← aquí defines dónde NO quieres el footer completo
+  const showFullFooter = !hideFullFooterIn.includes(pathname);
+
   return (
-    <footer className="bg-neutro-dark py-12 text-gray-300">
-      <div className="container mx-auto px-4">
+    <footer className="bg-neutro-dark py-6 text-gray-300">
+      <div className="container mx-auto px-4"> 
+        {showFullFooter ? (
+          <>
         <div className="grid gap-8 md:grid-cols-4">
           <div className="container flex flex-col items-center justify-center md:col-span-1 text-center ">
           <Brain className="text-rose-400"/>
@@ -56,7 +66,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary">
+                <Link href="./contact-us" className="hover:text-primary">
                   Contacto
                 </Link>
               </li>
@@ -95,13 +105,24 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm">
-          <p>
-            &copy; {new Date().getFullYear()} Séntia. Todos los derechos
-            reservados.
-          </p>
-        </div>
+
+      <div className="mt-12 border-t border-neutro-dark pt-4 text-center text-sm">
+        <p>
+      &copy; {new Date().getFullYear()} Séntia. Todos los derechos
+      reservados.
+        </p>
+      </div>
+</>
+ ) : (
+          <div className="text-center text-sm">
+            <p>
+              &copy; {new Date().getFullYear()} Séntia. Todos los derechos
+              reservados.
+            </p>
+          </div>
+        )}
       </div>
     </footer>
   );
 }
+     
