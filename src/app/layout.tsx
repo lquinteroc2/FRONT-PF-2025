@@ -9,6 +9,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ClientFooter from "@/components/Navigation/ClientFooter";
 import ClientNavbar from "@/components/Navigation/ClientNavbar";
 import { AuthProvider } from "@/context/Auth";
+import ClientLayoutWrapper from "@/components/Navigation/ClientLayoutWrapper";
 
 
 const geistSans = Geist({
@@ -42,14 +43,14 @@ export default async function RootLayout({
   return (
     <html lang="es">
       <body
-        className={` ${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased  bg-secondary-50 flex flex-col min-h-screen`}
-      >
+        className={` ${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-secondary-50 flex flex-col min-h-screen`}
+      >  
         <AuthProvider>
         <AuthProviderGoogle session={session}>
-        <ClientNavbar />
-        <main className="flex-grow flex justify-center items-center pt-16 pb-4">
-          {children}
-        </main>
+          <ClientNavbar />
+          <ClientLayoutWrapper>
+            {children}
+          </ClientLayoutWrapper>
         </AuthProviderGoogle>
         <ClientFooter />
         <Toaster />
