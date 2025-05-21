@@ -12,7 +12,8 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
     fileType: '',
     fileExtension: '',
     description: '',
-    file: null,
+    files: null,
+    thumbnailFile: null,
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -24,7 +25,7 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
         fileType: resource.fileType,
         fileExtension: resource.fileExtension,
         description: resource.description || "",
-        file: null,
+        files: null,
       })
     }
   }, [resource])
@@ -36,7 +37,7 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const { name, fileType, fileExtension, description, file } = formData
+    const { name, fileType, fileExtension, description, files, thumbnailFile } = formData
     const uploadedById = 'admin-id' // o quien edita
 
     if (!name || !fileType || !fileExtension || !uploadedById) {
@@ -47,9 +48,12 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
     setIsSubmitting(true)
 
     try {
-      if (file) {
+      if (files) {
         const form = new FormData()
-        form.append("file", file)
+        form.append("file", files)
+        if (thumbnailFile) {
+          form.append("thumbnail", thumbnailFile) // ← clave esperada por tu backend
+        }
         form.append("name", name)
         form.append("fileType", fileType)
         form.append("fileExtension", fileExtension)

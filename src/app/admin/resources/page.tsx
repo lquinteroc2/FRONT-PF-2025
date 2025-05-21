@@ -103,6 +103,23 @@ const fetchResources = async () => {
     }
   }
 
+  const handleFeatureVideo = async (id: string | null) => {
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/main-video/${id || "none"}`, {
+        method: 'PATCH',
+      });
+
+      setResources((prev) =>
+        prev.map((res) => ({
+          ...res,
+          isMainVideo: id ? res.id === id : false,
+        }))
+      );
+    } catch (error) {
+      console.error("Error al actualizar recurso destacado:", error);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -148,6 +165,8 @@ const fetchResources = async () => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Destacado</TableHead>
+              <TableHead>Vista previa</TableHead>
               <TableHead>Nombre</TableHead>
               <TableHead>Descripción</TableHead>
               <TableHead>Tipo</TableHead>
@@ -166,6 +185,43 @@ const fetchResources = async () => {
             ) : (
               filteredResources.map((resource) => (
                 <TableRow key={resource.id}>
+                  <TableCell>
+                  {resource.isMainVideo ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleFeatureVideo(null)} // quitar destaque
+                  >
+                    Quitar
+                  </Button>
+                ) : (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleFeatureVideo(resource.id)}
+                  >
+                    Destacar
+                  </Button>
+                )}
+                </TableCell>
+                  <TableCell>
+                  <div className="relative group w-12 h-12">
+                    <img
+                      src={resource.thumbnailUrl}
+                      alt={resource.name}
+                      className="w-full h-full object-cover rounded-md cursor-pointer"
+                    />
+                    <div
+                      className="fixed -translate-y-1/2 hidden group-hover:flex w-32 h-32 z-50 border bg-white p-1 rounded-md shadow-lg"
+                    >
+                      <img
+                        src={resource.thumbnailUrl}
+                        alt={`preview-${resource.name}`}
+                        className="w-full h-full object-cover rounded-md"
+                      />
+                    </div>
+                  </div>
+                </TableCell>
                   <TableCell className="font-medium">{resource.name}</TableCell>
                   <TableCell className="max-w-xs truncate text-sm">
                     <TooltipProvider>

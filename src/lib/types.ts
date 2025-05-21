@@ -46,6 +46,9 @@ export interface Resource {
   }
   createdAt: string
   updatedAt: string
+  thumbnailUrl?: string;
+  thumbnailPublicId?: string;
+  isMainVideo: boolean;
 }
 
 export interface HelpCenter {
@@ -83,8 +86,8 @@ export interface IUserDto {
     email: string;
     password: string;
     confirmPassword: string;
-    address: string;
-    profileImage: string;
+    address?: string;
+    profileImage?: string;
 }
 
 export type ResourceFormData = {
@@ -92,7 +95,8 @@ export type ResourceFormData = {
   fileType: string
   fileExtension: string
   description: string
-  file?: File | null
+  files?: File | null
+  thumbnailFile?: File | null
 }
 
 export type ResourceFormProps = {

@@ -44,8 +44,8 @@ const RegisterView = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    address: "",
-    profileImage: "",
+    // address: "",
+    // profileImage: "",
   }}
   validationSchema={validationSchemaRegister}
 onSubmit={async (values, { resetForm }) => {
@@ -123,7 +123,7 @@ onSubmit={async (values, { resetForm }) => {
     </div> 
 </div>
 
-        <div className='text-center w-full'><label className="block text-sm font-semibold text-neutro-dark ">
+        {/* <div className='text-center w-full'><label className="block text-sm font-semibold text-neutro-dark ">
         Direccion
         </label>
         <div className="mx-auto text-center w-[40%]">
@@ -137,9 +137,9 @@ onSubmit={async (values, { resetForm }) => {
     component="div"
     className="text-sm text-primary-dark font-bold"/>
     </div> 
-</div>
+</div> */}
 
-        <div className='text-center w-full'><label className="block text-sm font-semibold text-neutro-dark ">
+        {/* <div className='text-center w-full'><label className="block text-sm font-semibold text-neutro-dark ">
         Foto
         </label>
         <div className="mx-auto text-center w-[40%]">
@@ -153,7 +153,7 @@ onSubmit={async (values, { resetForm }) => {
     component="div"
     className="text-sm text-primary-dark font-bold"/>
     </div> 
-</div>
+</div> */}
 
 <Button
                 type="submit"
