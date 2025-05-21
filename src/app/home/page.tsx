@@ -1,5 +1,7 @@
+'use client'
+
 import { CardList2 } from '@/components/card/CardList2'
-import { CardList } from '@/components/card/CardLit'
+import { CardList } from '@/components/card/CardList'
 import Header from '@/components/Header/Header'
 import Multimedia from '@/components/multimedia/Multimedia'
 import React from 'react'

@@ -16,7 +16,8 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
     fileType: '',
     fileExtension: '',
     description: '',
-    file: null,
+    files: null,
+    thumbnailFile: null,
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -28,10 +29,10 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const { name, fileType, fileExtension, description, file } = formData
+    const { name, fileType, fileExtension, description, files, thumbnailFile } = formData
     const uploadedById = 'admin-id' // Puedes hacer dinámico esto según tu auth
 
-    if (!name || !fileType || !fileExtension || !uploadedById || !file) {
+    if (!name || !fileType || !fileExtension || !uploadedById || !files) {
       alert("Por favor completa todos los campos obligatorios.")
       return
     }
@@ -40,7 +41,10 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
 
     try {
       const form = new FormData()
-      form.append("file", file)
+      form.append("file", files)
+      if (thumbnailFile) {
+        form.append("thumbnail", thumbnailFile) // ← clave esperada por tu backend
+      }
       form.append("name", name)
       form.append("fileType", fileType)
       form.append("fileExtension", fileExtension)
