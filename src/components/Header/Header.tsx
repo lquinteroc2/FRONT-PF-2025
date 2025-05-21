@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image"
-import EmotionUser from "../Buttons/EmotionUser";
+import EmotionUser from "../Buttons/EmotionRegister";
 
 export default function Header() {
 

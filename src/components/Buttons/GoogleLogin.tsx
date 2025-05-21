@@ -6,9 +6,11 @@ import { Button } from "../ui/button";
 import Image from "next/image";
 import googleHelper from "../Login/GoogleHelper";
 import { useAuth } from "@/context/Auth";
+import { useRouter } from "next/navigation";
 
 const GoogleLogin = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   const [sent, setSent] = useState(false); // Para evitar múltiples envíos
     const { setUser } = useAuth();
 
@@ -35,9 +37,8 @@ const GoogleLogin = () => {
         const data = await googleHelper({ name, email, profileImage, sub });
         setUser(data);
         await signOut({ redirect: false });
-
-        alert("logueado correctamente")
-        setSent(true);
+        alert("Logueado Correctamente")
+        router.push("/home");
       } catch (err) {
         console.error("❌ Error al enviar datos a backend:", err);
       }
