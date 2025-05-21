@@ -24,30 +24,28 @@ const GoogleLogin = () => {
   };
 
    useEffect(() => {
-    const sendDataToBackend = async () => {
-      if (session?.user && session.user.sub && !sent) {
-        const { name, email, image, sub } = session.user;
+  const sendDataToBackend = async () => {
+    if (session?.user && session.user.sub && !sent) {
+      const { name, email, image, sub } = session.user;
+
+      // Renombrar antes de enviar
+      const profileImage = image;
 
       try {
-        const data = await googleHelper({ name, email, image, sub });
+        const data = await googleHelper({ name, email, profileImage, sub });
+        setUser(data);
+        await signOut({ redirect: false });
 
-      
-      setUser(data);
-
-      await signOut({ redirect: false });
-
-      console.log("📤 Datos enviados:", { name, email, image, sub });
-      setSent(true);
-
+        alert("logueado correctamente")
+        setSent(true);
       } catch (err) {
-      console.error("❌ Error al enviar datos a backend:", err);
+        console.error("❌ Error al enviar datos a backend:", err);
       }
-      }
-    };
+    }
+  };
 
-    sendDataToBackend();
-  }, [session, sent, setUser]);
-
+  sendDataToBackend();
+}, [session, sent, setUser]);
 
   return (
     <Button
