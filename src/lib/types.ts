@@ -26,9 +26,10 @@ export interface User {
   id: string
   name: string
   email: string
+  profileImage: string
+  address: string
   role: string
   status: "active" | "inactive"
-  avatar?: string
   createdAt: string
 }
 

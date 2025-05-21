@@ -1,26 +1,29 @@
-import { useAuth } from "@/context/Auth";
 import axios from "axios";
 
 
 const googleHelper = async (userData: {
   name: string;
   email: string;
-  image: string;
+  profileImage: string;
   sub: string;
 }) => {
   try {
     const url = process.env.NEXT_PUBLIC_API_URL;
-    const response  = await axios.post(`${url}/auth/google`, {
+
+    // Renombramos aquí para que quede claro
+    const payload = {
       name: userData.name,
       email: userData.email,
-      image: userData.image,
-      sub: userData.sub, // según cómo tu backend lo espera
-    });
+      profileImage: userData. profileImage, // renombrado aquí
+      sub: userData.sub,
+    };
+
+    console.log("📤 Datos enviados:", payload); // ✅ ya no aparecerá como "image"
+
+    const response = await axios.post(`${url}/auth/google`, payload);
 
     const { token, user } = response.data;
-
-    return response.data;    
-    console.log("Login con Google exitoso. Datos guardados.");
+    return response.data;
   } catch (error: any) {
     console.error(
       "Error enviando usuario de Google al backend:",

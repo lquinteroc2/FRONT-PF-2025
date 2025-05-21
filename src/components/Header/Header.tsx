@@ -1,6 +1,8 @@
 import Image from "next/image"
+import EmotionUser from "../Buttons/EmotionUser";
 
 export default function Header() {
+
   return (
     <header className="relative h-[100vh] w-full overflow-hidden md:h-[600px]">
       {/* Contenedor de la imagen con posición relativa */}
@@ -24,7 +26,7 @@ export default function Header() {
       {/* Contenido de texto superpuesto */}
       <div className="absolute inset-0 md:inset-0 z-20 flex items-center justify-center">
         <div className="container mx-auto px-4">
-          <div className=" mx-auto max-w-2xl rounded-lg   bg-neutral p-6 text-center backdrop-blur- md:p-8">
+          <div className=" mx-auto max-w-2xl rounded-lg   bg-transparent p-6 text-center backdrop-blur- md:p-8">
             <h1 className="mb-4 text-2xl font-bold text-neutro-light sm:text-3xl md:text-4xl lg:text-5xl">
               Bienvenidos a <span className="text-primary">Séntia</span>
             </h1>
@@ -32,9 +34,9 @@ export default function Header() {
               Una plataforma donde puedes registrar tu estado emocional, encontrar recursos de salud mental y conectar
               con grupos de apoyo cercanos.
             </p>
-            <button className="rounded-full bg-primary px-4 py-2 text-white shadow-md transition-all hover:bg-primary/80 hover:shadow-lg sm:px-6 sm:py-3">
-              ¿Cómo te Sientes Hoy?
-            </button>
+
+         <EmotionUser />
+
           </div>
         </div>
       </div>

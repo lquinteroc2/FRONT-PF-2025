@@ -44,7 +44,7 @@ if (emailResult.success && contactResult.success) {
       onSubmit={onSubmit}
     >
       {() => (
-        <Form className="space-y-4">
+        <Form className="space-y-4 mt-20">
           <div className="flex flex-col md:flex-row gap-12">
             <MotionDiv
         className="flex flex-col p-4 w-full md:w-1/2 items-center"
