@@ -22,8 +22,8 @@ const ResourceForm: React.FC<ResourceFormProps> = ({
   isSubmitting = false,
 }) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null
-    onChange("file", file)
+    const files = e.target.files?.[0] || null
+    onChange("files", files)
   }
 
   return (
@@ -73,6 +73,7 @@ const ResourceForm: React.FC<ResourceFormProps> = ({
               <SelectItem value="pdf">PDF</SelectItem>
               <SelectItem value="mp3">MP3</SelectItem>
               <SelectItem value="wav">WAV</SelectItem>
+              <SelectItem value="mp4">MP4</SelectItem>
               <SelectItem value="jpg">JPG</SelectItem>
               <SelectItem value="png">PNG</SelectItem>
             </SelectContent>
@@ -85,6 +86,20 @@ const ResourceForm: React.FC<ResourceFormProps> = ({
           id="file"
           type="file"
           onChange={handleFileChange}
+          className="col-span-3"
+        />
+      </div>
+
+      <div className="grid grid-cols-4 items-center gap-4">
+        <Label htmlFor="thumbnailFile" className="text-left">Imagen portada</Label>
+        <Input
+          id="thumbnailFile"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const files = e.target.files?.[0] || null
+            onChange("thumbnailFile", files)
+          }}
           className="col-span-3"
         />
       </div>
