@@ -1,9 +1,11 @@
 'use client'
 
-import { CardList2 } from '@/components/card/CardList2'
-import { CardList } from '@/components/card/CardList'
 import Header from '@/components/Header/Header'
-import Multimedia from '@/components/multimedia/Multimedia'
+import { AudioList } from '@/components/Resources/home/AudioList'
+import { DocumentList } from '@/components/Resources/home/DocumentList'
+import { ImageList } from '@/components/Resources/home/ImageList'
+import { MostViewedResources } from '@/components/Resources/home/MostViewedResources'
+import VideoList from '@/components/Resources/home/VideoList'
 import React from 'react'
 
 const page = () => {
@@ -11,14 +13,19 @@ const page = () => {
     <div>
     <Header />
     <div className='container h-auto pt-9 md:px-40 justify-center flex flex-col items-center flex-1'>
-      <CardList/>
+      <MostViewedResources />
+            <div className='text-left py-8 flex justify-evenly'>
+      <AudioList />
+      </div>
       <div className='py-16 flex justify-evenly'>
-     <Multimedia/>
+     <VideoList />
       </div>
       <div className='text-left py-8 flex justify-evenly'>
-      <CardList2/>
+      <ImageList />
       </div>
-      
+      <div className='text-left py-8 flex justify-evenly'>
+      <DocumentList />
+      </div>
     </div> 
     </div>
   )

@@ -12,6 +12,7 @@ interface CardProps {
 }
 
 export default function Card({ title, description, imageSrc, imageAlt, href }: CardProps) {
+  
   const CardContent = () => (
     <div className="group overflow-hidden rounded-xl  bg-white shadow-lg transition-all duration-300 hover:shadow-2xl">
       {/* Imagen */}
