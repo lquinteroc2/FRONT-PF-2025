@@ -103,10 +103,11 @@ const toggleExpand = (id: string | number) => {
   }
 
  return (
-    <div className="w-full p-4 sm:p-6 md:p-8 lg:w-2/5">
-      <div className="mb-6 lg:mt-16 sm:mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 text-center w-full">
-          Tu Historial de Emociones
+   <div className="min-h-screen flex items-center justify-center">
+    <div className="w-full p-4 sm:p-6 md:p-8 lg:w-[60%]">
+    <div className="mb-6 lg:mt-16 sm:mb-8">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-2 text-neutro-dark">
+          Emociones Registradas
         </h2>
       </div>
 
@@ -148,6 +149,7 @@ const toggleExpand = (id: string | number) => {
           </li>
         ))}
       </ul>
+    </div>
     </div>
   );
 }
