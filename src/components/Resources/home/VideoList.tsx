@@ -6,22 +6,24 @@ import { useEffect, useState } from "react"
 import { Resource } from "@/lib/types"
 import YouTubePlayer from "./youtubePlayer"
 
-export default function Multimedia() {
+export default function VideoList() {
   const [videoResource, setVideoResource] = useState<Resource | null>(null)
 
-useEffect(() => {
-  const fetchFeaturedVideo = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/main-video`);
-      const data = await response.json();
-      if (data) setVideoResource(data);
-    } catch (error) {
-      console.error("Error fetching featured video resource:", error);
-    }
-  };
+    useEffect(() => {
+      const fetchFeaturedVideo = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/resources/featured/section/video`
+          );
+          const data = await response.json();
+          if (data) setVideoResource(data[0]);
+        } catch (error) {
+          console.error("Error fetching featured video resource:", error);
+        }
+      };
 
-  fetchFeaturedVideo();
-}, []);
+      fetchFeaturedVideo();
+    }, []);
   
   const title = videoResource?.name || "Te lo dice Séntia"
   const description =

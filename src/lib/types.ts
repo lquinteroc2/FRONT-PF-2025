@@ -48,7 +48,10 @@ export interface Resource {
   updatedAt: string
   thumbnailUrl?: string;
   thumbnailPublicId?: string;
-  isMainVideo: boolean;
+  showInCardList: boolean;
+  showInSection: boolean;
+  section: FileType;
+
 }
 
 export interface HelpCenter {

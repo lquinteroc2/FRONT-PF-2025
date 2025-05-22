@@ -35,31 +35,31 @@ const cardsData = [
   },
 ];
 
-export function CardList() {
+export function MostViewedResources() {
 
   const [resources, setResources] = useState<Resource[]>([])
   const [shuffledCards, setShuffledCards] = useState<any[]>([])
 
   useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
-        const data = await response.json()
+  const fetchResources = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/featured`)
+      const data = await response.json()
 
-        if (Array.isArray(data)) {
-          setResources(data)
-        } else {
-          console.error("La respuesta no es un array:", data)
-          setResources([])
-        }
-      } catch (error) {
-        console.error("Error fetching resources:", error)
+      if (Array.isArray(data)) {
+        setResources(data)
+      } else {
+        console.error("La respuesta no es un array:", data)
         setResources([])
       }
+    } catch (error) {
+      console.error("Error fetching featured resources:", error)
+      setResources([])
     }
+  }
 
-    fetchResources()
-  }, [])
+  fetchResources()
+}, [])
    
     useEffect(() => {
     const combined = [
@@ -73,9 +73,9 @@ export function CardList() {
       ...cardsData,
     ]
 
-    // Solo se mezcla en el cliente
     setShuffledCards([...combined].sort(() => Math.random() - 0.5))
    }, [resources])
+   
   return (
     <div>
       <div className="text-center font-geist text-3xl shadow-md pb-2 font-bold mb-4">
