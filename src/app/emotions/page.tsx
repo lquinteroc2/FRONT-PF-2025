@@ -1,4 +1,4 @@
-import  {StripeButton, StripeButtonPrueba, StripeButtonThree}  from '@/components/Buttons/StripeButton'
+import  {StripeButton, StripeButtonPrueba, StripeButtonThree}  from '@/components/Buttons/SubscriptionButton'
 import EmotionsHistoryUser from '@/components/Emotion/EmotionsHistoryUser'
 
 const Emotionspage = () => {
