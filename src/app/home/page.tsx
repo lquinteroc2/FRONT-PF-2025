@@ -8,7 +8,9 @@ import { MostViewedResources } from '@/components/Resources/home/MostViewedResou
 import VideoList from '@/components/Resources/home/VideoList'
 import React from 'react'
 
-const page = () => {
+export default function Page() {
+  const userHasHadSubscription = false; // o tu lógica real
+
   return (
     <div>
     <Header />
@@ -28,7 +30,6 @@ const page = () => {
       </div>
     </div> 
     </div>
-  )
+  );
 }
 
-export default page
