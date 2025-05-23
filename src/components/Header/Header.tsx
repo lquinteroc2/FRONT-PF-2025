@@ -6,18 +6,12 @@ export default function Header() {
 
   return (
     <header className="relative h-[100vh] w-full overflow-hidden md:h-[600px]">
-      {/* Contenedor de la imagen con posición relativa */}
       <div className="relative h-full w-full">
-        {/* Imagen de fondo */}
         <Image 
-        // src="/assets/ejercicios de respiración al aire libre.jpg" 
-        // src="/assets/hablar con personas.jpg" 
-        src="/assets/joga.jpg" 
-        // src="/assets/meditación.jpg" 
+        src="https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/Joga_q93kis.jpg" 
         alt="meditar al aire libre" 
         fill className="" priority />
 
-        {/* para mejorar la legibilidad del texto */}
         <div className="absolute 
         inset-0 md:inset
         

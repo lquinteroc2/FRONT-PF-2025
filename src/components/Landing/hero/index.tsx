@@ -76,7 +76,7 @@ export default function Hero() {
             className="relative mx-auto h-[400px] w-full max-w-md rounded-2xl shadow-xl md:h-[500px]"
           >
             <Image
-              src="/assets/ejercicios de respiración al aire libre.jpg"
+              src="https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960117/ejerciciosderespiraci%C3%B3nalairelibre_fgtste.jpg"
               alt="Séntia App Preview"
               fill
               className="rounded-2xl object-cover"

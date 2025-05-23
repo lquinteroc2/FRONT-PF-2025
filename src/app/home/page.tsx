@@ -14,7 +14,7 @@ const page = () => {
     <Header />
     <div className='container h-auto pt-9 md:px-40 justify-center flex flex-col items-center flex-1'>
       <MostViewedResources />
-            <div className='text-left py-8 flex justify-evenly'>
+        <div className='text-left py-8 flex justify-evenly'>
       <AudioList />
       </div>
       <div className='py-16 flex justify-evenly'>
