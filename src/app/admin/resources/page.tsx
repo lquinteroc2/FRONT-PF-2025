@@ -9,6 +9,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -103,22 +104,31 @@ const fetchResources = async () => {
     }
   }
 
-  const handleFeatureVideo = async (id: string | null) => {
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/main-video/${id || "none"}`, {
-        method: 'PATCH',
-      });
+const toggleShowInSection = async (id: string, show: boolean, section: FileType) => {
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-section/${section}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ show }),
+    });
+    fetchResources();
+  } catch (error) {
+    console.error("Error actualizando visibilidad en CardList:", error);
+  }
+};
 
-      setResources((prev) =>
-        prev.map((res) => ({
-          ...res,
-          isMainVideo: id ? res.id === id : false,
-        }))
-      );
-    } catch (error) {
-      console.error("Error al actualizar recurso destacado:", error);
-    }
-  };
+const toggleShowInCardList = async (id: string, show: boolean) => {
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-cardlist`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ show }),
+    });
+    fetchResources();
+  } catch (error) {
+    console.error("Error actualizando visibilidad en CardList:", error);
+  }
+};
 
   return (
     <motion.div
@@ -165,7 +175,8 @@ const fetchResources = async () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Destacado</TableHead>
+              <TableHead>Más vistos</TableHead>
+              <TableHead>Sección Destacada</TableHead>
               <TableHead>Vista previa</TableHead>
               <TableHead>Nombre</TableHead>
               <TableHead>Descripción</TableHead>
@@ -186,24 +197,43 @@ const fetchResources = async () => {
               filteredResources.map((resource) => (
                 <TableRow key={resource.id}>
                   <TableCell>
-                  {resource.isMainVideo ? (
                   <Button
-                    variant="outline"
                     size="sm"
-                    onClick={() => handleFeatureVideo(null)} // quitar destaque
+                    variant={resource.showInCardList ? "default" : "outline"}
+                    onClick={() => toggleShowInCardList(resource.id, !resource.showInCardList)}
                   >
-                    Quitar
+                    {resource.showInCardList ? "Ocultar del inicio" : "Mostrar en inicio"}
                   </Button>
-                ) : (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => handleFeatureVideo(resource.id)}
-                  >
-                    Destacar
-                  </Button>
-                )}
                 </TableCell>
+                <TableCell className="text-left">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      Secciones
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuLabel>Mostrar en sección</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {Object.values(FileType).map((section) => {
+                      const isCurrentSection =
+                        resource.showInSection && resource.fileType === section;
+
+                      return (
+                        <DropdownMenuItem
+                          key={section}
+                          onClick={() =>
+                            toggleShowInSection(resource.id, !isCurrentSection, section)
+                          }
+                          className={isCurrentSection ? "font-semibold text-primary" : ""}
+                        >
+                          {isCurrentSection ? `Ocultar de ${section}` : `Mostrar en ${section}`}
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
                   <TableCell>
                   <div className="relative group w-12 h-12">
                     <img

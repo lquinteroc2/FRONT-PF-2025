@@ -55,7 +55,7 @@ const GoogleLogin = () => {
       size="sm"
       className="w-[60%] flex items-center justify-center gap-2 font-bold"
     >
-      <Image src="/assets/google.webp" alt="Google" width={20} height={20} />
+      <Image src="https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960113/google_zas5vr.png" alt="Google" width={20} height={20} />
       Iniciar sesión con Google
     </Button>
   );

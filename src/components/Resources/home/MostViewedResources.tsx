@@ -8,58 +8,58 @@ const cardsData = [
   {
     title: "Ejercicios de respiración al aire libre",
     description: "Description for card 1",
-    imageSrc: "/assets/ejercicios de respiración al aire libre.jpg",
+    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960117/ejerciciosderespiraci%C3%B3nalairelibre_fgtste.jpg",
     imageAlt: "Image 1",
-    href: "/card1",
+    href: "/resources/card10",
   },
   {
     title: "hablar con personas",
     description: "Description for card 3",
-    imageSrc: "/assets/hablar con personas.jpg",
+    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960116/hablarconpersonas_e25pf1.jpg",
     imageAlt: "Image 3",
-    href: "/card3",
+    href: "/resources/card11",
   },
   {
     title: "Joga",
     description: "Description for card 4",
-    imageSrc: "/assets/Joga.jpg",
+    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/Joga_q93kis.jpg",
     imageAlt: "Image 4",
-    href: "/card4",
+    href: "/resources/card12",
   },
   {
     title: "Meditación",
     description: "Description for card 4",
-    imageSrc: "/assets/meditación.jpg",
+    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/meditaci%C3%B3n_yjjllb.jpg",
     imageAlt: "Image 5",
-    href: "/card5",
+    href: "/resources/card13",
   },
 ];
 
-export function CardList() {
+export function MostViewedResources() {
 
   const [resources, setResources] = useState<Resource[]>([])
   const [shuffledCards, setShuffledCards] = useState<any[]>([])
 
   useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
-        const data = await response.json()
+  const fetchResources = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/featured`)
+      const data = await response.json()
 
-        if (Array.isArray(data)) {
-          setResources(data)
-        } else {
-          console.error("La respuesta no es un array:", data)
-          setResources([])
-        }
-      } catch (error) {
-        console.error("Error fetching resources:", error)
+      if (Array.isArray(data)) {
+        setResources(data)
+      } else {
+        console.error("La respuesta no es un array:", data)
         setResources([])
       }
+    } catch (error) {
+      console.error("Error fetching featured resources:", error)
+      setResources([])
     }
+  }
 
-    fetchResources()
-  }, [])
+  fetchResources()
+}, [])
    
     useEffect(() => {
     const combined = [
@@ -73,9 +73,9 @@ export function CardList() {
       ...cardsData,
     ]
 
-    // Solo se mezcla en el cliente
     setShuffledCards([...combined].sort(() => Math.random() - 0.5))
    }, [resources])
+   
   return (
     <div>
       <div className="text-center font-geist text-3xl shadow-md pb-2 font-bold mb-4">

@@ -1,27 +1,28 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUpRightFromSquare } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Resource } from "@/lib/types"
 import YouTubePlayer from "./youtubePlayer"
 
-export default function Multimedia() {
+export default function VideoList() {
   const [videoResource, setVideoResource] = useState<Resource | null>(null)
 
-useEffect(() => {
-  const fetchFeaturedVideo = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/main-video`);
-      const data = await response.json();
-      if (data) setVideoResource(data);
-    } catch (error) {
-      console.error("Error fetching featured video resource:", error);
-    }
-  };
+    useEffect(() => {
+      const fetchFeaturedVideo = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/resources/featured/section/video`
+          );
+          const data = await response.json();
+          if (data) setVideoResource(data[0]);
+        } catch (error) {
+          console.error("Error fetching featured video resource:", error);
+        }
+      };
 
-  fetchFeaturedVideo();
-}, []);
+      fetchFeaturedVideo();
+    }, []);
   
   const title = videoResource?.name || "Te lo dice Séntia"
   const description =
@@ -71,10 +72,6 @@ useEffect(() => {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="flex flex-wrap gap-4"
             >
-              <span className="flex cursor-pointer text-secondary font-bold hover:text-secondary-dark">
-                <ArrowUpRightFromSquare />
-                Comenzar ahora
-              </span>
             </motion.div>
           </motion.div>
 
