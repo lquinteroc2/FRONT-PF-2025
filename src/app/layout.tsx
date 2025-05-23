@@ -5,11 +5,11 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import AuthProviderGoogle from "@/components/Login/AuthProviderGoogle";
 import { getServerSession, Session } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ClientFooter from "@/components/Navigation/ClientFooter";
 import ClientNavbar from "@/components/Navigation/ClientNavbar";
 import { AuthProvider } from "@/context/Auth";
 import ClientLayoutWrapper from "@/components/Navigation/ClientLayoutWrapper";
+import { authOptions } from "@/lib/authOptions";
 
 
 const geistSans = Geist({
