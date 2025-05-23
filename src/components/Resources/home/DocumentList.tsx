@@ -9,24 +9,24 @@ const cardsData = [
   {
     title: "Socializar",
     description: "Hablar con familiares, amigos o grupos de apoyo puede ayudar a compartir las preocupaciones y recibir apoyo emocional. ",
-    imageSrc: "/assets/familia.jpg",
+    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960116/familia_qmtvvd.jpg",
     imageAlt: "Image 1",
-    href: "/card1",
+    href: "/resources/card4",
   },
   
   {
     title: "terapia cognitivo conductual",
     description: "La TCC es una terapia eficaz para abordar los patrones negativos y distorsiones de pensamiento que contribuyen a la ansiedad.  ",
-    imageSrc: "/assets/rugbi.jpg",
+    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960117/rugbi_frlosd.jpg",
     imageAlt: "Image 3",
-    href: "/card3",
+    href: "/resources/card5",
   },
   {
-    title: "Ritinas relajantes",
+    title: "Rutinas relajantes",
     description: "Dar un baño caliente, leer un libro, practicar aromaterapia o cocinar pueden crear un ambiente relajante que ayuda a reducir la ansiedad. ",
-    imageSrc: "/assets/leer.jpg",
+    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/leer_kyttfv.jpg",
     imageAlt: "Image 4",
-    href: "/card4",
+    href: "/resources/card6",
   },
 ];
 
@@ -57,7 +57,7 @@ export function DocumentList() {
           ...documentResources.map((resource) => ({
             title: resource.name || "Recurso destacado",
             description: resource.description || "Descripción no disponible.",
-            imageSrc: resource.thumbnailUrl || "/assets/placeholder.jpg",
+            imageSrc: resource.thumbnailUrl || "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/dormir_porkcy.jpg",
             imageAlt: resource.name || "Imagen destacada",
             href: `/resources/${resource.id}`,
           })),

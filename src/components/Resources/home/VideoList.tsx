@@ -1,7 +1,6 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowUpRightFromSquare } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Resource } from "@/lib/types"
 import YouTubePlayer from "./youtubePlayer"
@@ -73,10 +72,6 @@ export default function VideoList() {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="flex flex-wrap gap-4"
             >
-              <span className="flex cursor-pointer text-secondary font-bold hover:text-secondary-dark">
-                <ArrowUpRightFromSquare />
-                Comenzar ahora
-              </span>
             </motion.div>
           </motion.div>
 
