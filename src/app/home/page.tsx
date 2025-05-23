@@ -13,20 +13,6 @@ export default function Page() {
 
   return (
     <div>
-<<<<<<< HEAD
-      <Header />
-      <div className="container h-auto pt-9 md:px-40 justify-center flex flex-col items-center flex-1">
-        <CardList />
-
-        <div className="py-16 flex justify-evenly">
-          <Multimedia />
-        </div>
-
-        <div className="text-left py-8 flex justify-evenly">
-          <CardList2 />
-        </div>
-      </div>
-=======
     <Header />
     <div className='container h-auto pt-9 md:px-40 justify-center flex flex-col items-center flex-1'>
       <MostViewedResources />
@@ -43,7 +29,6 @@ export default function Page() {
       <DocumentList />
       </div>
     </div> 
->>>>>>> develop
     </div>
   );
 }
