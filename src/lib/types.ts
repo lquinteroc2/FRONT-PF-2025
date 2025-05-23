@@ -51,7 +51,6 @@ export interface Resource {
   showInCardList: boolean;
   showInSection: boolean;
   section: FileType;
-
 }
 
 export interface HelpCenter {

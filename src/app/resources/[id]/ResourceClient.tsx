@@ -1,5 +1,10 @@
 "use client"
 
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { notFound } from "next/navigation"
@@ -463,6 +468,38 @@ export default function ResourceClient({ id }: { id: string }) {
                 </div>
               )}
             </motion.div> */}
+
+            {resource?.cloudinaryUrl && (
+            <div className="mt-6">
+              {resource.fileType === "image" && (
+                <Image src={resource.cloudinaryUrl} alt={resource.name} width={600} height={400} />
+              )}
+              {resource.fileType === "audio" && (
+                <audio controls className="w-full">
+                  <source src={resource.cloudinaryUrl} type="audio/mpeg" />
+                  Tu navegador no soporta el elemento de audio.
+                </audio>
+              )}
+              {resource.fileType === "video" && (
+                <video controls className="w-full">
+                  <source src={resource.cloudinaryUrl} type="video/mp4" />
+                  Tu navegador no soporta el video.
+                </video>
+              )}
+              {resource.fileType === 'document' && (
+                <div className="w-full flex justify-center">
+                  <Document
+                    file={resource.cloudinaryUrl}
+                    onLoadError={(error) => console.error('Error al cargar PDF:', error)}
+                    loading={<p>Cargando documento...</p>}
+                    error={<p>No se pudo cargar el PDF.</p>}
+                  >
+                    <Page pageNumber={1} />
+                  </Document>
+                </div>
+              )}
+            </div>
+          )}
 
             <motion.p className="text-lg leading-relaxed text-muted-foreground" variants={itemVariants}>
               {res.description || "Sin descripción disponible"}
