@@ -1,5 +1,10 @@
 "use client"
 
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { notFound } from "next/navigation"
@@ -8,13 +13,13 @@ import { ChevronLeft, Clock, Eye, Tag, Calendar } from "lucide-react"
 import Link from "next/link"
 import type { Resource } from "@/lib/types"
 import { fetchResourceById } from "@/services/resources"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import CardHome from "@/components/Resources/home/Card"
 
 const cardsData = [
   {
@@ -228,7 +233,7 @@ export default function ResourceClient({ id }: { id: string }) {
 
     return (
       <motion.div
-        className="container mx-auto max-w-4xl px-4 py-12"
+        className="container mx-auto pt-20 max-w-4xl px-4 py-12"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -305,19 +310,14 @@ export default function ResourceClient({ id }: { id: string }) {
                         whileHover={{ y: -5 }}
                         transition={{ type: "spring", stiffness: 300 }}
                       >
-                        <Card className="overflow-hidden">
-                          <div className="relative h-40 w-full">
-                            <Image
-                              src={relatedCard.imageSrc || "/placeholder.svg"}
-                              alt={relatedCard.imageAlt}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <CardContent className="p-4">
-                            <h3 className="font-semibold">{relatedCard.title}</h3>
-                          </CardContent>
-                        </Card>
+                        <CardHome
+                        key={relatedCard.id}
+                        title={relatedCard.title}
+                        description={relatedCard.description}
+                        imageSrc={relatedCard.imageSrc}
+                        imageAlt={relatedCard.imageAlt}
+                        href={`/resources/${relatedCard.id}`}
+                      />
                       </motion.div>
                     ))}
                 </div>
@@ -344,7 +344,7 @@ export default function ResourceClient({ id }: { id: string }) {
 
     return (
       <motion.div
-        className="container mx-auto max-w-4xl px-4 py-12"
+        className="container mx-auto pt-20 max-w-4xl px-4 py-12"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -366,22 +366,82 @@ export default function ResourceClient({ id }: { id: string }) {
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            {/* <div className="absolute bottom-0 left-0 p-6">
-              {res.category && (
+            <div className="absolute bottom-0 left-0 p-6">
+              {/* {res.category && (
                 <Badge className="mb-3" variant="secondary">
                   {res.category}
                 </Badge>
-              )}
+              )} */}
               <h1 className="text-4xl font-bold text-white">{res.name}</h1>
-            </div> */}
+            </div>
           </motion.div>
 
           <CardContent className="p-6 pt-6">
-            <motion.div
+            <CardContent className="p-6 pt-6">
+            {/* <motion.div
               className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
               variants={itemVariants}
             >
-              {/* {res.author && (
+              <div className="flex items-center">
+                <Clock className="mr-1 h-4 w-4" />
+                {res.readTime} de lectura
+              </div>
+              <div className="flex items-center">
+                <Calendar className="mr-1 h-4 w-4" />
+                {res.date}
+              </div>
+            </motion.div> */}
+
+            <Tabs defaultValue="detalles" className="mt-6" value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="mb-4 grid w-full grid-cols-2">
+                <TabsTrigger value="detalles">Detalles</TabsTrigger>
+                <TabsTrigger value="recursos">Recursos relacionados</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="detalles" className="space-y-4">
+                <motion.p className="text-lg leading-relaxed text-muted-foreground" variants={itemVariants}>
+                  {res.description}
+                </motion.p>
+
+                <motion.div variants={itemVariants} className="mt-6 space-y-4">
+                  <h2 className="text-2xl font-semibold">Beneficios</h2>
+                  <p className="text-muted-foreground">
+                    Este recurso te ayudará a mejorar tu bienestar mental y físico a través de técnicas probadas y
+                    respaldadas por expertos.
+                  </p>
+                </motion.div>
+              </TabsContent>
+
+              <TabsContent value="recursos" className="space-y-4">
+                <p className="text-muted-foreground">Otros recursos que podrían interesarte:</p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {cardsData
+                    .filter((c) => c.id !== res.id)
+                    .slice(0, 2)
+                    .map((relatedCard) => (
+                      <motion.div
+                        key={relatedCard.id}
+                        whileHover={{ y: -5 }}
+                        transition={{ type: "spring", stiffness: 300 }}
+                      >
+                        <CardHome
+                        key={relatedCard.id}
+                        title={relatedCard.title}
+                        imageSrc={relatedCard.imageSrc}
+                        imageAlt={relatedCard.imageAlt}
+                        href={`/resources/${relatedCard.id}`}
+                      />
+                      </motion.div>
+                    ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+            {/* <motion.div
+              className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground"
+              variants={itemVariants}
+            >
+              {res.author && (
                 <div className="flex items-center gap-2">
                   <Avatar className="h-6 w-6">
                     <AvatarFallback>{res.author.substring(0, 2)}</AvatarFallback>
@@ -406,8 +466,40 @@ export default function ResourceClient({ id }: { id: string }) {
                   <Tag className="mr-1 h-4 w-4" />
                   {res.tags.join(", ")}
                 </div>
-              )} */}
-            </motion.div>
+              )}
+            </motion.div> */}
+
+            {resource?.cloudinaryUrl && (
+            <div className="mt-6">
+              {resource.fileType === "image" && (
+                <Image src={resource.cloudinaryUrl} alt={resource.name} width={600} height={400} />
+              )}
+              {resource.fileType === "audio" && (
+                <audio controls className="w-full">
+                  <source src={resource.cloudinaryUrl} type="audio/mpeg" />
+                  Tu navegador no soporta el elemento de audio.
+                </audio>
+              )}
+              {resource.fileType === "video" && (
+                <video controls className="w-full">
+                  <source src={resource.cloudinaryUrl} type="video/mp4" />
+                  Tu navegador no soporta el video.
+                </video>
+              )}
+              {resource.fileType === 'document' && (
+                <div className="w-full flex justify-center">
+                  <Document
+                    file={resource.cloudinaryUrl}
+                    onLoadError={(error) => console.error('Error al cargar PDF:', error)}
+                    loading={<p>Cargando documento...</p>}
+                    error={<p>No se pudo cargar el PDF.</p>}
+                  >
+                    <Page pageNumber={1} />
+                  </Document>
+                </div>
+              )}
+            </div>
+          )}
 
             <motion.p className="text-lg leading-relaxed text-muted-foreground" variants={itemVariants}>
               {res.description || "Sin descripción disponible"}

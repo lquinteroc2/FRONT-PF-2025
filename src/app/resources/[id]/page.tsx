@@ -1,17 +1,10 @@
-// import ResourcePageClient from "./ResourcePageClient";
-
-
-
-// export default function ResourcePage({ params }: { params: { id: string } }) {
-//   return <ResourcePageClient id={params.id} />
-// }
-
 import ResourcePageClient from "./ResourcePageClient"
 
 interface Props {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
-export default function ResourcePage({ params }: Props) {
-  return <ResourcePageClient id={params.id} />
+export default async function ResourcePage({ params }: Props) {
+  const { id } = await params
+  return <ResourcePageClient id={id} />
 }
