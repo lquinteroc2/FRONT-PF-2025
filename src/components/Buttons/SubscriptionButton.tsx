@@ -93,8 +93,17 @@ const { user , setUser } = useAuth();
 
         // Redirigimos a Stripe
         const stripeUrl = "https://buy.stripe.com/test_9B64gB85afOD7VqeiB2Fa02";
-        window.location.href = stripeUrl;
-      }
+       const stripeWindow = window.open(stripeUrl, "_blank", "width=500,height=700");
+
+        // Escuchar si la ventana se cierra y entonces redirigir internamente
+  const interval = setInterval(() => {
+    if (stripeWindow?.closed) {
+      clearInterval(interval);
+      // Redirigir al home cuando la ventana de Stripe se cierre
+      window.location.href = "/home";
+    }
+  }, 1000);
+ }
     } catch (error) {
       console.error("❌ Error al suscribirse:", error);
     }
@@ -140,7 +149,16 @@ const { user , setUser } = useAuth();
 
         // Redirigimos a Stripe
         const stripeUrl = "https://buy.stripe.com/test_bJe00ladi0TJdfKa2l2Fa01";
-        window.location.href = stripeUrl;
+        const stripeWindow = window.open(stripeUrl, "_blank", "width=500,height=700");
+
+        // Escuchar si la ventana se cierra y entonces redirigir internamente
+  const interval = setInterval(() => {
+    if (stripeWindow?.closed) {
+      clearInterval(interval);
+      // Redirigir al home cuando la ventana de Stripe se cierre
+      window.location.href = "/home";
+    }
+  }, 1000);
       }
     } catch (error) {
       console.error("❌ Error al suscribirse:", error);
