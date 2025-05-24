@@ -166,7 +166,6 @@ const toggleShowInCardList = async (id: string, show: boolean) => {
             <SelectItem value="IMAGE">Imágenes</SelectItem>
             <SelectItem value="AUDIO">Audio</SelectItem>
             <SelectItem value="VIDEO">Video</SelectItem>
-            <SelectItem value="OTHER">Otros</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -206,34 +205,24 @@ const toggleShowInCardList = async (id: string, show: boolean) => {
                   </Button>
                 </TableCell>
                 <TableCell className="text-left">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      Secciones
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuLabel>Mostrar en sección</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {Object.values(FileType).map((section) => {
-                      const isCurrentSection =
-                        resource.showInSection && resource.fileType === section;
+                  {(() => {
+                    const section = resource.fileType;
+                    const isCurrentSection = resource.showInSection;
 
-                      return (
-                        <DropdownMenuItem
-                          key={section}
-                          onClick={() =>
-                            toggleShowInSection(resource.id, !isCurrentSection, section)
-                          }
-                          className={isCurrentSection ? "font-semibold text-primary" : ""}
-                        >
-                          {isCurrentSection ? `Ocultar de ${section}` : `Mostrar en ${section}`}
-                        </DropdownMenuItem>
-                      );
-                    })}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+                    return (
+                      <Button
+                        size="sm"
+                        variant={isCurrentSection ? "secondary" : "outline"}
+                        onClick={() =>
+                          toggleShowInSection(resource.id, !isCurrentSection, section)
+                        }
+                        // className={isCurrentSection ? "font-semibold text-primary" : ""}
+                      >
+                        {isCurrentSection ? `Ocultar de ${section}` : `Mostrar en ${section}`}
+                      </Button>
+                    );
+                  })()}
+                </TableCell>
                   <TableCell>
                   <div className="relative group w-12 h-12">
                     <img
