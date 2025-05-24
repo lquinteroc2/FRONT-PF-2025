@@ -3,6 +3,7 @@
 import { Resource } from "@/lib/types";
 import Card from "./Card";
 import { useEffect, useState } from "react";
+import { FileText } from "lucide-react";
 
 
 const cardsData = [
@@ -65,9 +66,10 @@ export function DocumentList() {
   
   return (
     <div>
-      <div className="font-geist text-3xl shadow-sm pb-2 font-bold mb-4">
-        destacados por <strong className="text-primary">Séntia</strong>
-      </div>
+        <div className="font-geist text-3xl shadow-sm pb-2 font-bold mb-4 flex items-center gap-2">
+          <FileText className="text-primary w-8 h-8" />
+          Lecturas para tu Mente <strong className="text-primary">Séntia</strong>
+        </div>
       
         {isLoading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

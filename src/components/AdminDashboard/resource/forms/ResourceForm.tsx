@@ -53,7 +53,6 @@ const ResourceForm: React.FC<ResourceFormProps> = ({
             <SelectItem value="video">Video</SelectItem>
             <SelectItem value="document">Documento</SelectItem>
             <SelectItem value="image">Imagen</SelectItem>
-            <SelectItem value="other">Otro</SelectItem>
           </SelectContent>
         </Select>
       </div>

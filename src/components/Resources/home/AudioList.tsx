@@ -3,6 +3,7 @@
 import { Resource } from "@/lib/types";
 import Card from "./Card";
 import { useEffect, useState } from "react";
+import { Mic } from "lucide-react";
 
 
 const cardsData = [
@@ -64,8 +65,9 @@ export function AudioList() {
       ];
   return (
     <div>
-      <div className="font-geist text-3xl shadow-sm pb-2 font-bold mb-4">
-        destacados por <strong className="text-primary">Séntia</strong>
+      <div className="font-geist text-3xl shadow-sm pb-2 font-bold mb-4 flex items-center gap-2">
+        <Mic className="text-primary w-8 h-8" />
+        Sonidos que Inspiran <strong className="text-primary">Séntia</strong>
       </div>
 
       {isLoading ? (

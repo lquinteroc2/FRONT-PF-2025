@@ -1,9 +1,9 @@
 import StripeSuccess from "@/components/Stripe/StripeSuccess"
 
-const StripeSuccessPage = () => {
+const SubscriptionSuccessPage = () => {
     return(
 <StripeSuccess/>
     )
 }
 
-export default StripeSuccessPage;
+export default SubscriptionSuccessPage;

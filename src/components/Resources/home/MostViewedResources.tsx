@@ -79,7 +79,7 @@ export function MostViewedResources() {
   return (
     <div>
       <div className="text-center font-geist text-3xl shadow-md pb-2 font-bold mb-4">
-        Lo que más ven nuestros usuarios
+        Recomendados
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
