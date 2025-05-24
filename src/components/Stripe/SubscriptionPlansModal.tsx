@@ -1,7 +1,8 @@
+
 import { Badge, Check } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { StripeButtonPrueba, StripeButtonThree, SubscriptionButton } from "../Buttons/SubscriptionButton";
+import { SubscriptionButtonPrueba, SubscriptionButtonThree, SubscriptionButton } from "../Buttons/SubscriptionButton";
 
 interface SubscriptionPlansModalProps {
   onClose: () => void;
@@ -86,7 +87,7 @@ export default function SubscriptionPlansModal({
                   ) : "Ya usaste tu prueba"}
                 </Button>
               ) : (
-                <StripeButtonPrueba />
+                <SubscriptionButtonPrueba />
               )}
             </CardFooter>
           </Card>
@@ -139,7 +140,7 @@ export default function SubscriptionPlansModal({
                   Tu plan <u className="font-semibold">actual</u>
                 </Button>
               ) : (
-                <StripeButtonThree />
+                <SubscriptionButtonThree />
               )}
             </CardFooter>
           </Card>
