@@ -14,10 +14,7 @@ export default function ClientLayoutWrapper({
   const shouldCenter = centeredRoutes.includes(pathname);
 
   return (
-  <main
-      className={`flex flex-col flex-grow ${shouldCenter ? 'justify-center items-center' : ''} px-4`}
-      style={{ minHeight: 0 }} 
-    >
+  <main className={`w-full flex-grow ${shouldCenter ? 'flex justify-center items-center' : ''}`}>
       {children}
     </main>
   );
