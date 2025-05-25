@@ -8,28 +8,46 @@ import { MostViewedResources } from '@/components/Resources/home/MostViewedResou
 import VideoList from '@/components/Resources/home/VideoList'
 import React from 'react'
 
-export default function Page() {
-  const userHasHadSubscription = false; // o tu lógica real
-
+export default function HomePage() {
   return (
     <div>
-    <Header />
-    <div className='container h-auto pt-9 md:px-40 justify-center flex flex-col items-center flex-1'>
-      <MostViewedResources />
-        <div className='text-left py-8 flex justify-evenly'>
-      <AudioList />
-      </div>
-      <div className='py-16 flex justify-evenly'>
-     <VideoList />
-      </div>
-      <div className='text-left py-8 flex justify-evenly'>
-      <ImageList />
-      </div>
-      <div className='text-left py-8 flex justify-evenly'>
-      <DocumentList />
-      </div>
-    </div> 
+      <Header />
+      
+      {/* Most viewed resources */}
+      <section className="w-full bg-white py-16">
+        <div className="mx-auto max-w-6xl px-4">
+          <MostViewedResources />
+        </div>
+      </section>
+
+      {/* Audio list */}
+      <section className="w-full bg-neutral-100 py-16">
+        <div className="mx-auto max-w-6xl px-4">
+          <AudioList />
+        </div>
+      </section>
+
+      {/* Video list */}
+      <section className="w-full bg-white py-16">
+        <div className="mx-auto max-w-6xl px-4">
+          <VideoList />
+        </div>
+      </section>
+
+      {/* Image list */}
+      <section className="w-full bg-neutral-100 py-16">
+        <div className="mx-auto max-w-6xl px-4">
+          <ImageList />
+        </div>
+      </section>
+
+      {/* Document list */}
+      <section className="w-full bg-white py-16">
+        <div className="mx-auto max-w-6xl px-4">
+          <DocumentList />
+        </div>
+      </section>
     </div>
-  );
+  )
 }
 
