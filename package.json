@@ -19,6 +19,7 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@radix-ui/react-toast": "^1.2.13",
     "@radix-ui/react-tooltip": "^1.2.6",
+    "@stripe/stripe-js": "^7.3.0",
     "@tailwindcss/postcss": "^4.1.5",
     "axios": "^1.9.0",
     "browserslist": "^4.24.4",
