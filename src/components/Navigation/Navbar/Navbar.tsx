@@ -53,7 +53,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="overflow-hidden min-w-[100vw] border-b bg-neutro-light fixed top-0 w-full z-50 shadow-sm">
+    <nav className="overflow-hidden min-w-[100vw] border-b bg-neutro fixed top-0 w-full z-50 shadow-sm">
       <div className="relative overflow-hidden container flex justify-between h-16 items-center px-4 md:flex md:justify-between md:px-8">
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-2">

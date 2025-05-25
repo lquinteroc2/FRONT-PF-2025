@@ -1,14 +1,18 @@
 import axios from "axios";
 
 
-export const subscribeUser = async (userId: string) => {
+interface SubscribeUserParams {
+  userId: string;
+  sessionId: string;
+}
+
+export const subscribeUser = async ({ userId, sessionId }: SubscribeUserParams) => {
   try {
     const url = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.post(`${url}/subscription `, {
+    const response = await axios.post(`${url}/subscription`, {
       userId,
     });
 
-     
     return response.data;
   } catch (error) {
     console.error("❌ Error en subscribeUser:", error);
@@ -16,12 +20,11 @@ export const subscribeUser = async (userId: string) => {
   }
 };
 
-export const subscribeUserThree = async (userId: string) => {
+export const subscribeUserThree =  async ({ userId, sessionId }: SubscribeUserParams) => {
   try {
     const url = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.post(`${url}/subscription/extended `, {
-      userId,
-    });
+    const response = await axios.post(`${url}/subscription/extended`, {
+      userId,    });
     return response.data;
   } catch (error) {
     console.error("❌ Error en subscribeUser:", error);
@@ -29,12 +32,12 @@ export const subscribeUserThree = async (userId: string) => {
   }
 };
 
-export const subscribeUserPrueba = async (userId: string) => {
+export const subscribeUserPrueba = async ({ userId, sessionId }: SubscribeUserParams) => {
   try {
     const url = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.post(`${url}/subscription/trial `, {
+    const response = await axios.post(`${url}/subscription/trial`, {
       userId,
-    });
+        });
     return response.data;
   } catch (error) {
     console.error("❌ Error en subscribeUser:", error);
