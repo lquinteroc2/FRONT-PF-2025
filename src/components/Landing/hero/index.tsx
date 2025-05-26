@@ -57,7 +57,7 @@ export default function Hero() {
               className="flex flex-wrap gap-4"
             >
               <Button size="lg" className="bg-primary hover:bg-primary-dark">
-                <Link href="/home" >
+                <Link href="/login" >
                 Comenzar ahora
                 </Link>
               </Button>
