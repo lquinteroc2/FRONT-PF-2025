@@ -1,11 +1,13 @@
+import AboutUs from '@/views/aboutUs'
 import React from 'react'
 
-const AboutMEpage = () => {
+const AboutUspage = () => {
   return (
     <div className='container h-screen justify-center flex items-center flex-1  overflow-y-auto'>
-      <h1>Hola estas en Acerca de Nosotros</h1>
+      
+      <AboutUs/>
     </div>
   )
 }
 
-export default AboutMEpage
+export default AboutUspage

@@ -62,7 +62,7 @@ export default function Hero() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-teal-600 text-primary hover:bg-primary-light">
-                <Link href="/abautMe" >
+                <Link href="/aboutUs" >
                 Saber más
                 </Link>
               </Button>
