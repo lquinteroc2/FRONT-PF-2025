@@ -49,7 +49,10 @@ export default async function RootLayout({
         <AuthProviderGoogle session={session}>
           <ClientNavbar />
           <ClientLayoutWrapper>
-            {children}
+       <main className="flex-grow flex flex-col ">
+        {/* Aquí van los hijos de la página */}
+        {children}
+      </main>
           </ClientLayoutWrapper>
         </AuthProviderGoogle>
         <ClientFooter />

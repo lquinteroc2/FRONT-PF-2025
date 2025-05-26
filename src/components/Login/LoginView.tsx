@@ -36,7 +36,7 @@ const LoginView = () => {
 
 return (
     <>
-<div className="flex flex-col md:flex-row gap-12 justify-evenly">
+<div className="flex flex-col md:flex-row gap-12 justify-evenly mt-20">
     <div>
         <RelaxingVideo/>
         <div className="flex flex-row items-center mt-8">

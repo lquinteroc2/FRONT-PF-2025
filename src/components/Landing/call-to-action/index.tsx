@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 export default function CallToAction() {
   return (
-    <section className="bg-gradient-to-r from-primary  to-neutro-dark to-primary-dark py-20 text-white md:py-32">
+    <section className="bg-gradient-to-r from-primary  to-neutro-dark py-20 text-white md:py-32">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

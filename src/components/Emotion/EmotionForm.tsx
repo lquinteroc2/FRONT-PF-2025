@@ -80,7 +80,7 @@ export default function EmotionForm({ onClose }: { onClose: () => void }) {
           </p>
         )}
         <p className="text-base  text-neutro-dark">{user?.user.name} entiendo te sientes en este momento con {selectedEmotion?.name}
-          <br/> <br/> <div className="text-xl font-semibold  text-neutro-dark">{selectedEmotion?.reflexion}</div>
+          <br/> <br/> <span className="text-xl font-semibold  text-neutro-dark">{selectedEmotion?.reflexion}</span>
         </p>
         <button
           onClick={onClose}
