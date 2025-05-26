@@ -79,13 +79,9 @@ export default function EmotionForm({ onClose }: { onClose: () => void }) {
             Has registrado <strong className="text-primary-dark">{selectedEmotion.name}</strong> {selectedEmotion.emoji}.
           </p>
         )}
-        <p className="text-neutro-dark">
-        {user?.user.name} entiendo te sientes en este momento con {selectedEmotion?.name}
-         </p>
-       <br /><br />
-       <div className="text-xl font-semibold text-neutro-dark">
-  {selectedEmotion?.reflexion}
-       </div>
+        <p className="text-base  text-neutro-dark">{user?.user.name} entiendo te sientes en este momento con {selectedEmotion?.name}
+          <br/> <br/> <span className="text-xl font-semibold  text-neutro-dark">{selectedEmotion?.reflexion}</span>
+        </p>
         <button
           onClick={onClose}
           className="mt-4 bg-primary text-neutro-light px-8 py-3 rounded-lg shadow-md hover:bg-primary-dark transition-all duration-300 active:scale-95"

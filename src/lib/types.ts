@@ -22,15 +22,23 @@ export enum FileExtension {
 }
 
 // Interfaces
+export interface Subscription {
+  active: boolean;
+  isTrial: boolean;
+  startDate: string;
+  endDate: string;
+}
+
 export interface User {
-  id: string
-  name: string
-  email: string
-  profileImage: string
-  address: string
-  role: string
-  status: "active" | "inactive"
-  createdAt: string
+  id: string;
+  name: string;
+  email: string;
+  profileImage: string;
+  address: string;
+  role: string;
+  status: "active" | "inactive";
+  createdAt: string;
+  subscription?: Subscription[];  
 }
 
 export interface Resource {

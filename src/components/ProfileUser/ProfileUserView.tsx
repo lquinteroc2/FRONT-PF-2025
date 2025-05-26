@@ -6,6 +6,41 @@ import EditableField, { initialUserData, UserData } from "./EditableField";
 import { useAuth } from "@/context/Auth";
 import ChangePassword from "../Buttons/ChangePassword";
 import { Button } from "../ui/button";
+import uploadImageToImgBB from "./fsg"
+import axios from "axios";
+
+interface UpdateUserData {
+  name?: string;
+  address?: string;
+  profileImage?: string;
+}
+export async function profileEditHelper(userId: string, data: UpdateUserData, token: string) {
+  try {
+    const response = await axios.patch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      console.error("❌ Error en la respuesta del servidor:");
+    } else if (error.request) {
+      console.error(error.request);
+    } else {
+      console.error("❌ Error al configurar la petición:");
+    }
+    throw error;
+  }
+};
+
+
+
+
 
 export default function ProfileUserView() {
   const { user } = useAuth();
@@ -24,25 +59,67 @@ export default function ProfileUserView() {
     }
   }, [user]);
 
-  const handleSaveField = (field: keyof UserData) => (newValue: string) => {
-    setUserData((prev) => ({ ...prev, [field]: newValue }));
-    console.log(`Campo ${field} guardado:`, newValue);
-  };
+const handleSaveField = (field: keyof UserData) => async (newValue: string) => {
+  if (!user) return;
 
-  const handleProfilePicChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
+  try {
+    const updatedUser = await profileEditHelper(
+      user.user.id,
+      { [field]: newValue }, // sólo el campo que cambió
+      user.token
+    );
+
+    setUserData((prev) => ({
+      ...prev,
+      ...updatedUser,
+    }));
+
+    console.log(`Campo ${field} guardado correctamente:`, newValue);
+  } catch (error) {
+    console.error(`Error guardando el campo ${field}:`, error);
+    alert(`No se pudo actualizar ${field}. Intenta de nuevo.`);
+  }
+};
+
+
+
+const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file && user) {
+    try {
+      // Opcional: mostrar preview rápido
       const reader = new FileReader();
       reader.onloadend = () => {
         setUserData((prev) => ({
           ...prev,
           profilePicUrl: reader.result as string,
         }));
-        console.log("Nueva foto de perfil seleccionada:", file.name);
       };
       reader.readAsDataURL(file);
+
+      // 1. Subir la imagen a ImgBB y obtener el URL público
+      const imageUrl = await uploadImageToImgBB(file);
+
+      // 2. Enviar sólo el link al backend para actualizar el perfil
+      const updatedUser = await profileEditHelper(
+        user.user.id,
+        { profileImage: imageUrl },
+        user.token
+      );
+
+      // 3. Actualizar el estado con la URL definitiva que viene del backend
+      setUserData((prev) => ({
+        ...prev,
+        profilePicUrl: updatedUser.profileImage || imageUrl,
+      }));
+
+      console.log("Foto de perfil actualizada correctamente");
+    } catch (error) {
+      alert("Error al actualizar la foto de perfil. Intenta nuevamente.");
     }
-  };
+  }
+};
+
 
   return (
     <div>
