@@ -4,6 +4,7 @@ import type { Resource } from "@/lib/types"
 import { useEffect, useState } from "react"
 import ImagesCard from "./ImagesCard"
 import { motion } from "framer-motion"
+import { ImageIcon } from "lucide-react"
 
 const cardsData = [
   {
@@ -79,9 +80,10 @@ export function ImageList() {
     <div className="py-8">
       <div className="flex items-center gap-2 mb-8">
         <div className="h-10 w-1.5 bg-primary rounded-full" />
-        <h2 className="font-geist text-3xl font-bold">
-          Galería <span className="text-primary">Séntia</span>
-        </h2>
+        <div className="font-geist text-3xl shadow-sm pb-2 font-bold mb-4 flex items-center gap-2">
+          <ImageIcon className="text-primary w-8 h-8" />
+          Galería de Calma <strong className="text-primary">Séntia</strong>
+        </div>
       </div>
 
       {isLoading ? (

@@ -21,13 +21,10 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   const shouldCenter = centeredRoutes.includes(pathname);
 
   return (
-    <main
-  className={
-    `w-full flex-grow` +
-    (shouldCenter ? " flex justify-center items-center" : "")
-  }
->
-  {children}
-</main>
+
+    <main className={`w-full flex-grow ${shouldCenter ? 'flex justify-center items-center' : ''}`}>
+
+      {children}
+    </main>
   );
 }
