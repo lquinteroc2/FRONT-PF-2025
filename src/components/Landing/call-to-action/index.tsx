@@ -22,10 +22,14 @@ export default function CallToAction() {
             importante.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="bg-neutro-light  text-primary hover:bg-primary-dark">
+            <Button  
+              onClick={() => window.location.href = '/login'}
+              size="lg" 
+              className="bg-neutro-light text-primary hover:bg-primary-dark"
+            >
               Registrarse gratis
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-primary hover:bg-primary-dark">
+            <Button onClick={() => window.location.href = '/aboutUs'} size="lg" variant="outline" className="border-white text-primary hover:bg-primary-dark">
               Conocer más
             </Button>
           </div>
