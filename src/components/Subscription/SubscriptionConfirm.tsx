@@ -2,16 +2,12 @@
 
 import { useAuth } from "@/context/Auth";
 import { useEffect, useRef, useState } from "react";
-import {
-  subscribeUser,
-  subscribeUserThree,
-  subscribeUserPrueba,
-} from "./SubscriptionsHelper";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Brain, CheckCircle } from "lucide-react";
 
 interface Props {
   sessionId: string;
+  subscribeFn: (params: { userId: string; sessionId: string }) => Promise<any>;
 }
 
 interface SubscriptionData {
@@ -22,27 +18,12 @@ interface SubscriptionData {
   endDate: string;
 }
 
-const SubscriptionConfirm = ({ sessionId }: Props) => {
+const SubscriptionConfirm = ({ sessionId, subscribeFn }: Props) => {
   const router = useRouter();
   const { user, setUser } = useAuth();
   const hasSubscribed = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
   const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionData | null>(null);
-
-  // Función para elegir el helper adecuado
-  const getHelperByPlan = () => {
-    const plan = localStorage.getItem("selectedPlan") || "subscription";
-
-    switch (plan) {
-      case "extended":
-        return subscribeUserThree;
-      case "trial":
-        return subscribeUserPrueba;
-      case "subscription":
-      default:
-        return subscribeUser;
-    }
-  };
 
   useEffect(() => {
     if (!user || hasSubscribed.current) return;
@@ -51,28 +32,19 @@ const SubscriptionConfirm = ({ sessionId }: Props) => {
       hasSubscribed.current = true;
 
       if (!sessionId) {
-        console.error("⚠️ No se encontró sessionId en la ruta.");
+        console.error("⚠️ No se encontró sessionId.");
         setIsLoading(false);
         return;
       }
 
       try {
-        const selectedHelper = getHelperByPlan();
-        console.log("📤 Enviando al backend userId:", user.user.id);
-        console.log("📤 Usando sessionId:", sessionId);
-
-        const response = await selectedHelper({ userId: user.user.id, sessionId });
-
-        console.log("📥 Respuesta del backend:", response);
+        const response = await subscribeFn({ userId: user.user.id, sessionId });
 
         if (response.role) {
           localStorage.setItem("role", response.role);
           setUser({
             ...user,
-            user: {
-              ...user.user,
-              role: response.role,
-            },
+            user: { ...user.user, role: response.role },
           });
         }
 
@@ -91,11 +63,11 @@ const SubscriptionConfirm = ({ sessionId }: Props) => {
     };
 
     handleSubscribe();
-  }, [user, setUser, sessionId]);
+  }, [user, setUser, sessionId, subscribeFn]);
 
   if (isLoading) {
     return (
-      <main className="p-8 text-center">
+      <main className="p-8 text-center mt-20">
         <h1 className="text-xl font-semibold">Procesando tu suscripción...</h1>
         <p>Por favor espera un momento.</p>
       </main>
@@ -104,8 +76,8 @@ const SubscriptionConfirm = ({ sessionId }: Props) => {
 
   if (subscriptionInfo) {
     return (
-      <main className="min-h-[60vh] flex items-center justify-center from-neutro-dark to-neutro-light px-4 py-6 my-auto">
-        <div className="bg-neutro rounded-xl shadow-lg max-w-md w-full px-6 py-6 text-center animate-fade-in-up transition-all duration-500">
+      <main className="min-h-[60vh] flex items-center justify-center px-4 mt-20 py-6">
+        <div className="bg-neutro rounded-xl shadow-lg max-w-md w-full px-6 py-6 text-center animate-fade-in-up">
           <CheckCircle className="w-12 h-12 text-primary mx-auto mb-3 animate-bounce" />
           <h1 className="text-2xl font-extrabold text-primary mb-1">¡Suscripción exitosa!</h1>
           <p className="text-neutro-dark text-base">
