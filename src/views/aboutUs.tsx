@@ -142,6 +142,7 @@ export default function AboutUs() {
               <h2 className="mb-4 text-2xl font-bold">Nuestra Visión</h2>
               <p className="leading-relaxed opacity-90">
                 Ser la plataforma líder en salud mental digital, donde cada persona tenga acceso a los recursos
+                
                 necesarios para vivir una vida emocionalmente plena y conectada con una comunidad que la comprenda y
                 apoye.
               </p>
