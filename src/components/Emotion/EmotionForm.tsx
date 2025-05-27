@@ -20,11 +20,27 @@ export default function EmotionForm({ onClose }: { onClose: () => void }) {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false); // For submit button loading state
 
-  useEffect(() => {
-    emotionsHelper()
-      .then(setEmotions)
-      .catch((err) => console.error("Error fetching emotions:", err));
-  }, []);
+useEffect(() => {
+  const rawUser = localStorage.getItem("loginUser");
+
+  if (!rawUser) {
+    console.warn("⚠️ No se encontró loginUser en localStorage.");
+    return;
+  }
+
+  const parsed = JSON.parse(rawUser);
+  const token = parsed.token;
+
+  if (!token) {
+    console.warn("⚠️ No hay token dentro de loginUser.");
+    return;
+  }
+
+  emotionsHelper(token)
+    .then(setEmotions)
+    .catch((err) => console.error("Error fetching emotions:", err));
+}, []);
+
 
   const handleEmotionSelect = (emotion: Emotion) => {
     setSelectedEmotion(emotion);
@@ -47,27 +63,34 @@ export default function EmotionForm({ onClose }: { onClose: () => void }) {
   };
 
   const handleSubmit = async () => {
-    if (selectedEmotion && intensity && user?.user.id) {
-      setIsLoading(true);
-      try {
-        const result = await emotionCreateHelper({
+  if (selectedEmotion && intensity && user?.user.id) {
+    setIsLoading(true);
+    try {
+      const raw = localStorage.getItem("loginUser");
+      const parsed = raw ? JSON.parse(raw) : null;
+      const token = parsed?.token;
+
+      const result = await emotionCreateHelper(
+        {
           userId: user.user.id,
           emotionId: selectedEmotion.id.toString(),
           intensity,
           comment,
-        });
-        console.log("👍 Emoción registrada:", result.emotion, result.createdAt);
-        // Consider a more integrated success message instead of alert
-        setCurrentStep("done"); // Move to a "done" step
-        // onClose(); // You might want to close after a delay or on a "done" screen button
-      } catch (error) {
-        console.error("❌ Error al enviar emoción:", error);
-        alert("Hubo un error al registrar tu emoción. Por favor, inténtalo de nuevo."); // Inform user
-      } finally {
-        setIsLoading(false);
-      }
+        },
+        token // ✅ Aquí sí estás pasando el token
+      );
+
+      console.log("👍 Emoción registrada:", result.emotion, result.createdAt);
+      setCurrentStep("done");
+    } catch (error) {
+      console.error("❌ Error al enviar emoción:", error);
+      alert("Hubo un error al registrar tu emoción. Por favor, inténtalo de nuevo.");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }
+};
+
 
   if (currentStep === "done") {
     return (
