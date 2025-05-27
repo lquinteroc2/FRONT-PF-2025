@@ -49,7 +49,7 @@ export default function Navbar() {
     localStorage.removeItem("user");
     Cookies.remove("loginUser");
 
-    router.push("/home");
+    router.push("/");
   };
 
   return (

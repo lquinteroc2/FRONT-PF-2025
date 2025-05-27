@@ -2,7 +2,7 @@
 
 import React, { useState, FormEvent } from "react";
 import { Button } from "../ui/button";
-import { useAuth } from "@/context/Auth"; // Ajusta la ruta según tu proyecto
+import { useAuth } from "@/context/Auth";
 import { changePasswordHelper } from "@/components/ProfileUser/changePasswordHelper";
 
 const ChangePassword = () => {
@@ -15,42 +15,68 @@ const ChangePassword = () => {
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  const handleChangePassword = async (e: FormEvent) => {
-    e.preventDefault();
-    setPasswordError(null);
-    setPasswordSuccess(null);
+ 
+const handleChangePassword = async (e: FormEvent) => {
+  e.preventDefault();
+  setPasswordError(null);
+  setPasswordSuccess(null);
 
-    if (newPassword !== confirmNewPassword) {
-      setPasswordError("Las nuevas contraseñas no coinciden.");
-      return;
-    }
-    if (newPassword.length < 8) {
-      setPasswordError("La nueva contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
+  const trimmedCurrentPassword = currentPassword.trim();
+  const trimmedNewPassword = newPassword.trim();
+  const trimmedConfirmPassword = confirmNewPassword.trim();
 
-    if (!user?.token) {
-      setPasswordError("Usuario no autenticado.");
-      return;
-    }
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*])[A-Za-z\d!@#$%&*]{8,20}$/;
 
-    try {
-      await changePasswordHelper(
-        { currentPassword, newPassword, confirmNewPassword },
-        user.token
-      );
+  if (trimmedNewPassword !== trimmedConfirmPassword) {
+    setPasswordError("Las nuevas contraseñas no coinciden.");
+    return;
+  }
 
-      setPasswordSuccess("¡Contraseña cambiada exitosamente!");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmNewPassword("");
-      setShowChangePassword(false);
+  if (!passwordRegex.test(trimmedNewPassword)) {
+    setPasswordError(
+      "La contraseña debe tener entre 8 y 20 caracteres, incluyendo una minúscula, una mayúscula, un número y un carácter especial (!@#$%&*)."
+    );
+    return;
+  }
 
-      setTimeout(() => setPasswordSuccess(null), 3000);
-    } catch (error: any) {
-      setPasswordError(error.message || "Error al cambiar la contraseña");
-    }
-  };
+  if (!user?.token) {
+    setPasswordError("Usuario no autenticado.");
+    return;
+  }
+
+  console.log("TOKEN ENVIADO:", user?.token);
+  console.log("Datos enviados:", {
+    currentPassword: trimmedCurrentPassword,
+    password: trimmedNewPassword,
+    confirmPassword: trimmedConfirmPassword,
+  });
+
+  try {
+    await changePasswordHelper(
+      {
+        currentPassword: trimmedCurrentPassword,
+        password: trimmedNewPassword,
+        confirmPassword: trimmedConfirmPassword,
+      },
+      user.token
+    );
+
+    setPasswordSuccess("¡Contraseña cambiada exitosamente!");
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
+    setShowChangePassword(false);
+
+    setTimeout(() => setPasswordSuccess(null), 3000);
+  } catch (error: any) {
+    // Aquí mostramos el error completo para más detalle
+    console.error("Error al cambiar contraseña:", error);
+    setPasswordError(error.message || "Error al cambiar la contraseña");
+  }
+};
+
+
 
   return (
     <div className="flex justify-center my-4">
@@ -64,10 +90,7 @@ const ChangePassword = () => {
       ) : (
         <form onSubmit={handleChangePassword} className="space-y-4 w-full max-w-md">
           <div>
-            <label
-              htmlFor="currentPassword"
-              className="block text-sm text-center font-medium text-neutro-dark mb-1"
-            >
+            <label htmlFor="currentPassword" className="block text-sm text-center font-medium text-neutro-dark mb-1">
               Contraseña Actual
             </label>
             <input
@@ -80,10 +103,7 @@ const ChangePassword = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="newPassword"
-              className="block text-sm font-medium text-center text-neutro-dark mb-1"
-            >
+            <label htmlFor="newPassword" className="block text-sm font-medium text-center text-neutro-dark mb-1">
               Nueva Contraseña
             </label>
             <input
@@ -96,10 +116,7 @@ const ChangePassword = () => {
             />
           </div>
           <div>
-            <label
-              htmlFor="confirmNewPassword"
-              className="block text-sm font-medium text-center text-neutro-dark mb-1"
-            >
+            <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-center text-neutro-dark mb-1">
               Confirmar Nueva Contraseña
             </label>
             <input

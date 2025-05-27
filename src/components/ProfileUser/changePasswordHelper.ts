@@ -2,8 +2,8 @@ import axios from "axios";
 
 export interface ChangePasswordData {
   currentPassword: string;
-  newPassword: string;
-  confirmNewPassword: string;
+  password: string;   
+  confirmPassword: string;   
 }
 
 export async function changePasswordHelper(
@@ -11,19 +11,31 @@ export async function changePasswordHelper(
   token: string
 ): Promise<void> {
   try {
-    await axios.patch(
-      "${process.env.NEXT_PUBLIC_API_URL}/users/update/password", // Cambia esta URL por la de tu API real
-      data,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/update/password`,
       {
+        method: "PATCH",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify(data),
       }
     );
+
+    if (!response.ok) {
+      // Intentamos obtener el mensaje de error del body
+      let errorMessage = "Error al cambiar la contraseña";
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        // No JSON, dejamos el mensaje por defecto
+      }
+      throw new Error(errorMessage);
+    }
   } catch (error: any) {
-    const message =
-      error.response?.data?.message || error.message || "Error al cambiar la contraseña";
-    throw new Error(message);
+    // Error en la petición fetch o error lanzado arriba
+    throw new Error(error.message || "Error al cambiar la contraseña");
   }
 }
