@@ -5,92 +5,57 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MoreHorizontal, Search, UserPlus } from "lucide-react"
+import { Search, UserPlus } from "lucide-react"
+import { toast } from "sonner"
+import { User, UserRole } from "@/lib/types"
+import UserForm from "@/components/AdminDashboard/users/UsersComponent"
+import UserActions from "@/components/AdminDashboard/users/User-actions"
 
-interface User {
-  id: string
-  name: string
-  email: string
-  role: string
-  status: "active" | "inactive"
-  avatar?: string
-  createdAt: string
-}
+
 
 export default function UsersPage() {
-  const [users,
-    //  setUsers
-    ] = useState<User[]>([
+  const [users, setUsers] = useState<User[]>([
     {
       id: "1",
       name: "Carlos Mendez",
       email: "carlos@example.com",
-      role: "Admin",
+      role: UserRole.ADMIN,
       status: "active",
-      avatar: "/placeholder-user.jpg",
-      createdAt: "2023-01-15T10:00:00Z",
+      profileImage: "/placeholder.svg?height=40&width=40",
+      createdAt: new Date("2023-01-15T10:00:00Z").toISOString(),
+      address: "Calle Principal 123, Ciudad",
     },
     {
       id: "2",
       name: "Ana López",
       email: "ana@example.com",
-      role: "Editor",
+      role: UserRole.PREMIUM,
       status: "active",
-      avatar: "/placeholder-user.jpg",
-      createdAt: "2023-02-20T14:30:00Z",
+      profileImage: "/placeholder.svg?height=40&width=40",
+      createdAt: new Date("2023-01-15T10:00:00Z").toISOString(),
+      address: "Calle Principal 123, Ciudad",
     },
     {
       id: "3",
       name: "Miguel Torres",
       email: "miguel@example.com",
-      role: "Viewer",
+      role: UserRole.FREE,
       status: "inactive",
-      avatar: "/placeholder-user.jpg",
-      createdAt: "2023-03-10T09:15:00Z",
-    },
-    {
-      id: "4",
-      name: "Laura Sánchez",
-      email: "laura@example.com",
-      role: "Editor",
-      status: "active",
-      avatar: "/placeholder-user.jpg",
-      createdAt: "2023-04-05T16:45:00Z",
-    },
-    {
-      id: "5",
-      name: "David Ruiz",
-      email: "david@example.com",
-      role: "Viewer",
-      status: "active",
-      avatar: "/placeholder-user.jpg",
-      createdAt: "2023-05-08T11:20:00Z",
+      profileImage: "/placeholder.svg?height=40&width=40",
+      createdAt: new Date("2023-01-15T10:00:00Z").toISOString(),
+      address: "Calle Principal 123, Ciudad",
     },
   ])
 
   const [searchTerm, setSearchTerm] = useState("")
-  const [roleFilter, setRoleFilter] = useState<string>("all")
+  const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all")
   const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -103,8 +68,7 @@ export default function UsersPage() {
     return matchesSearch && matchesRole && matchesStatus
   })
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
+  const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("es-ES", {
       day: "numeric",
       month: "short",
@@ -120,6 +84,101 @@ export default function UsersPage() {
       .toUpperCase()
   }
 
+  const isUserRole = (value: string): value is UserRole => {
+  return ["admin", "premium", "free"].includes(value)
+ }
+
+  const getRoleLabel = (role: UserRole) => {
+    switch (role) {
+      case UserRole.ADMIN:
+        return "Administrador"
+      case UserRole.PREMIUM:
+        return "Premium"
+      case UserRole.FREE:
+        return "Gratuito"
+      default:
+        return role
+    }
+  }
+
+  const handleCreateUser = () => {
+    setEditingUser(null)
+    setIsDialogOpen(true)
+  }
+
+  const handleEditUser = (user: User) => {
+    setEditingUser(user)
+    setIsDialogOpen(true)
+  }
+
+  const handleSubmitUser = async (userData: Partial<User>) => {
+    setIsLoading(true)
+
+    try {
+      // Simular llamada a API
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      if (editingUser) {
+        // Actualizar usuario existente
+        setUsers((prev) =>
+          prev.map((user) => (user.id === editingUser.id ? { ...user, ...userData, updatedAt: new Date() } : user)),
+        )
+        toast.success("Usuario actualizado correctamente")
+      } else {
+        // Crear nuevo usuario
+        const newUser: User = {
+          ...(userData as User),
+          status: "active",
+          createdAt: new Date().toISOString(),
+        }
+        setUsers((prev) => [...prev, newUser])
+        toast.success("Usuario creado correctamente")
+      }
+
+      setIsDialogOpen(false)
+    } catch (error) {
+      toast.error("Error al guardar el usuario")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleDeleteUser = async (userId: string) => {
+    try {
+      // Simular llamada a API
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      setUsers((prev) => prev.filter((user) => user.id !== userId))
+      toast.success("Usuario eliminado correctamente")
+    } catch (error) {
+      toast.error("Error al eliminar el usuario")
+    }
+  }
+
+  const handleToggleUserStatus = async (userId: string, newStatus: "active" | "inactive") => {
+    try {
+      // Simular llamada a API
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      setUsers((prev) =>
+        prev.map((user) => (user.id === userId ? { ...user, status: newStatus, updatedAt: new Date() } : user)),
+      )
+      toast.success(`Usuario ${newStatus === "active" ? "activado" : "desactivado"} correctamente`)
+    } catch (error) {
+      toast.error("Error al cambiar el estado del usuario")
+    }
+  }
+
+  const handleViewProfile = (userId: string) => {
+    // Implementar navegación al perfil del usuario
+    toast.info(`Ver perfil del usuario ${userId}`)
+  }
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
+    setEditingUser(null)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -129,64 +188,10 @@ export default function UsersPage() {
     >
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Usuarios</h1>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Nuevo Usuario
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[525px]">
-            <DialogHeader>
-              <DialogTitle>Crear nuevo usuario</DialogTitle>
-              <DialogDescription>Completa los detalles del usuario que deseas añadir al sistema.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Nombre
-                </Label>
-                <Input id="name" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input id="email" type="email" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="role" className="text-right">
-                  Rol
-                </Label>
-                <Select>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Selecciona un rol" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Administrador</SelectItem>
-                    <SelectItem value="Editor">Editor</SelectItem>
-                    <SelectItem value="Viewer">Visualizador</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="password" className="text-right">
-                  Contraseña
-                </Label>
-                <Input id="password" type="password" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="confirmPassword" className="text-right">
-                  Confirmar
-                </Label>
-                <Input id="confirmPassword" type="password" className="col-span-3" />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Crear usuario</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={handleCreateUser}>
+          <UserPlus className="mr-2 h-4 w-4" />
+          Nuevo Usuario
+        </Button>
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -200,18 +205,27 @@ export default function UsersPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
+        <Select
+            value={roleFilter}
+            onValueChange={(value) => {
+              if (value === "all") {
+                setRoleFilter("all")
+              } else if (isUserRole(value)) {
+                setRoleFilter(value)
+              }
+            }}
+          >
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Filtrar por rol" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos los roles</SelectItem>
-            <SelectItem value="Admin">Administrador</SelectItem>
-            <SelectItem value="Editor">Editor</SelectItem>
-            <SelectItem value="Viewer">Visualizador</SelectItem>
+            <SelectItem value={UserRole.ADMIN}>Administrador</SelectItem>
+            <SelectItem value={UserRole.PREMIUM}>Premium</SelectItem>
+            <SelectItem value={UserRole.FREE}>Gratuito</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value)}>
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Filtrar por estado" />
           </SelectTrigger>
@@ -230,7 +244,6 @@ export default function UsersPage() {
               <TableHead>Usuario</TableHead>
               <TableHead>Rol</TableHead>
               <TableHead>Estado</TableHead>
-              <TableHead>Fecha de creación</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
           </TableHeader>
@@ -247,7 +260,7 @@ export default function UsersPage() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                        <AvatarImage src={user.profileImage || "/placeholder.svg"} alt={user.name} />
                         <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
                       </Avatar>
                       <div>
@@ -256,7 +269,7 @@ export default function UsersPage() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>{user.role}</TableCell>
+                  <TableCell>{getRoleLabel(user.role as UserRole)}</TableCell>
                   <TableCell>
                     <div
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
@@ -266,24 +279,14 @@ export default function UsersPage() {
                       {user.status === "active" ? "Activo" : "Inactivo"}
                     </div>
                   </TableCell>
-                  <TableCell>{formatDate(user.createdAt)}</TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Abrir menú</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                        <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-                        <DropdownMenuItem>Editar usuario</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>{user.status === "active" ? "Desactivar" : "Activar"}</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">Eliminar</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <UserActions
+                      user={user}
+                      onEdit={handleEditUser}
+                      onDelete={handleDeleteUser}
+                      onToggleStatus={handleToggleUserStatus}
+                      onViewProfile={handleViewProfile}
+                    />
                   </TableCell>
                 </TableRow>
               ))
@@ -291,6 +294,27 @@ export default function UsersPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Diálogo para crear/editar usuario */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingUser ? "Editar Usuario" : "Crear Nuevo Usuario"}</DialogTitle>
+            <DialogDescription>
+              {editingUser
+                ? "Modifica los detalles del usuario seleccionado."
+                : "Completa los detalles del usuario que deseas añadir al sistema."}
+            </DialogDescription>
+          </DialogHeader>
+          <UserForm
+            user={editingUser}
+            onSubmit={handleSubmitUser}
+            onCancel={handleCloseDialog}
+            isLoading={isLoading}
+            mode={editingUser ? "edit" : "create"}
+          />
+        </DialogContent>
+      </Dialog>
     </motion.div>
   )
 }
