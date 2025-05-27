@@ -77,7 +77,7 @@ export default function AboutUs() {
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white font-[family-name:var(--font-geist-sans)]">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
-        <div className="absolute inset-0 bg-gradient-to-r from-teal-600/10 to-blue-600/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-teal-600/10"></div>
         <div className="container relative mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -134,7 +134,7 @@ export default function AboutUs() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="rounded-2xl bg-gradient-to-br from-teal-500 to-secondary-light p-8 text-white shadow-lg"
+              className="rounded-2xl bg-gradient-to-br from-teal-500 to-primary p-8 text-white shadow-lg"
             >
               <div className="mb-4 inline-flex rounded-full bg-white/20 p-3">
                 <Award className="h-6 w-6 text-white" />
@@ -142,7 +142,7 @@ export default function AboutUs() {
               <h2 className="mb-4 text-2xl font-bold">Nuestra Visión</h2>
               <p className="leading-relaxed opacity-90">
                 Ser la plataforma líder en salud mental digital, donde cada persona tenga acceso a los recursos
-                
+
                 necesarios para vivir una vida emocionalmente plena y conectada con una comunidad que la comprenda y
                 apoye.
               </p>
@@ -277,16 +277,13 @@ export default function AboutUs() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="rounded-2xl bg-gradient-to-r from-teal-600 to-blue-600 p-8 text-center text-white md:p-12"
+            className="rounded-2xl bg-gradient-to-r from-primary-light to-secondary p-8 text-center text-white md:p-12"
           >
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">¿Listo para comenzar tu viaje?</h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">
               Únete a nuestra comunidad y comienza a cuidar tu bienestar emocional hoy mismo.
             </p>
             <SubscriptionPlans />
-            <button >
-              Comenzar ahora
-            </button>
           </motion.div>
         </div>
       </section>
