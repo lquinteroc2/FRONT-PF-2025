@@ -1,32 +1,29 @@
-import { IUserDto } from '@/lib/types';
 import axios from 'axios';
-
-
-
+import { IUserDto } from '@/lib/types';
 
 const registerHelper = async (userData: IUserDto) => {
     try {
         const Url = process.env.NEXT_PUBLIC_API_URL;
-        console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
-           console.log('Datos enviados al backend:', userData);
+        console.log('API URL:', Url);
+        console.log('Datos enviados al backend:', userData); // Aquí se verá confirmPassword
+
         const res = await axios.post(`${Url}/auth/signup`, userData);
-    
-        alert('Registrado con Exito');
+
+        alert('Registrado con éxito');
         return res.data;
 
-    }  
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    catch (error: any) {
-  console.error('Error al Registrar:', error);
+    } catch (error: any) {
+        console.error('Error al Registrar:', error);
 
-  if (error.response) {
-    console.error('Detalles del error:', error.response.data);
-    alert(error.response.data.message || 'No se pudo registrar');
-  } else {
-    alert('No se pudo registrar');
-  }
-}
-    
+        if (error.response) {
+            console.error('Detalles del error:', error.response.data);
+            alert(error.response.data.message || 'No se pudo registrar');
+        } else {
+            alert('No se pudo registrar');
+        }
+    }
 };
 
 export default registerHelper;
+
+

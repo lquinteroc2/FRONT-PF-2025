@@ -21,6 +21,12 @@ export enum FileExtension {
   WAV = "wav",
 }
 
+export enum UserRole {
+  FREE = "FREE",
+  PREMIUM = "PREMIUM",
+  ADMIN = "ADMIN",
+}
+
 // Interfaces
 export interface Subscription {
   active: boolean;
@@ -33,11 +39,11 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  profileImage: string;
-  address: string;
+  profileImage?: string;
+  address?: string;
   role: string;
   status: "active" | "inactive";
-  createdAt: string;
+  createdAt?: string;
   subscription?: Subscription[];  
 }
 

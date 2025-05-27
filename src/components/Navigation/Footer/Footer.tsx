@@ -33,13 +33,13 @@ const showFullFooter = !(
             <h4 className="mb-4 font-semibold text-white">Plataforma</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-primary">
-                  Diario emocional
+                <Link href="/emotions" className="hover:text-primary">
+                  Bitácora emocional
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary">
-                  Mapa de bienestar
+                <Link href="/centrosApoyo" className="hover:text-primary">
+                  Centros de Apoyo
                 </Link>
               </li>
               <li>
@@ -48,7 +48,7 @@ const showFullFooter = !(
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/home" className="hover:text-primary">
                   Recursos
                 </Link>
               </li>
@@ -59,13 +59,8 @@ const showFullFooter = !(
             <h4 className="mb-4 font-semibold text-white">Compañía</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/aboutUs" className="hover:text-primary">
                   Sobre nosotros
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-primary">
-                  Blog
                 </Link>
               </li>
               <li>
@@ -85,12 +80,12 @@ const showFullFooter = !(
             <h4 className="mb-4 font-semibold text-neutro-light">Legal</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/terms-of-service" className="hover:text-primary">
                   Términos de uso
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/politicas" className="hover:text-primary">
                   Política de privacidad
                 </Link>
               </li>

@@ -26,8 +26,8 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
-    { name: "Contactanos", href: "/contact-us", showWhen: "always" },
-    { name: "Acerca de Nosotros", href: "/abautMe", showWhen: "always" },
+    { name: "Contáctanos", href: "/contact-us", showWhen: "always" },
+    { name: "Acerca de Nosotros", href: "/aboutUs", showWhen: "always" },
     { name: "Recomendaciones", href: "/recomendaciones", hidden: false, showWhen: "auth" },
     { name: "Mis Emociones", href: "/emotions", hidden: false, showWhen: "auth" },
     { name: "Centros de Apoyo", href: "/centrosApoyo", hidden: false, showWhen: "auth" },
@@ -49,7 +49,7 @@ export default function Navbar() {
     localStorage.removeItem("user");
     Cookies.remove("loginUser");
 
-    router.push("/home");
+    router.push("/");
   };
 
   return (

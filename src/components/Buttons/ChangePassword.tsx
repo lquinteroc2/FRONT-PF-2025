@@ -2,8 +2,12 @@
 
 import React, { useState, FormEvent } from "react";
 import { Button } from "../ui/button";
+import { useAuth } from "@/context/Auth";
+import { changePasswordHelper } from "@/components/ProfileUser/changePasswordHelper";
 
 const ChangePassword = () => {
+  const { user } = useAuth();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -11,22 +15,52 @@ const ChangePassword = () => {
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  const handleChangePassword = (e: FormEvent) => {
-    e.preventDefault();
-    setPasswordError(null);
-    setPasswordSuccess(null);
+ 
+const handleChangePassword = async (e: FormEvent) => {
+  e.preventDefault();
+  setPasswordError(null);
+  setPasswordSuccess(null);
 
-    if (newPassword !== confirmNewPassword) {
-      setPasswordError("Las nuevas contraseñas no coinciden.");
-      return;
-    }
-    if (newPassword.length < 8) {
-      setPasswordError("La nueva contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
+  const trimmedCurrentPassword = currentPassword.trim();
+  const trimmedNewPassword = newPassword.trim();
+  const trimmedConfirmPassword = confirmNewPassword.trim();
 
-    // Aquí harías la llamada a la API para cambiar la contraseña
-    console.log("Cambiando contraseña", { currentPassword, newPassword });
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*])[A-Za-z\d!@#$%&*]{8,20}$/;
+
+  if (trimmedNewPassword !== trimmedConfirmPassword) {
+    setPasswordError("Las nuevas contraseñas no coinciden.");
+    return;
+  }
+
+  if (!passwordRegex.test(trimmedNewPassword)) {
+    setPasswordError(
+      "La contraseña debe tener entre 8 y 20 caracteres, incluyendo una minúscula, una mayúscula, un número y un carácter especial (!@#$%&*)."
+    );
+    return;
+  }
+
+  if (!user?.token) {
+    setPasswordError("Usuario no autenticado.");
+    return;
+  }
+
+  console.log("TOKEN ENVIADO:", user?.token);
+  console.log("Datos enviados:", {
+    currentPassword: trimmedCurrentPassword,
+    password: trimmedNewPassword,
+    confirmPassword: trimmedConfirmPassword,
+  });
+
+  try {
+    await changePasswordHelper(
+      {
+        currentPassword: trimmedCurrentPassword,
+        password: trimmedNewPassword,
+        confirmPassword: trimmedConfirmPassword,
+      },
+      user.token
+    );
 
     setPasswordSuccess("¡Contraseña cambiada exitosamente!");
     setCurrentPassword("");
@@ -35,7 +69,14 @@ const ChangePassword = () => {
     setShowChangePassword(false);
 
     setTimeout(() => setPasswordSuccess(null), 3000);
-  };
+  } catch (error: any) {
+    // Aquí mostramos el error completo para más detalle
+    console.error("Error al cambiar contraseña:", error);
+    setPasswordError(error.message || "Error al cambiar la contraseña");
+  }
+};
+
+
 
   return (
     <div className="flex justify-center my-4">
@@ -57,7 +98,7 @@ const ChangePassword = () => {
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-neutro-light first-letter:border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               required
             />
           </div>
@@ -70,7 +111,7 @@ const ChangePassword = () => {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-ICE focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               required
             />
           </div>
@@ -113,4 +154,3 @@ const ChangePassword = () => {
 };
 
 export default ChangePassword;
-
