@@ -2,8 +2,12 @@
 
 import React, { useState, FormEvent } from "react";
 import { Button } from "../ui/button";
+import { useAuth } from "@/context/Auth"; // Ajusta la ruta según tu proyecto
+import { changePasswordHelper } from "@/components/ProfileUser/changePasswordHelper";
 
 const ChangePassword = () => {
+  const { user } = useAuth();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -11,7 +15,7 @@ const ChangePassword = () => {
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  const handleChangePassword = (e: FormEvent) => {
+  const handleChangePassword = async (e: FormEvent) => {
     e.preventDefault();
     setPasswordError(null);
     setPasswordSuccess(null);
@@ -25,16 +29,27 @@ const ChangePassword = () => {
       return;
     }
 
-    // Aquí harías la llamada a la API para cambiar la contraseña
-    console.log("Cambiando contraseña", { currentPassword, newPassword });
+    if (!user?.token) {
+      setPasswordError("Usuario no autenticado.");
+      return;
+    }
 
-    setPasswordSuccess("¡Contraseña cambiada exitosamente!");
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmNewPassword("");
-    setShowChangePassword(false);
+    try {
+      await changePasswordHelper(
+        { currentPassword, newPassword, confirmNewPassword },
+        user.token
+      );
 
-    setTimeout(() => setPasswordSuccess(null), 3000);
+      setPasswordSuccess("¡Contraseña cambiada exitosamente!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setShowChangePassword(false);
+
+      setTimeout(() => setPasswordSuccess(null), 3000);
+    } catch (error: any) {
+      setPasswordError(error.message || "Error al cambiar la contraseña");
+    }
   };
 
   return (
@@ -49,7 +64,10 @@ const ChangePassword = () => {
       ) : (
         <form onSubmit={handleChangePassword} className="space-y-4 w-full max-w-md">
           <div>
-            <label htmlFor="currentPassword" className="block text-sm text-center font-medium text-neutro-dark mb-1">
+            <label
+              htmlFor="currentPassword"
+              className="block text-sm text-center font-medium text-neutro-dark mb-1"
+            >
               Contraseña Actual
             </label>
             <input
@@ -57,12 +75,15 @@ const ChangePassword = () => {
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-neutro-light first-letter:border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               required
             />
           </div>
           <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-center text-neutro-dark mb-1">
+            <label
+              htmlFor="newPassword"
+              className="block text-sm font-medium text-center text-neutro-dark mb-1"
+            >
               Nueva Contraseña
             </label>
             <input
@@ -70,12 +91,15 @@ const ChangePassword = () => {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-ICE focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+              className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               required
             />
           </div>
           <div>
-            <label htmlFor="confirmNewPassword" className="block text-sm font-medium text-center text-neutro-dark mb-1">
+            <label
+              htmlFor="confirmNewPassword"
+              className="block text-sm font-medium text-center text-neutro-dark mb-1"
+            >
               Confirmar Nueva Contraseña
             </label>
             <input
@@ -113,4 +137,3 @@ const ChangePassword = () => {
 };
 
 export default ChangePassword;
-
