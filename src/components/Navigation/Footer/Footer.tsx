@@ -85,7 +85,7 @@ const showFullFooter = !(
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary">
+                <Link href="/politicas" className="hover:text-primary">
                   Política de privacidad
                 </Link>
               </li>
