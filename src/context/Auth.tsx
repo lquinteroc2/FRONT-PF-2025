@@ -28,7 +28,6 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
 
 useEffect(() => {
   const storedUser = localStorage.getItem("loginUser");
-  console.log("🗄️ Usuario cargado desde localStorage:", storedUser);
   if (storedUser) {
     setUser(JSON.parse(storedUser));
   }

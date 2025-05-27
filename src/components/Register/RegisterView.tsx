@@ -33,7 +33,12 @@ const RegisterView = () => {
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.5, ease: 'easeOut' }}>
-                <p className="text-2xl font-bold mb-12">Formulario de Registro</p>
+                        <div className="w-full max-w-md space-y-8 mb-12">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-neutro-dark">Formulario de Registro</h2>
+            <p className="mt-2 text-sm text-gray-600">Únete a Séntia y comienza tu viaje emocional</p>
+          </div>
+          </div>
 
                 <Formik<IUserDto>
                     initialValues={{
