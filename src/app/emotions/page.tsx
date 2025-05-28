@@ -1,9 +1,12 @@
-import EmotionsHistoryUser from '@/components/Emotion/EmotionsHistoryUser'
+import PuntajesEmotionsDaily from '@/components/Emotion/PuntajesEmotionsDaily'
+import PuntajesEmotionsWeekly from '@/components/Emotion/PuntajesEmotionsWeekly'
 
 const Emotionspage = () => {
   return (
     <div>
-      <EmotionsHistoryUser />
+            
+            <PuntajesEmotionsDaily/>
+            <PuntajesEmotionsWeekly/>
     </div>
   )
 }

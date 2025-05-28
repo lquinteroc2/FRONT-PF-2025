@@ -1,20 +1,8 @@
-import CallToAction from "@/components/Landing/call-to-action";
-import Features from "@/components/Landing/features";
-import Footer from "@/components/Navigation/Footer/Footer";
-import Hero from "@/components/Landing/hero";
-import HowItWorks from "@/components/Landing/how-it-works";
-import Testimonials from "@/components/Landing/testimonials";
+import LandingView from "@/components/Landing/landing-view";
 
-
-export default function Home() {
+export default function Landing() {
+ 
   return (
-    <main className="min-h-screen">
-      <Hero />
-      <Features />
-      <HowItWorks />
-      <Testimonials />
-      <CallToAction />
-      <Footer />
-    </main>
+   <LandingView/>
   );
 }

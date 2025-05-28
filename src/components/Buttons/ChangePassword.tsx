@@ -69,6 +69,7 @@ const handleChangePassword = async (e: FormEvent) => {
     setShowChangePassword(false);
 
     setTimeout(() => setPasswordSuccess(null), 3000);
+    alert("Cambio de Contraseña Exitoso")
   } catch (error: any) {
     // Aquí mostramos el error completo para más detalle
     console.error("Error al cambiar contraseña:", error);
