@@ -164,7 +164,7 @@ export default function HelpCenterPage() {
                             {point.description || "Sin descripción"}
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent>
+                        <TooltipContent className="max-w-xs whitespace-pre-line break-words">
                           <p>{point.description}</p>
                         </TooltipContent>
                       </Tooltip>
@@ -197,14 +197,6 @@ export default function HelpCenterPage() {
           </TableBody>
         </Table>
       </div>
-
-      {/* {isCreateModalOpen && (
-        <CreateHelpCenterModal open={isCreateModalOpen} onClose={handleModalClose} />
-      )}
-
-      {isEditModalOpen && editingHelpPoint && (
-        <EditHelpCenterModal open={isEditModalOpen} resource={editingHelpPoint} onClose={handleModalClose} />
-      )} */}
     </motion.div>
   )
 }
