@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-type PuntajeResponse = {
+export type PuntajeResponse = {
   puntajes: number[],
   desde: string,
   hasta: string,
@@ -8,6 +8,8 @@ type PuntajeResponse = {
   total: number,
   IEG: number,
   interpretacion: string
+  consejo: string
+ accion: string
 }
 
 export async function PuntajesWeeklyHelper(id: string, token: string): Promise<PuntajeResponse> {

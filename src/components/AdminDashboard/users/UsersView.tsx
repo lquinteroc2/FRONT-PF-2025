@@ -14,7 +14,9 @@ import { User, UserRole } from "@/lib/types"
 import UserForm from "@/components/AdminDashboard/users/UsersComponent"
 import UserActions from "@/components/AdminDashboard/users/User-actions"
 import { useAuth } from "@/context/Auth"
-import { usersHelper } from "@/components/AdminDashboard/users/Users-helper"
+import { updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
+import { adminEditUserHelper, AdminUpdateUserData, profileEditHelper, UpdateUserData } from "@/components/ProfileUser/profileEditHelper"
+import Cookies from "js-cookie"
 
 
 export default function UsersPageView() {
@@ -22,40 +24,90 @@ export default function UsersPageView() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all")
-  const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [statusFilter, setStatusFilter] = useState<"all" | "Activo" | "Inactivo">("all")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const { user } = useAuth()
+  const [totalPages, setTotalPages] = useState<number>(1)
+  const [currentPage, setCurrentPage] = useState(1)
+  const usersPerPage = 999
 
+const mapStatusToAPI = (filter: string ): "Activo" | "Inactivo" | "all" => {
+  switch (filter) {
+    case "Activo":
+      return "Activo";
+    case "Inactivo":
+      return "Inactivo";
+    default:
+      return "all";
+  }
+}
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        if (!user?.token) return
+useEffect(() => {
+  const fetchUsers = async () => {
+    if (!user?.token) return;
 
-        const data = await usersHelper(user.token)
-        setUsers(data)
-      } catch (error) {
-        console.error("Error al obtener usuarios:", error)
-      }
+    
+const params: UserRequestParams = {
+  page: currentPage,
+  limit: usersPerPage,
+  search: searchTerm || undefined,
+  role: roleFilter !== "all" ? roleFilter : undefined,
+  status: mapStatusToAPI(statusFilter),
+};
+    try {
+      console.log("📦 Pidiendo usuarios. Página:", currentPage, "Params:", params);
+
+      const response = await usersHelper(user.token, params);
+
+      console.log("✅ Respuesta recibida:", response);
+      console.log("🧍 Usuarios recibidos:", response.data.length);
+
+      setUsers(response.data);
+      console.log(setUsers)
+      setTotalPages(response.totalPages || 1);
+
+    } catch (error) {
+      console.error("❌ Error al obtener usuarios:", error);
     }
+  };
 
-    fetchUsers()
-  }, [user])
-
-
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-
-    const matchesRole = roleFilter === "all" || user.role === roleFilter
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter
-
-    return matchesSearch && matchesRole && matchesStatus
-  })
+  fetchUsers();
+}, [user, currentPage, searchTerm, roleFilter, statusFilter]);
 
 
+
+useEffect(() => {
+
+  console.log("🔁 Página actual:", currentPage);
+  console.log("📄 Usuarios paginados (estado actualizado):", users);
+}, [users, currentPage]);
+  
+const filteredUsers = users.filter((user) => {
+  const matchesSearch =
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+  const matchesRole =
+    roleFilter === "all" || user.role === roleFilter;
+
+  const mappeStatusFilter = mapStatusToAPI(statusFilter)
+
+  const matchesStatus =
+    mappeStatusFilter  === "all" || user.status === mappeStatusFilter;
+
+  return matchesSearch && matchesRole && matchesStatus;
+});
+
+useEffect(() => {
+  setCurrentPage(1)
+}, [searchTerm, roleFilter, statusFilter])
+
+useEffect(() => {
+  console.log("Página actual:", currentPage)
+  console.log("Usuarios paginados:", filteredUsers)
+}, [currentPage, filteredUsers])
+  
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("es-ES", {
       day: "numeric",
@@ -81,9 +133,9 @@ export default function UsersPageView() {
       case UserRole.ADMIN:
         return "Administrador"
       case UserRole.PREMIUM:
-        return "premium"
+        return "Premium"
       case UserRole.FREE:
-        return "free"
+        return "Free"
       default:
         return role
     }
@@ -99,41 +151,57 @@ export default function UsersPageView() {
     setIsDialogOpen(true)
   }
 
-  const handleSubmitUser = async (userData: Partial<User>) => {
-    setIsLoading(true)
+const handleSubmitUser = async (userData: Partial<User>) => {
 
-    try {
-      // Simular llamada a API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      if (editingUser) {
-        // Actualizar usuario existente
-        setUsers((prev) =>
-          prev.map((user) => (user.id === editingUser.id ? { ...user, ...userData, updatedAt: new Date() } : user)),
-        )
-        toast.success("Usuario actualizado correctamente")
-      } else {
-        // Crear nuevo usuario
-        const newUser: User = {
-          ...(userData as User),
-          status: "active",
-          createdAt: new Date().toISOString(),
-        }
-        setUsers((prev) => [...prev, newUser])
-        toast.success("Usuario creado correctamente")
-      }
-
-      setIsDialogOpen(false)
-    } catch (error) {
-      toast.error("Error al guardar el usuario")
-    } finally {
-      setIsLoading(false)
-    }
+  if (!userData.id || !user?.token) {
+    console.error("Datos incompletos para actualizar el usuario");
+    toast.error("No se puede actualizar el usuario. Datos incompletos.");
+    return;
   }
 
+  setIsLoading(true);
+
+  try {
+    const updateData: Partial<User> = {};
+
+    if (userData.name && userData.name.trim() !== "") updateData.name = userData.name;
+    if (userData.email && userData.email.trim() !== "") updateData.email = userData.email;
+    if (userData.address && userData.address.trim() !== "") updateData.address = userData.address;
+    if (userData.profileImage && userData.profileImage.trim() !== "") updateData.profileImage = userData.profileImage;
+    if (userData.role && userData.role.trim() !== "") updateData.role = userData.role;
+    if (userData.status && userData.status.trim() !== "") updateData.status = userData.status;
+
+    const updatedUser = await updateUserHelper(
+      userData.id,
+      user.token,
+      updateData
+    );
+
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
+    );
+
+    alert("Cambios realizados con éxito");
+    setTimeout(() => {
+    window.location.reload();
+   }, 500); 
+    setIsDialogOpen(false);
+    
+  } catch (error: any) {
+    console.error("Error al actualizar usuario:", error);
+    toast.error("Error al actualizar el usuario");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
+
   const handleDeleteUser = async (userId: string) => {
+      setIsLoading(true)
     try {
-      // Simular llamada a API
+
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       setUsers((prev) => prev.filter((user) => user.id !== userId))
@@ -143,24 +211,43 @@ export default function UsersPageView() {
     }
   }
 
-  const handleToggleUserStatus = async (userId: string, newStatus: "active" | "inactive") => {
-    try {
-      // Simular llamada a API
-      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      setUsers((prev) =>
-        prev.map((user) => (user.id === userId ? { ...user, status: newStatus, updatedAt: new Date() } : user)),
-      )
-      toast.success(`Usuario ${newStatus === "active" ? "activado" : "desactivado"} correctamente`)
-    } catch (error) {
-      toast.error("Error al cambiar el estado del usuario")
+const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Inactivo") => {
+  
+  try {
+    const cookieValue = Cookies.get("loginUser")
+    const parsed = cookieValue ? JSON.parse(cookieValue) : null
+    const token = parsed?.token || ""
+
+    if (!token) {
+      toast.error("Token no encontrado. Inicia sesión nuevamente.")
+      return
     }
-  }
 
-  const handleViewProfile = (userId: string) => {
-    // Implementar navegación al perfil del usuario
-    toast.info(`Ver perfil del usuario ${userId}`)
+    console.log("Datos enviados a userStatusHelper:", {
+  id: userId,
+  token: token,
+  data: newStatus,
+});
+    await userStatusHelper(userId, newStatus, token)
+
+    setUsers((prev) =>
+      prev.map((user) =>
+        user.id === userId ? { ...user, status: newStatus, updatedAt: new Date() } : user
+      )
+    )
+    toast.success(`Usuario ${newStatus === "Activo" ? "activado" : "desactivado"} correctamente`)
+       setTimeout(() => {
+    window.location.reload();
+   }, 500); 
+    setIsDialogOpen(false);
+
+  } catch (error) {
+    toast.error("Error al cambiar el estado del usuario")
+    console.error(error)
   }
+}
+
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false)
@@ -187,22 +274,22 @@ export default function UsersPageView() {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Buscar usuarios..."
+            placeholder="Buscar por nombre o email..."
             className="pl-8 w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Select
-            value={roleFilter}
-            onValueChange={(value) => {
-              if (value === "all") {
-                setRoleFilter("all")
-              } else if (isUserRole(value)) {
-                setRoleFilter(value)
-              }
-            }}
-          >
+           <Select
+          value={roleFilter}
+          onValueChange={(value) => {
+            if (value === "all") {
+              setRoleFilter("all")
+            } else if (isUserRole(value)) {
+              setRoleFilter(value)
+            }
+          }}
+        >
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Filtrar por rol" />
           </SelectTrigger>
@@ -213,14 +300,18 @@ export default function UsersPageView() {
             <SelectItem value={UserRole.FREE}>Gratuito</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value)}>
+
+        <Select
+          value={statusFilter}
+          onValueChange={(value) => setStatusFilter(value as "all" | "Activo" | "Inactivo")}
+        >
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Filtrar por estado" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos los estados</SelectItem>
-            <SelectItem value="active">Activo</SelectItem>
-            <SelectItem value="inactive">Inactivo</SelectItem>
+            <SelectItem value="Activo">Activo</SelectItem>
+            <SelectItem value="Inactivo">Inactivo</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -232,7 +323,7 @@ export default function UsersPageView() {
               <TableHead>Usuario</TableHead>
               <TableHead>Rol</TableHead>
               <TableHead>Estado</TableHead>
-              <TableHead className="w-[50px]"></TableHead>
+              <TableHead className="w-[50px]">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -259,21 +350,20 @@ export default function UsersPageView() {
                   </TableCell>
                   <TableCell>{getRoleLabel(user.role as UserRole)}</TableCell>
                   <TableCell>
-                    <div
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        user.status === "active" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                      }`}
-                    >
-                      {user.status === "active" ? "Activo" : "Inactivo"}
-                    </div>
+                <div
+  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+    user.status === "Activo" ? "bg-primary text-neutro-dark" : "bg-neutro-dark text-neutro-ice"
+  }`}
+>
+  {user.status === "Activo" ? "Activo" : "Inactivo"}
+</div>
+
                   </TableCell>
                   <TableCell>
                     <UserActions
                       user={user}
                       onEdit={handleEditUser}
-                      onDelete={handleDeleteUser}
                       onToggleStatus={handleToggleUserStatus}
-                      onViewProfile={handleViewProfile}
                     />
                   </TableCell>
                 </TableRow>
@@ -281,6 +371,7 @@ export default function UsersPageView() {
             )}
           </TableBody>
         </Table>
+
       </div>
 
       {/* Diálogo para crear/editar usuario */}

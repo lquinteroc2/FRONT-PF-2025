@@ -88,8 +88,6 @@ const handleSaveField = (field: keyof UserData) => async (newValue: string) => {
   }
 };
 
-
-
 const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
   if (file && user && setUser) {
@@ -196,11 +194,25 @@ const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
                 </div>
 
                 {/* Badge premium */}
-                {user?.user.role === "premium" && (
-                  <div className="mt-4 px-3 py-1 bg-primary text-white text-sm rounded-full shadow-sm">
-                    Usuario Premium
-                  </div>
-                )}
+{user?.user.role === "premium" && (user?.user?.subscription?.length ?? 0) > 0  && (
+  <div className="mt-4 px-3 py-1 bg-primary text-white text-sm rounded-full shadow-sm">
+    Usuario Premium
+  </div>
+)}
+    <div className="text-xs mt-1">
+{user?.user?.subscription?.[0]?.startDate ? (
+  <>
+    Inicio: {new Date(user.user.subscription[0].startDate).toLocaleDateString("es-ES")}
+    {" | "}
+  </>
+) : null}
+{user?.user?.subscription?.[0]?.endDate ? (
+  <>
+    Fin: {new Date(user.user.subscription[0].endDate).toLocaleDateString("es-ES")}
+  </>
+) : null}
+
+    </div>
               </div>
             </div>
 

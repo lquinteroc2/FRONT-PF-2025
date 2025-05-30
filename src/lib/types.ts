@@ -22,9 +22,9 @@ export enum FileExtension {
 }
 
 export enum UserRole {
-  FREE = "FREE",
-  PREMIUM = "PREMIUM",
-  ADMIN = "ADMIN",
+  FREE = "free",
+  PREMIUM = "premium",
+  ADMIN = "admin",
 }
 
 // Interfaces
@@ -42,7 +42,7 @@ export interface User {
   profileImage?: string;
   address?: string;
   role: string;
-  status: "active" | "inactive";
+  status: "Activo" | "Inactivo";
   createdAt?: string;
   subscription?: Subscription[];  
 }
