@@ -10,6 +10,7 @@ import ClientNavbar from "@/components/Navigation/ClientNavbar";
 import { AuthProvider } from "@/context/Auth";
 import ClientLayoutWrapper from "@/components/Navigation/ClientLayoutWrapper";
 import { authOptions } from "@/lib/authOptions";
+import GlobalChatbot from "@/components/Navigation/ChatBotGeminiAI";
 
 
 const geistSans = Geist({
@@ -42,6 +43,14 @@ export default async function RootLayout({
 
   return (
     <html lang="es">
+       <head>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossOrigin=""
+        />
+      </head>
       <body
         className={` ${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}
       >  
@@ -50,9 +59,9 @@ export default async function RootLayout({
           <ClientNavbar />
           <ClientLayoutWrapper>
        <main className="flex-grow flex flex-col ">
-        {/* Aquí van los hijos de la página */}
         {children}
-      </main>
+       </main>
+          <GlobalChatbot />
           </ClientLayoutWrapper>
         </AuthProviderGoogle>
         <ClientFooter />

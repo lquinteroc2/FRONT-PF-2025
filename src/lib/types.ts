@@ -127,3 +127,21 @@ export type Props = {
   resource: Resource
   onClose: () => void
 }
+
+
+export interface HelpCenterData {
+  id: string
+  name: string
+  description: string
+  contact: string
+  category: string
+  address: string
+  city: string
+  country: string
+  coordinates: {
+    type: "Point"
+    coordinates: [number, number] // [longitude, latitude]
+  }
+  createdAt: Date
+  updatedAt: Date
+}
