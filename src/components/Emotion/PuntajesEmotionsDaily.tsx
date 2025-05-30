@@ -7,15 +7,8 @@ import {
 } from 'recharts'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/context/Auth'
-import { PuntajesDailyHelper } from './emotionsPuntajesHelper'
+import { PuntajeResponse, PuntajesDailyHelper } from './emotionsPuntajesHelper'
 
-type PuntajeData = {
- puntajes: number[],
- desde: string,
- hasta: string,
- IEG: number,
- interpretacion: string
-}
 
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
  if (active && payload && payload.length) {
@@ -56,7 +49,7 @@ const getInterpretationStyle = (interpretation: string) => {
 };
 
 export default function PuntajesEmotionsDaily() {
- const [data, setData] = useState<PuntajeData | null>(null)
+ const [data, setData] = useState<PuntajeResponse | null>(null)
  const [isLoading, setIsLoading] = useState(true);
  const { user } = useAuth()
 
@@ -157,62 +150,81 @@ const generateChartData = () => {
    className="w-full max-w-3xl mt-24 mx-auto p-6 bg-neutro-light rounded-2xl shadow-xl space-y-6 border border-neutro"
   >
    <motion.h2 variants={itemVariants} className="text-2xl font-bold text-primary">
-    Bitacora Emocional Diaria
+    Analisis Diario
    </motion.h2>
 
    <motion.div variants={itemVariants} className="h-64 w-full">
-    {chartData.length > 0 ? (
-     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-       <defs>
-        <linearGradient id="colorPuntaje" x1="0" y1="0" x2="0" y2="1">
-         <stop offset="5%" stopColor={`${(interpretationStyle.dotColor === 'bg-primary') ? '#ccfbf1' : '#f3f4f6'}`} stopOpacity={0.8} />
-         <stop offset="95%" stopColor={`${interpretationStyle.dotColor.replace('bg-', '#')}`} stopOpacity={0.2} />
-        </linearGradient>
-       </defs>
-       <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
-       <XAxis dataKey="dia" stroke="#4b5563" fontSize={12} />
-       <YAxis stroke="#4b5563" fontSize={12} />
-       <Tooltip content={<CustomTooltip />} />
-       <Area
-       type="monotone"
-       dataKey="puntaje"
-       stroke="#16a34a" // verde oscuro (primary-dark)
-       strokeWidth={2.5}
-       fillOpacity={1}
-       fill="url(#colorPuntaje)"
-    />
-      </AreaChart>
-     </ResponsiveContainer>
-    ) : (
-     <div className="flex items-center justify-center h-full">
-      <p className="text-neutro-dark">No hay suficientes datos para mostrar la gráfica.</p>
+       {chartData.length > 0 ? (
+        <ResponsiveContainer width="100%" height="100%">
+         <AreaChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+          <defs>
+           <linearGradient id="colorPuntaje" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor={`${(interpretationStyle.dotColor === 'bg-primary') ? '#ccfbf1' : '#f3f4f6'}`} stopOpacity={0.8} />
+            <stop offset="95%" stopColor={`${interpretationStyle.dotColor.replace('bg-', '#')}`} stopOpacity={0.2} />
+           </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
+          <XAxis dataKey="dia" stroke="#4b5563" fontSize={12} />
+          <YAxis stroke="#4b5563" fontSize={12} />
+          <Tooltip content={<CustomTooltip />} />
+          <Area
+          type="monotone"
+          dataKey="puntaje"
+          stroke="#16a34a" // verde oscuro (primary-dark)
+          strokeWidth={2.5}
+          fillOpacity={1}
+          fill="url(#colorPuntaje)"
+       />
+         </AreaChart>
+        </ResponsiveContainer>
+       ) : (
+        <div className="flex items-center justify-center h-full">
+         <p className="text-neutro-dark">No hay suficientes datos para mostrar la gráfica.</p>
+        </div>
+       )}
+      </motion.div>
+   
+      <motion.div
+     variants={itemVariants}
+     className="bg-white p-5 rounded-xl shadow-md border border-neutro-dark/80"
+   >
+     <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left md:space-x-6">
+       {/* Bloque Izquierdo: IEG */}
+       <div className="flex-shrink-0 mb-4 md:mb-0">
+         <p className="text-sm font-medium text-neutro-dark">Tu Índice General</p>
+         <p className="text-6xl font-bold text-primary tracking-tight shadow-sm">
+           {data.IEG.toFixed(1)}
+         </p>
+       </div>
+   
+       {/* Bloque Derecho: Interpretación */}
+       <div className={`flex-grow p-4 rounded-lg ${interpretationStyle.bgColor}`}>
+         <div className="flex items-center justify-center md:justify-start space-x-3">
+           <span className={`h-3 w-3 rounded-full ${interpretationStyle.dotColor}`}></span>
+           <h4 className={`text-lg font-semibold ${interpretationStyle.textColor}`}>
+             {interpretationStyle.title}
+           </h4>
+         </div>
+         <p className={`mt-1 text-sm ${interpretationStyle.textColor}`}>
+           {data.interpretacion}
+         </p>
+       </div>
      </div>
-    )}
+   
+     {/* Sección Inferior: Consejo y Acción */}
+     <div className="mt-6 border-t border-gray-200 pt-4 text-center md:text-left">
+       <p className="text-sm text-gray-600">
+         <span className="font-semibold text-neutro-dark">Consejo: </span>
+         {data.consejo}
+       </p>
+       <p className="text-sm text-gray-600 mt-2">
+         <span className="font-semibold text-neutro-dark">Acción sugerida: </span>
+         {data.accion}
+       </p>
+     </div>
    </motion.div>
 
-   <motion.div variants={itemVariants} className={`bg-white p-5 rounded-xl shadow-md border border-neutro-dark/80`}>
-    <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left md:space-x-6">
-     <div className="flex-shrink-0 mb-4 md:mb-0">
-      <p className="text-sm font-medium text-neutro-dark">Tu Índice General</p>
-      <p className="text-6xl font-bold text-primary tracking-tight shadow-sm">
-       {data.IEG.toFixed(1)}
-      </p>
-     </div>
 
-     <div className={`flex-grow p-4 rounded-lg ${interpretationStyle.bgColor}`}>
-      <div className="flex items-center justify-center md:justify-start space-x-3">
-       <span className={`h-3 w-3 rounded-full ${interpretationStyle.dotColor}`}></span>
-       <h4 className={`text-lg font-semibold ${interpretationStyle.textColor}`}>
-        {interpretationStyle.title}
-       </h4>
-      </div>
-      <p className={`mt-1 text-sm ${interpretationStyle.textColor}`}>
-       {data.interpretacion}
-      </p>
-     </div>
-    </div>
-   </motion.div>
   </motion.div>
  )
 }

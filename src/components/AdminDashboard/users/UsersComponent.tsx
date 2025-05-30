@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,18 +9,18 @@ import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Upload, X } from "lucide-react"
 import { User, UserRole } from "@/lib/types"
-
+import { useAuth } from "@/context/Auth"
 
 
 interface UserFormProps {
-  user?: User | null 
+  user?: User | null
   onSubmit: (userData: Partial<User>) => Promise<void>
   onCancel: () => void
   isLoading?: boolean
   mode: "create" | "edit"
 }
 
-export default function UserForm({ user, onSubmit, onCancel, isLoading = false, mode }: UserFormProps) {
+export default function UserForm({ user: editingUser, onSubmit, onCancel, isLoading = false, mode }: UserFormProps) {
   const [formData, setFormData] = useState<Partial<User>>({
     name: "",
     email: "",
@@ -30,18 +28,18 @@ export default function UserForm({ user, onSubmit, onCancel, isLoading = false, 
     profileImage: "",
     role: UserRole.FREE,
   })
-  const [confirmPassword, setConfirmPassword] = useState("")
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [imagePreview, setImagePreview] = useState<string>("")
+  const { user } = useAuth()
 
   useEffect(() => {
-    if (user && mode === "edit") {
+    if (editingUser && mode === "edit") {
       setFormData({
-        ...user,
+        ...editingUser,
       })
-      setImagePreview(user.profileImage || "")
+      setImagePreview(editingUser.profileImage || "")
     }
-  }, [user, mode])
+  }, [editingUser, mode])
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {}
@@ -64,25 +62,36 @@ export default function UserForm({ user, onSubmit, onCancel, isLoading = false, 
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+   const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
-    if (!validateForm()) {
-      return
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name || formData.name.trim() === "") {
+      newErrors.name = "El nombre es obligatorio";
+    }
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email inválido";
+    }
+    if (!formData.role || formData.role.trim() === "") {
+      newErrors.role = "El rol es obligatorio";
     }
 
-    const submitData = { ...formData }
+    setErrors(newErrors);
 
-    try {
-      await onSubmit(submitData)
-    } catch (error) {
-      console.error("Error al guardar usuario:", error)
+    if (Object.keys(newErrors).length > 0) {
+      return; // Hay errores, no continuar
     }
-  }
+
+    // Si está todo ok, llamamos al onSubmit que viene de afuera (tu handleUpdateUser)
+    onSubmit(formData);
+  };
 
   const handleInputChange = (field: keyof User, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    // Limpiar error del campo cuando el usuario empiece a escribir
+    // Para role, que es enum, casteamos a UserRole
+    const newValue = field === "role" ? (value as UserRole) : value
+
+    setFormData((prev) => ({ ...prev, [field]: newValue }))
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }))
     }
@@ -177,7 +186,7 @@ export default function UserForm({ user, onSubmit, onCancel, isLoading = false, 
         {/* Rol */}
         <div className="space-y-2">
           <Label htmlFor="role">Rol *</Label>
-          <Select value={formData.role} onValueChange={(value) => handleInputChange("role", value)}>
+          <Select value={formData.role || ""} onValueChange={(value) => handleInputChange("role", value)}>
             <SelectTrigger className={errors.role ? "border-red-500" : ""}>
               <SelectValue placeholder="Selecciona un rol" />
             </SelectTrigger>
@@ -208,9 +217,9 @@ export default function UserForm({ user, onSubmit, onCancel, isLoading = false, 
         <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
           Cancelar
         </Button>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Guardando..." : mode === "create" ? "Crear Usuario" : "Actualizar Usuario"}
-        </Button>
+<Button type="submit">
+  Guardar
+</Button>
       </div>
     </form>
   )

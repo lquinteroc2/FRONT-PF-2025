@@ -31,7 +31,9 @@ const LoginView = () => {
       setUser({ token, user });
       resetForm();
       setSubmitting(false);
-      router.push('/home');  
+      setTimeout(() => {
+    router.push('/home');
+  }, 2000);
 };
 
 return (
