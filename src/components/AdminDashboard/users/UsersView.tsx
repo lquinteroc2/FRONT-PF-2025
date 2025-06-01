@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, UserPlus } from "lucide-react"
-import { toast } from "sonner"
 import { User, UserRole } from "@/lib/types"
 import UserForm from "@/components/AdminDashboard/users/UsersComponent"
 import UserActions from "@/components/AdminDashboard/users/User-actions"
@@ -17,6 +16,7 @@ import { useAuth } from "@/context/Auth"
 import { updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
 import { adminEditUserHelper, AdminUpdateUserData, profileEditHelper, UpdateUserData } from "@/components/ProfileUser/profileEditHelper"
 import Cookies from "js-cookie"
+import { useToast } from "@/components/ui/use-toast"
 
 
 export default function UsersPageView() {
@@ -31,6 +31,7 @@ export default function UsersPageView() {
   const [totalPages, setTotalPages] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState(1)
   const usersPerPage = 999
+  const { toast } = useToast()
 
 const mapStatusToAPI = (filter: string ): "Activo" | "Inactivo" | "all" => {
   switch (filter) {
@@ -155,7 +156,11 @@ const handleSubmitUser = async (userData: Partial<User>) => {
 
   if (!userData.id || !user?.token) {
     console.error("Datos incompletos para actualizar el usuario");
-    toast.error("No se puede actualizar el usuario. Datos incompletos.");
+    toast({
+        title: "Error",
+        description: "No se puede actualizar el usuario. Datos incompletos.",
+        variant: "destructive",
+      })
     return;
   }
 
@@ -181,7 +186,10 @@ const handleSubmitUser = async (userData: Partial<User>) => {
       prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
     );
 
-    alert("Cambios realizados con éxito");
+    toast({
+        title: "Éxito",
+        description: "Cambios realizados con éxito",
+      })
     setTimeout(() => {
     window.location.reload();
    }, 500); 
@@ -189,7 +197,11 @@ const handleSubmitUser = async (userData: Partial<User>) => {
     
   } catch (error: any) {
     console.error("Error al actualizar usuario:", error);
-    toast.error("Error al actualizar el usuario");
+    toast({
+        title: "Error",
+        description: "Error al actualizar el usuario",
+        variant: "destructive",
+      })
   } finally {
     setIsLoading(false);
   }
@@ -205,9 +217,16 @@ const handleSubmitUser = async (userData: Partial<User>) => {
       await new Promise((resolve) => setTimeout(resolve, 500))
 
       setUsers((prev) => prev.filter((user) => user.id !== userId))
-      toast.success("Usuario eliminado correctamente")
+      toast({
+        title: "Usuario eliminado",
+        description: "Usuario eliminado correctamente",
+      })
     } catch (error) {
-      toast.error("Error al eliminar el usuario")
+      toast({
+        title: "Error",
+        description: "Error al eliminar el usuario",
+        variant: "destructive",
+      })
     }
   }
 
@@ -220,7 +239,11 @@ const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Ina
     const token = parsed?.token || ""
 
     if (!token) {
-      toast.error("Token no encontrado. Inicia sesión nuevamente.")
+        toast({
+          title: "Error",
+          description: "Token no encontrado. Inicia sesión nuevamente.",
+          variant: "destructive",
+        })
       return
     }
 
@@ -236,14 +259,21 @@ const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Ina
         user.id === userId ? { ...user, status: newStatus, updatedAt: new Date() } : user
       )
     )
-    toast.success(`Usuario ${newStatus === "Activo" ? "activado" : "desactivado"} correctamente`)
+      toast({
+        title: `Usuario ${newStatus === "Activo" ? "activado" : "desactivado"}`,
+        description: `Usuario ${newStatus === "Activo" ? "activado" : "desactivado"} correctamente`,
+      })
        setTimeout(() => {
     window.location.reload();
    }, 500); 
     setIsDialogOpen(false);
 
   } catch (error) {
-    toast.error("Error al cambiar el estado del usuario")
+      toast({
+        title: "Error",
+        description: "Error al cambiar el estado del usuario",
+        variant: "destructive",
+      })
     console.error(error)
   }
 }

@@ -29,7 +29,6 @@ const emotionCreateHelper = async (
     });
 
     if (!isValidUUID(data.emotionId) || !isValidUUID(data.userId)) {
-      alert("❌ El ID de usuario o emoción no tiene un formato UUID válido.");
       throw new Error("UUID inválido");
     }
 
@@ -54,10 +53,6 @@ const emotionCreateHelper = async (
 
     return { emotion, createdAt };
   } catch (error: any) {
-    alert(
-      "❌ Error al enviar emoción:\n" +
-        JSON.stringify(error.response?.data || error.message, null, 2)
-    );
     throw error;
   }
 };

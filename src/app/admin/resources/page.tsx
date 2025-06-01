@@ -9,7 +9,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -19,6 +18,7 @@ import { FileType, Resource } from "@/lib/types"
 import CreateResourceModal from "@/components/AdminDashboard/resource/modals/CreateResourceModal"
 import EditResourceModal from "@/components/AdminDashboard/resource/modals/EditResourceModal"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function ResourcesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -27,8 +27,9 @@ export default function ResourcesPage() {
   const [resources, setResources] = useState<Resource[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [fileTypeFilter, setFileTypeFilter] = useState<string>("all")
+  const { toast } = useToast()
 
-const fetchResources = async () => {
+ const fetchResources = async () => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
     const data = await response.json()
@@ -94,41 +95,91 @@ const fetchResources = async () => {
   setIsEditModalOpen(true)
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("¿Estás seguro de que quieres eliminar este recurso?")) return
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}`, { method: 'DELETE' })
-      setResources((prev) => prev.filter((res) => res.id !== id))
-    } catch (error) {
-      console.error("Error al eliminar el recurso:", error)
-    }
+const handleDelete = async (id: string) => {
+  const confirmed = confirm("¿Estás seguro de que quieres eliminar este recurso?")
+  if (!confirmed) return
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}`, {
+      method: 'DELETE',
+    })
+
+    if (!res.ok) throw new Error("Falló la eliminación")
+
+    setResources((prev) => prev.filter((res) => res.id !== id))
+
+    toast({
+      title: "Recurso eliminado",
+      description: "El recurso ha sido eliminado exitosamente.",
+      variant: "default",
+    })
+  } catch (error) {
+    console.error("Error al eliminar el recurso:", error)
+    toast({
+      title: "Error al eliminar",
+      description: "Ocurrió un error al intentar eliminar el recurso.",
+      variant: "destructive",
+    })
   }
+}
 
 const toggleShowInSection = async (id: string, show: boolean, section: FileType) => {
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-section/${section}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-section/${section}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ show }),
-    });
-    fetchResources();
+    })
+
+    if (!res.ok) throw new Error("Falló la actualización")
+
+    fetchResources()
+
+    toast({
+      title: `Actualizado en sección`,
+      description: show
+        ? `Recurso ahora visible en la sección ${section}`
+        : `Recurso oculto de la sección ${section}`,
+      variant: "default",
+    })
   } catch (error) {
-    console.error("Error actualizando visibilidad en CardList:", error);
+    console.error("Error actualizando visibilidad en sección:", error)
+    toast({
+      title: "Error al actualizar",
+      description: "No se pudo actualizar la visibilidad del recurso.",
+      variant: "destructive",
+    })
   }
-};
+}
+
 
 const toggleShowInCardList = async (id: string, show: boolean) => {
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-cardlist`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-cardlist`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ show }),
-    });
-    fetchResources();
+    })
+
+    if (!res.ok) throw new Error("Falló la actualización")
+
+    fetchResources()
+
+    toast({
+      title: "Inicio actualizado",
+      description: show ? "Recurso ahora visible en el inicio" : "Recurso ocultado del inicio",
+      variant: "default",
+    })
   } catch (error) {
-    console.error("Error actualizando visibilidad en CardList:", error);
+    console.error("Error actualizando visibilidad en CardList:", error)
+    toast({
+      title: "Error al actualizar",
+      description: "No se pudo actualizar la visibilidad del recurso en el inicio.",
+      variant: "destructive",
+    })
   }
-};
+}
+
 
   return (
     <motion.div

@@ -19,6 +19,7 @@ import {
   isValidExtensionForType,
   isMatchingExtension,
 } from "@/lib/resourcesValidation"
+import { useToast } from "@/components/ui/use-toast";
 
 const ResourceForm: React.FC<ResourceFormProps> = ({
   data,
@@ -27,6 +28,7 @@ const ResourceForm: React.FC<ResourceFormProps> = ({
   isSubmitting = false,
 }) => {
   const [validExtensions, setValidExtensions] = useState<string[]>([])
+  const { toast } = useToast();
 
   useEffect(() => {
     if (data.fileType) {
@@ -45,13 +47,21 @@ const ResourceForm: React.FC<ResourceFormProps> = ({
 
     const extension = getFileExtensionFromName(file.name)
 
-    if (!isValidExtensionForType(data.fileType, extension)) {
-      alert(`El archivo no es válido para el tipo ${data.fileType}. Extensiones permitidas: ${validExtensions.join(", ")}`)
+if (!isValidExtensionForType(data.fileType, extension)) {
+      toast({
+        title: "Archivo inválido",
+        description: `El archivo no es válido para el tipo ${data.fileType}. Extensiones permitidas: ${validExtensions.join(", ")}`,
+        variant: "destructive",
+      })
       return
     }
 
     if (data.fileExtension && !isMatchingExtension(file.name, data.fileExtension)) {
-      alert(`La extensión del archivo no coincide con la seleccionada: ${data.fileExtension}`)
+      toast({
+        title: "Extensión no coincide",
+        description: `La extensión del archivo no coincide con la seleccionada: ${data.fileExtension}`,
+        variant: "destructive",
+      })
       return
     }
 
