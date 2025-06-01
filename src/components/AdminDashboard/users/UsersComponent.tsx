@@ -37,7 +37,11 @@ export default function UserForm({ user: editingUser, onSubmit, onCancel, isLoad
       setFormData({
         ...editingUser,
       })
-      setImagePreview(editingUser.profileImage || "")
+    setImagePreview(
+  typeof editingUser.profileImage === "string"
+    ? editingUser.profileImage
+    : "" // o una URL temporal si es File, o "" si no tienes nada
+);
     }
   }, [editingUser, mode])
 

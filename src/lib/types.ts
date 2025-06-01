@@ -39,7 +39,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  profileImage?: string;
+  profileImage?: string | File;
   address?: string;
   role: string;
   status: "Activo" | "Inactivo";

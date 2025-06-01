@@ -29,7 +29,7 @@ export default function Navbar() {
     { name: "Contáctanos", href: "/contact-us", showWhen: "always" },
     { name: "Acerca de Nosotros", href: "/aboutUs", showWhen: "always" },
     { name: "Recomendaciones", href: "/recomendaciones", hidden: false, showWhen: "auth" },
-    { name: "Centros de Apoyo", href: "/centrosApoyo", hidden: false, showWhen: "auth" },
+    { name: "Centros de Apoyo", href: "/help-centers", hidden: false, showWhen: "auth" },
     { name: "Registro", href: "/register", hidden: false, showWhen: "noAuth" },
     { name: "Iniciar Sesión", href: "/login", hidden: false, showWhen: "noAuth" },
     {

@@ -7,16 +7,28 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SubscriptionPlans from '../Subscription/SubscriptionPlans';
 import { ChevronDown } from 'lucide-react';
 
+export const AnimatedArrow = () => {
+  const handleClick = () => {
+    const target = document.getElementById("emotion-list");
+    if (target) {
+      const offset = target.getBoundingClientRect().top + window.scrollY - 80; // Ajusta el -80 si quieres más espacio
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    }
+  };
 
-const AnimatedArrow = () => (
-  <motion.div
-  animate={{ y: [0, 10, 0] }}
-  transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-  className="mt-4 text-primary flex justify-center"
->
-  <ChevronDown size={32} strokeWidth={2.5} />
-</motion.div>
-);
+  return (
+    <motion.div
+      onClick={handleClick}
+      animate={{ y: [0, 10, 0] }}
+      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+      whileHover={{ scale: 1.2, filter: "brightness(1.5)" }}
+      className="mt-8 text-primary flex justify-center cursor-pointer"
+    >
+      <ChevronDown size={36} strokeWidth={2.5} />
+    </motion.div>
+  );
+};
+
 
 const EmotionalLogView = () => {
   const { user } = useAuth();
@@ -27,36 +39,52 @@ const EmotionalLogView = () => {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
   return (
-    <div className="p-4 min-h-[60vh] flex flex-col items-center justify-start mt-12 space-y-12">
-      {canAccess ? (
-        <>
-          {/* Título principal */}
-<motion.div
-  initial="hidden"
-  animate="visible"
-  variants={sectionVariants}
-  className="w-full max-w-6xl mx-auto text-center my-48 px-4"
+    <>
+      <motion.div
+  initial={{ opacity: 0, y: 50 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1, ease: "easeOut" }}
+  viewport={{ once: true }}
+  className="w-full max-w-6xl mx-auto text-center mt-56 px-4"
 >
-  <h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight">
-    Bitácora emocional
-  </h1>
-  <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
-    Visualiza tu evolución emocional con resúmenes diarios, semanales y mensuales. 
-    Una herramienta para reflexionar, crecer y encontrar equilibrio.
+  <motion.h1
+    initial={{ opacity: 0, scale: 0.95 }}
+    whileInView={{ opacity: 1, scale: 1 }}
+    transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+    className="text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight drop-shadow-[0_0_15px_rgba(109,40,217,0.4)]"
+  >
+    🧠✨ Bitácora Emocional
+  </motion.h1>
+
+  <motion.p
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+    className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto"
+  >
+    Visualiza tu evolución emocional con resúmenes diarios, semanales y mensuales.
     <br />
-    <br />
-  </p>
-    <AnimatedArrow />
+    Una herramienta para reflexionar, crecer y encontrar equilibrio 🌱
+  </motion.p>
+
+  <AnimatedArrow />
 </motion.div>
 
 
+  <div
+    className="p-4 min-h-[60vh] flex flex-col items-center justify-start selection:space-y-12"
+  ></div>
+    <div 
+    id="emotion-list" className="p-4 min-h-[60vh] flex flex-col items-center justify-start selection:space-y-12">
+      {canAccess ? (
+        <>
           {/* Análisis Diario */}
           <motion.section
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={sectionVariants}
-            className="w-full max-w-4xl text-center space-y-2"
+            className="w-full max-w-4xl text-center space-y-2 mb-8"
           >
             <h2 className="text-xl font-semibold text-neutro-dark">Resumen diario</h2>
             <p className="text-sm text-gray-600">
@@ -71,7 +99,7 @@ const EmotionalLogView = () => {
             whileInView="visible"
             viewport={{ once: true }}
             variants={sectionVariants}
-            className="w-full max-w-4xl text-center space-y-2"
+            className="w-full max-w-4xl text-center space-y-2 mb-8"
           >
             <h2 className="text-xl font-semibold text-neutro-dark">Resumen semanal</h2>
             <p className="text-sm text-gray-600">
@@ -118,6 +146,7 @@ const EmotionalLogView = () => {
         </motion.div>
       )}
     </div>
+    </>
   );
 };
 

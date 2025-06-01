@@ -6,6 +6,7 @@ import emotionHistoryHelper, { RegisteredEmotion } from "./emotionHistoryHelper"
 import { Button } from "../ui/button";
 import SubscriptionPlans from "../Subscription/SubscriptionPlans";
 import { AnimatePresence, motion } from "framer-motion";
+import { AnimatedArrow } from "./EmotionalLogView";
 
 export default function EmotionsHistoryUser() {
   const [emotions, setEmotions] = useState<RegisteredEmotion[]>([]);
@@ -59,6 +60,11 @@ const toggleExpand = (id: string | number) => {
       setIsLoading(false);
     }
   }, [user]); // Dependencia del efecto: el objeto user
+  
+  const sectionVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
 
   // Componente interno para mostrar los puntos de intensidad
   const IntensityDots = ({ level }: { level: number }) => (
@@ -121,106 +127,157 @@ const toggleExpand = (id: string | number) => {
     );
   }
 
- return (
-   <div className="min-h-screen flex items-center justify-center my-0">
-    <div className="w-full p-4 sm:p-6 md:p-8 lg:w-[60%]">
-    <div className="lg:mt-0 sm:mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-neutro-dark">
-          Emociones Registradas
-        </h2>
-      </div>
+return (
+  <div className="px-4">
+    {/* Encabezado principal */}
+<motion.div
+  initial="hidden"
+  animate="visible"
+  variants={sectionVariants}
+  className="min-h-screen w-full max-w-6xl mx-auto text-center flex flex-col items-center justify-center px-4 leading-tight drop-shadow-[0_0_15px_rgba(109,40,217,0.4)]"
+>
+  <motion.h1
+    initial={{ opacity: 0, y: -30 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8, ease: "easeOut" }}
+    className="text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight drop-shadow"
+  >
+    🧠✨ Tu Diario Emocional
+  </motion.h1>
 
-      <ul className="space-y-6">
-        {emotionsToShow.map((e) => (
-          <li
-            key={e.id}
-            className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl group cursor-pointer"
-            onClick={() => toggleExpand(e.id)}
-          >
-            <div className="p-3 sm:p-4">
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full group-hover:bg-primary/20 transition-colors duration-300">
-                  <span className="text-3xl sm:text-4xl">{e.emotion.emoji}</span>
-                </div>
-                <div className="flex-grow min-w-0">
-                  <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-1">
-                    <h3 className="text-xl font-semibold text-neutro-dark group-hover:text-primary-dark transition-colors duration-300 truncate">
-                      {e.emotion.name}
-                    </h3>
-                    <p className="text-xs text-neutro-dark mt-1 sm:mt-0 flex-shrink-0 ml-0 sm:ml-2">
-                      {new Date(e.date || e.createdAt).toLocaleString('es-ES', {
-                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                      })}
-                    </p>
-                    {isFreeUser && emotions.length > maxFreeEmotions && (
-  <div className="mt-4 flex justify-center">
-  </div>
-)}
-                  </div>
+  <motion.p
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+    className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-4"
+  >
+    Aquí verás las emociones que has registrado. Explora lo que sentiste, reflexiona y sigue creciendo 🌱
+    <br/>
+    <br/>
+  </motion.p>
 
-                  <IntensityDots level={e.intensity} />
+  <AnimatedArrow />
+</motion.div>
 
-                  {/* Mostrar comentario solo si está expandido */}
-                  {expandedId === e.id && e.comment && (
-                    <div className="mt-3 text-neutro-dark bg-neutro-light p-3 rounded-md border border-primary text-sm break-words">
-                      <strong className="font-medium text-neutro-dark">Comentario:</strong> {e.comment}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {isFreeUser && emotions.length > maxFreeEmotions && (
-        <div className="mt-4 flex justify-center">
-          <button
-            onClick={handleSeeMoreClick}
-            className="bg-primary text-white px-6 py-2 rounded-lg shadow hover:bg-primary/90 transition"
-          >
-            Ver Todas
-          </button>
 
-          {showSubscriptionPlans && (
-<AnimatePresence>
-    <motion.div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={handleClosePlans}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        className="bg-neutro-light rounded-lg p-6 max-w-lg w-full relative text-neutro-ice"
-        onClick={(e) => e.stopPropagation()}
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -50, opacity: 0 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-      >
-        <button
-          onClick={handleClosePlans}
-          className="absolute top-2 right-2 text-gray-400 hover:text-white"
-          aria-label="Cerrar modal"
+    {/* Lista de emociones */}
+   <ul
+  id="emotion-list"
+  className="space-y-4 max-w-4xl mx-auto w-full px-4 py-12 min-h-[60vh] flex flex-col justify-start"
+>
+
+      {emotionsToShow.map((e) => (
+        <motion.li
+          key={e.id}
+          layout
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+          onClick={() => toggleExpand(e.id)}
+          className="bg-white/60 backdrop-blur-md border border-primary/20 hover:border-primary/40 hover:shadow-xl transition-all duration-300 rounded-xl p-4 cursor-pointer group"
         >
-          ✕
+          <div className="flex items-start gap-3">
+            {/* Emoji */}
+            <div className="text-3xl bg-primary/10 p-3 rounded-full shadow-sm group-hover:bg-primary/20 transition">
+              {e.emotion.emoji}
+            </div>
+
+            {/* Contenido */}
+            <div className="flex-1">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center">
+                <h3 className="text-lg font-semibold text-neutro-dark group-hover:text-primary-dark transition truncate">
+                  {e.emotion.name}
+                </h3>
+                <p className="text-xs text-neutro-dark mt-1 sm:mt-0 sm:ml-2">
+                  {new Date(e.date || e.createdAt).toLocaleString("es-ES", {
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              </div>
+
+              {/* Intensidad */}
+              <div className="mt-2">
+                <IntensityDots level={e.intensity} />
+              </div>
+
+              {/* Comentario expandible */}
+              <AnimatePresence initial={false}>
+                {expandedId === e.id && e.comment && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-3 bg-neutro-light p-3 rounded-md border border-primary/10 text-sm text-neutro-dark shadow-inner">
+                      <div className="font-semibold text-primary-dark mb-1 flex items-center gap-1">
+                        📝 Comentario:
+                      </div>
+                      <p className="leading-relaxed">{e.comment}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </motion.li>
+      ))}
+    </ul>
+
+    {/* Límite para usuarios gratuitos */}
+    {isFreeUser && emotions.length > maxFreeEmotions && (
+      <div className="mt-6 flex flex-col items-center">
+        <p className="text-sm text-neutro-dark mb-3 text-center max-w-md">
+          Solo puedes ver las últimas <strong>{maxFreeEmotions}</strong> emociones con la versión gratuita.
+        </p>
+        <button
+          onClick={handleSeeMoreClick}
+          className="bg-primary text-white px-6 py-2 rounded-lg shadow-md hover:bg-primary/90 transition active:scale-95"
+        >
+          🔓 Ver Todo el Historial
         </button>
-<div className="text-center text-neutro-dark text-lg md:text-xl font-semibold leading-relaxed mb-4">
-  ¡Mejora tu experiencia con <strong className="text-primary">Premium</strong>! <br />
-  Accede a todo tu historial de emociones, recibe análisis personalizados y disfruta de beneficios exclusivos.
-  <br />
-  <span className="mt-2 block text-lg font-semibold text-primary-dark">
-   ¡Suscríbete Ahora!
-  </span>
-</div>
-        <SubscriptionPlans />
-      </motion.div>
-    </motion.div>
-  </AnimatePresence>
-          )}
-        </div>
-      )}
-    </div>
-    </div>
-  );
+
+        {/* Modal de planes de suscripción */}
+        {showSubscriptionPlans && (
+          <AnimatePresence>
+            <motion.div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+              onClick={handleClosePlans}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="bg-neutro-light rounded-2xl p-6 max-w-lg w-full relative text-neutro-ice shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -50, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <button
+                  onClick={handleClosePlans}
+                  className="absolute top-3 right-3 text-gray-400 hover:text-primary-dark text-xl"
+                  aria-label="Cerrar modal"
+                >
+                  ✕
+                </button>
+                <div className="text-center text-neutro-dark text-lg md:text-xl font-semibold leading-relaxed mb-4">
+                  🌟 <strong>¡Mejora tu experiencia con Premium!</strong><br />
+                  Accede a tu historial completo, recibe análisis personalizados y desbloquea más herramientas emocionales.
+                </div>
+                <SubscriptionPlans />
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </div>
+    )}
+  </div>
+);
 }
