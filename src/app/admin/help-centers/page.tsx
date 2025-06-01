@@ -1,283 +1,202 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import dynamic from 'next/dynamic'
-import { motion } from 'framer-motion'
-import { MapPin, Save, Info } from 'lucide-react'
-import 'leaflet/dist/leaflet.css'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Search, FilePlus, MoreHorizontal } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useRouter } from "next/navigation"
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { useToast } from '@/components/ui/use-toast'
 
-const Map = dynamic(() => import('./MapSelector'), { ssr: false })
+interface Coordinates {
+  type: "Point"
+  coordinates: [number, number]
+}
 
-const categories = [
-  { value: 'mental-health', label: 'Salud Mental' },
-  { value: 'support-group', label: 'Grupo de Apoyo' },
-  { value: 'therapy', label: 'Terapia' },
-  { value: 'wellness', label: 'Bienestar' },
-  { value: 'meditation', label: 'Meditación' },
-  { value: 'yoga', label: 'Yoga' },
-]
+interface HelpCenterData {
+  id: string
+  name: string
+  description: string
+  contact: string
+  category: string
+  address: string
+  city: string
+  country: string
+  coordinates: Coordinates | null
+  createdAt: string
+}
 
-export default function AdminHelppointsPage() {
-  const { toast } = useToast()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    contact: '',
-    category: '',
-    address: '',
-    city: '',
-    country: '',
-    coordinates: null as { type: 'Point'; coordinates: [number, number] } | null,
+export default function HelpCenterPage() {
+  const [helpPoints, setHelpPoints] = useState<HelpCenterData[]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const router = useRouter()
+
+  const fetchHelpPoints = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints`)
+      const data = await response.json()
+      if (Array.isArray(data)) {
+        setHelpPoints(data)
+      } else {
+        console.error("Respuesta inesperada:", data)
+        setHelpPoints([])
+      }
+    } catch (error) {
+      console.error("Error al cargar los puntos de ayuda:", error)
+      setHelpPoints([])
+    }
+  }
+
+  useEffect(() => {
+    fetchHelpPoints()
+  }, [])
+
+  const filteredHelpPoints = helpPoints.filter((point) => {
+    const term = searchTerm.toLowerCase()
+    return (
+      point.name.toLowerCase().includes(term) ||
+      (point.description && point.description.toLowerCase().includes(term)) ||
+      (point.city && point.city.toLowerCase().includes(term)) ||
+      (point.category && point.category.toLowerCase().includes(term))
+    )
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) return "Fecha inválida"
+
+    return new Intl.DateTimeFormat("es-ES", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }).format(date)
   }
 
-  const handleCategoryChange = (value: string) => {
-    setFormData({ ...formData, category: value })
+  const handleEdit = (point: HelpCenterData) => {
+  router.push(`/admin/help-centers/edit?edit=${point.id}`)
   }
 
-  const handleMapSelect = (lat: number, lng: number) => {
-    setFormData({
-      ...formData,
-      coordinates: {
-        type: 'Point',
-        coordinates: [lng, lat],
-      },
-    })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.coordinates) {
-      toast({
-        title: "Ubicación requerida",
-        description: "Por favor selecciona una ubicación en el mapa",
-        variant: "destructive"
-      })
-      return
-    }
-
-    setIsSubmitting(true)
+  const handleDelete = async (id: string) => {
+    if (!confirm("¿Estás seguro de que quieres eliminar este punto de ayuda?")) return
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
-
-      if (!res.ok) throw new Error('Error al guardar')
-
-      toast({
-        title: "¡Éxito!",
-        description: "Punto de ayuda creado correctamente",
-      })
-      
-      setFormData({
-        name: '',
-        description: '',
-        contact: '',
-        category: '',
-        address: '',
-        city: '',
-        country: '',
-        coordinates: null,
-      })
-    } catch (err) {
-      console.error(err)
-      toast({
-        title: "Error",
-        description: "Hubo un problema al crear el punto de ayuda",
-        variant: "destructive"
-      })
-    } finally {
-      setIsSubmitting(false)
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints/${id}`, { method: "DELETE" })
+      setHelpPoints((prev) => prev.filter((p) => p.id !== id))
+    } catch (error) {
+      console.error("Error al eliminar el punto de ayuda:", error)
     }
   }
 
   return (
-    <div className="container mx-auto py-12 px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Card className="max-w-3xl mx-auto border-none shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-t-lg">
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <MapPin className="h-6 w-6" />
-              Crear Punto de Ayuda
-            </CardTitle>
-            <CardDescription className="text-teal-50">
-              Añade un nuevo recurso de bienestar a nuestro mapa
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <Alert className="bg-teal-50 border-teal-200">
-                <Info className="h-4 w-4 text-primary" />
-                <AlertTitle className="text-teal-700">Información importante</AlertTitle>
-                <AlertDescription className="text-primary">
-                  Todos los puntos de ayuda son revisados antes de ser publicados. Asegúrate de proporcionar información precisa.
-                </AlertDescription>
-              </Alert>
-              
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name" className="text-gray-700">Nombre</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Centro de bienestar emocional"
-                    className="mt-1"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="description" className="text-gray-700">Descripción</Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    placeholder="Describe los servicios que ofrece este lugar..."
-                    className="mt-1 min-h-[100px]"
-                    required
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="contact" className="text-gray-700">Contacto</Label>
-                    <Input
-                      id="contact"
-                      name="contact"
-                      value={formData.contact}
-                      onChange={handleChange}
-                      placeholder="Teléfono o email"
-                      className="mt-1"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="category" className="text-gray-700">Categoría</Label>
-                    <Select 
-                      value={formData.category} 
-                      onValueChange={handleCategoryChange}
-                      required
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Selecciona una categoría" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category.value} value={category.value}>
-                            {category.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="address" className="text-gray-700">Dirección</Label>
-                  <Input
-                    id="address"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    placeholder="Calle, número, etc."
-                    className="mt-1"
-                    required
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="city" className="text-gray-700">Ciudad</Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      placeholder="Ciudad"
-                      className="mt-1"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="country" className="text-gray-700">País</Label>
-                    <Input
-                      id="country"
-                      name="country"
-                      value={formData.country}
-                      onChange={handleChange}
-                      placeholder="País"
-                      className="mt-1"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label className="text-gray-700 block mb-2">Ubicación en el mapa</Label>
-                  <p className="text-sm text-gray-500 mb-2">Haz clic en el mapa para seleccionar la ubicación exacta</p>
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className="rounded-lg overflow-hidden border border-gray-200"
-                  >
-                    <Map onSelect={handleMapSelect} selectedPosition={formData.coordinates?.coordinates} />
-                  </motion.div>
-                  {formData.coordinates && (
-                    <p className="text-sm text-primary mt-2 flex items-center">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      Ubicación seleccionada: {formData.coordinates.coordinates[1].toFixed(6)}, {formData.coordinates.coordinates[0].toFixed(6)}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-end border-t pt-6">
-            <Button 
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="bg-teal-600 hover:bg-teal-700 text-white"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                  Guardando...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Crear Punto de Ayuda
-                </>
-              )}
-            </Button>
-          </CardFooter>
-        </Card>
-      </motion.div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6"
+    >
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Puntos de Ayuda</h1>
+        {/* <Button onClick={() => setIsCreateModalOpen(true)}> */}
+        <Button onClick={() => router.push("/admin/help-centers/create")}>
+          <FilePlus className="mr-2 h-4 w-4" />
+          Crear punto
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Buscar puntos..."
+            className="pl-8"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Descripción</TableHead>
+              <TableHead>Categoría</TableHead>
+              <TableHead>Ciudad</TableHead>
+              <TableHead>País</TableHead>
+              <TableHead>Dirección</TableHead>
+              <TableHead>Fecha</TableHead>
+              <TableHead className="w-[50px]" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredHelpPoints.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  No se encontraron puntos de ayuda.
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredHelpPoints.map((point) => (
+                <TableRow key={point.id}>
+                  <TableCell className="font-medium">{point.name}</TableCell>
+                  <TableCell className="max-w-xs truncate text-sm">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="cursor-default truncate inline-block max-w-[200px]">
+                            {point.description || "Sin descripción"}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs whitespace-pre-line break-words">
+                          <p>{point.description}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </TableCell>
+                  <TableCell>{point.category}</TableCell>
+                  <TableCell>{point.city}</TableCell>
+                  <TableCell>{point.country}</TableCell>
+                  <TableCell>{point.address}</TableCell>
+                  <TableCell>{formatDate(point.createdAt)}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleEdit(point)}>Editar</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDelete(point.id)} className="text-destructive">
+                          Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </motion.div>
   )
 }

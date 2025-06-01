@@ -2,7 +2,7 @@ import type { IUserDto } from "@/lib/types"
 import { Toast } from "../ui/toast"
 import { toast } from "../ui/use-toast"
 
-export async function registerHelper(userData: IUserDto): Promise<boolean> {
+export async function registerHelper(userData: IUserDto, toast:any): Promise<boolean> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
       method: "POST",

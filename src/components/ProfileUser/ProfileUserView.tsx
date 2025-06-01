@@ -6,88 +6,97 @@ import EditableField, { initialUserData, UserData } from "./EditableField";
 import { useAuth } from "@/context/Auth";
 import ChangePassword from "../Buttons/ChangePassword";
 import { Button } from "../ui/button";
-import uploadImageToImgBB from "./fsg"
-import axios from "axios";
-
-interface UpdateUserData {
-  name?: string;
-  address?: string;
-  profileImage?: string;
-}
-export async function profileEditHelper(userId: string, data: UpdateUserData, token: string) {
-  try {
-    const response = await axios.patch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    if (error.response) {
-      console.error("❌ Error en la respuesta del servidor:");
-    } else if (error.request) {
-      console.error(error.request);
-    } else {
-      console.error("❌ Error al configurar la petición:");
-    }
-    throw error;
-  }
-};
-
-
-
+import uploadImageToImgBB from "./uploadImageToImgBB"
+import { profileEditHelper } from "./profileEditHelper";
+import { useToast } from "@/components/ui/use-toast";
 
 
 export default function ProfileUserView() {
-  const { user } = useAuth();
-
-  const [userData, setUserData] = useState<UserData>(initialUserData);
   const fileInputRef = useRef<HTMLInputElement>(null);
+const { user, setUser } = useAuth();
+const { toast } = useToast();
+const [userData, setUserData] = useState<UserData>({
+  name: "",
+  email: "",
+  address: "",
+  profilePicUrl: "",
+});
 
-  useEffect(() => {
-    if (user) {
-      setUserData({
-        name: user.user.name || "",
-        email: user.user.email || "",
-        address: user.user.address || "",
-        profilePicUrl: user.user.profileImage || "",
-      });
-    }
-  }, [user]);
+useEffect(() => {
+  if (user) {
+    setUserData({
+      name: user.user.name || "",
+      email: user.user.email || "",
+      address: user.user.address || "",
+      profilePicUrl: user.user.profileImage || "",
+    });
+  }
+}, [user]);
 
 const handleSaveField = (field: keyof UserData) => async (newValue: string) => {
-  if (!user) return;
+  if (!user || !setUser) {
+    console.warn("❌ Usuario o setUser no disponible");
+    return;
+  }
 
   try {
-    const updatedUser = await profileEditHelper(
+    console.log(`🔄 Actualizando campo: ${field} con valor:`, newValue);
+
+    // El campo para el backend (profilePicUrl se mapea a profileImage)
+    const backendField = field === "profilePicUrl" ? "profileImage" : field;
+
+    const updatedUserFromBackend = await profileEditHelper(
       user.user.id,
-      { [field]: newValue }, // sólo el campo que cambió
+      { [backendField]: newValue },
       user.token
     );
 
-    setUserData((prev) => ({
-      ...prev,
-      ...updatedUser,
-    }));
+    console.log("📦 Respuesta del backend:", updatedUserFromBackend);
 
-    console.log(`Campo ${field} guardado correctamente:`, newValue);
+    // Actualiza solo el campo modificado en el estado local
+    const newUserData = {
+      ...userData,
+      [field]:
+        field === "profilePicUrl"
+          ? updatedUserFromBackend.profileImage ?? userData.profilePicUrl
+          : updatedUserFromBackend[field] ?? userData[field],
+    };
+
+    setUserData(newUserData);
+
+    // Actualiza el contexto con los nuevos datos
+    const updatedContextUser = {
+      ...user,
+      user: {
+        ...user.user,
+        name: updatedUserFromBackend.name ?? user.user.name,
+        address: updatedUserFromBackend.address ?? user.user.address,
+        profileImage: updatedUserFromBackend.profileImage ?? user.user.profileImage,
+      },
+    };
+
+    setUser(updatedContextUser);
+
+    // Guarda el contexto actualizado en localStorage
+    localStorage.setItem("loginUser", JSON.stringify(updatedContextUser));
+    console.log("💾 Guardado en localStorage:", updatedContextUser);
+
+    console.log(`✅ Campo ${field} actualizado correctamente`);
   } catch (error) {
-    console.error(`Error guardando el campo ${field}:`, error);
-    alert(`No se pudo actualizar ${field}. Intenta de nuevo.`);
+    console.error(`❌ Error actualizando ${field}:`, error);
+    toast({
+      title: "Error al guardar",
+      description: `No se pudo actualizar ${field}. Intenta de nuevo.`,
+      variant: "destructive",
+    });
   }
 };
 
-
-
 const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
-  if (file && user) {
+  if (file && user && setUser) {
     try {
-      // Opcional: mostrar preview rápido
+      // Mostrar preview rápido (opcional)
       const reader = new FileReader();
       reader.onloadend = () => {
         setUserData((prev) => ({
@@ -107,18 +116,38 @@ const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
         user.token
       );
 
-      // 3. Actualizar el estado con la URL definitiva que viene del backend
+      // 3. Actualizar el estado local con la URL definitiva del backend
       setUserData((prev) => ({
         ...prev,
         profilePicUrl: updatedUser.profileImage || imageUrl,
       }));
 
-      console.log("Foto de perfil actualizada correctamente");
+      // 4. Actualizar el contexto con la nueva imagen
+      const updatedContextUser = {
+        ...user,
+        user: {
+          ...user.user,
+          profileImage: updatedUser.profileImage || imageUrl,
+        },
+      };
+
+      setUser(updatedContextUser);
+
+      // 5. Guardar en localStorage
+      localStorage.setItem("loginUser", JSON.stringify(updatedContextUser));
+
+      console.log("✅ Foto de perfil actualizada correctamente");
     } catch (error) {
-      alert("Error al actualizar la foto de perfil. Intenta nuevamente.");
+      toast({
+      title: "Error al actualizar la foto",
+      description: "No se pudo subir la nueva foto de perfil. Intenta nuevamente.",
+      variant: "destructive",
+    });
+      console.error(error);
     }
   }
 };
+
 
 
   return (
@@ -173,11 +202,25 @@ const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
                 </div>
 
                 {/* Badge premium */}
-                {user?.user.role === "premium" && (
-                  <div className="mt-4 px-3 py-1 bg-primary text-white text-sm rounded-full shadow-sm">
-                    Usuario Premium
-                  </div>
-                )}
+{user?.user.role === "premium" && (user?.user?.subscription?.length ?? 0) > 0  && (
+  <div className="mt-4 px-3 py-1 bg-primary text-white text-sm rounded-full shadow-sm">
+    Usuario Premium
+  </div>
+)}
+    <div className="text-xs mt-1">
+{user?.user?.subscription?.[0]?.startDate ? (
+  <>
+    Inicio: {new Date(user.user.subscription[0].startDate).toLocaleDateString("es-ES")}
+    {" | "}
+  </>
+) : null}
+{user?.user?.subscription?.[0]?.endDate ? (
+  <>
+    Fin: {new Date(user.user.subscription[0].endDate).toLocaleDateString("es-ES")}
+  </>
+) : null}
+
+    </div>
               </div>
             </div>
 

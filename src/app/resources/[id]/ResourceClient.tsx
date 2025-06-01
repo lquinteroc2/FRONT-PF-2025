@@ -123,8 +123,6 @@ const cardsData = [
     date: "5 Marzo, 2023",
   },
 ]
-
-// Variantes de animación para Framer Motion
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -159,9 +157,10 @@ export default function ResourceClient({ id }: { id: string }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("detalles")
-
+  const [numPages, setNumPages] = useState<number>(0);
   const staticCard = cardsData.find((card) => card.id === id)
-
+  const [width, setWidth] = useState<number>(800);
+  
   useEffect(() => {
     if (staticCard) {
       setLoading(false)
@@ -181,6 +180,17 @@ export default function ResourceClient({ id }: { id: string }) {
 
     loadResource()
   }, [id, staticCard])
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+  setNumPages(numPages);
+  };
+
+  useEffect(() => {
+  const handleResize = () => setWidth(window.innerWidth < 840 ? window.innerWidth - 32 : 800);
+  handleResize(); // set initial
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+   }, []);
 
   if (loading) {
     return (
@@ -486,16 +496,23 @@ export default function ResourceClient({ id }: { id: string }) {
                   Tu navegador no soporta el video.
                 </video>
               )}
-              {resource.fileType === 'document' && (
-                <div className="w-full flex justify-center">
-                  <Document
-                    file={resource.cloudinaryUrl}
-                    onLoadError={(error) => console.error('Error al cargar PDF:', error)}
-                    loading={<p>Cargando documento...</p>}
-                    error={<p>No se pudo cargar el PDF.</p>}
-                  >
-                    <Page pageNumber={1} />
-                  </Document>
+              {resource?.fileType === "document" && resource.cloudinaryUrl && (
+                <div className="mt-6 border rounded-lg shadow-md">
+                  <div className="h-[1000px] overflow-y-auto"> {/* SCROLL INTERNO AQUÍ */}
+                    <Document
+                      file={resource.cloudinaryUrl}
+                      onLoadSuccess={onDocumentLoadSuccess}
+                      loading={<p className="p-4">Cargando documento...</p>}
+                    >
+                      {Array.from({ length: numPages }, (_, index) => (
+                        <Page
+                          key={`page_${index + 1}`}
+                          pageNumber={index + 1}
+                          width={width}
+                        />
+                      ))}
+                    </Document>
+                  </div>
                 </div>
               )}
             </div>

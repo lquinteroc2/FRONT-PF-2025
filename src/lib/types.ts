@@ -21,6 +21,12 @@ export enum FileExtension {
   WAV = "wav",
 }
 
+export enum UserRole {
+  FREE = "free",
+  PREMIUM = "premium",
+  ADMIN = "admin",
+}
+
 // Interfaces
 export interface Subscription {
   active: boolean;
@@ -33,11 +39,11 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  profileImage: string;
-  address: string;
+  profileImage?: string;
+  address?: string;
   role: string;
-  status: "active" | "inactive";
-  createdAt: string;
+  status: "Activo" | "Inactivo";
+  createdAt?: string;
   subscription?: Subscription[];  
 }
 
@@ -120,4 +126,22 @@ export type ResourceFormProps = {
 export type Props = {
   resource: Resource
   onClose: () => void
+}
+
+
+export interface HelpCenterData {
+  id: string
+  name: string
+  description: string
+  contact: string
+  category: string
+  address: string
+  city: string
+  country: string
+  coordinates: {
+    type: "Point"
+    coordinates: [number, number] // [longitude, latitude]
+  }
+  createdAt: Date
+  updatedAt: Date
 }

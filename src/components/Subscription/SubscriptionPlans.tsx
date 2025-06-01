@@ -12,13 +12,15 @@ export default function SubscriptionPlans() {
 
   if (!isOpen) {
     return (
-      <div className="container mx-auto py-10 text-center">
+      <div className="w-full">
+         <div className="w-full flex justify-center my-6">
         <Button
           onClick={() => setIsOpen(true)}
           className="bg-primary text-white hover:bg-primary-dark"
         >
           Ver planes de suscripción
         </Button>
+        </div>
       </div>
     );
   }

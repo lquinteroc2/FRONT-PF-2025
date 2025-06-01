@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/Auth";
 import emotionHistoryHelper, { RegisteredEmotion } from "./emotionHistoryHelper";
+import { Button } from "../ui/button";
+import SubscriptionPlans from "../Subscription/SubscriptionPlans";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function EmotionsHistoryUser() {
   const [emotions, setEmotions] = useState<RegisteredEmotion[]>([]);
@@ -10,6 +13,22 @@ export default function EmotionsHistoryUser() {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
   const [expandedId, setExpandedId] = useState<string | number | null>(null);
+    const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
+
+  const handleSeeMoreClick = () => {
+    setShowSubscriptionPlans(true);
+  };
+
+    const handleClosePlans = () => {
+    setShowSubscriptionPlans(false);
+  };
+
+const MotionDiv = motion('div');
+const userRole = user?.user.role ?? "free"; // detecta el rol, por defecto "free"
+const maxFreeEmotions = 3;
+const isFreeUser = userRole === "free";
+
+const emotionsToShow = isFreeUser ? emotions.slice(0, maxFreeEmotions) : emotions;
 
 const toggleExpand = (id: string | number) => {
   setExpandedId(prev => (prev === id ? null : id));
@@ -103,22 +122,22 @@ const toggleExpand = (id: string | number) => {
   }
 
  return (
-   <div className="min-h-screen flex items-center justify-center">
+   <div className="min-h-screen flex items-center justify-center my-0">
     <div className="w-full p-4 sm:p-6 md:p-8 lg:w-[60%]">
-    <div className="mb-6 lg:mt-16 sm:mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-2 text-neutro-dark">
+    <div className="lg:mt-0 sm:mb-8">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-neutro-dark">
           Emociones Registradas
         </h2>
       </div>
 
       <ul className="space-y-6">
-        {emotions.map((e) => (
+        {emotionsToShow.map((e) => (
           <li
             key={e.id}
             className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl group cursor-pointer"
             onClick={() => toggleExpand(e.id)}
           >
-            <div className="p-5 sm:p-6">
+            <div className="p-3 sm:p-4">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full group-hover:bg-primary/20 transition-colors duration-300">
                   <span className="text-3xl sm:text-4xl">{e.emotion.emoji}</span>
@@ -133,6 +152,10 @@ const toggleExpand = (id: string | number) => {
                         year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                       })}
                     </p>
+                    {isFreeUser && emotions.length > maxFreeEmotions && (
+  <div className="mt-4 flex justify-center">
+  </div>
+)}
                   </div>
 
                   <IntensityDots level={e.intensity} />
@@ -149,6 +172,54 @@ const toggleExpand = (id: string | number) => {
           </li>
         ))}
       </ul>
+      {isFreeUser && emotions.length > maxFreeEmotions && (
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={handleSeeMoreClick}
+            className="bg-primary text-white px-6 py-2 rounded-lg shadow hover:bg-primary/90 transition"
+          >
+            Ver Todas
+          </button>
+
+          {showSubscriptionPlans && (
+<AnimatePresence>
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={handleClosePlans}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-neutro-light rounded-lg p-6 max-w-lg w-full relative text-neutro-ice"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -50, opacity: 0 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        <button
+          onClick={handleClosePlans}
+          className="absolute top-2 right-2 text-gray-400 hover:text-white"
+          aria-label="Cerrar modal"
+        >
+          ✕
+        </button>
+<div className="text-center text-neutro-dark text-lg md:text-xl font-semibold leading-relaxed mb-4">
+  ¡Mejora tu experiencia con <strong className="text-primary">Premium</strong>! <br />
+  Accede a todo tu historial de emociones, recibe análisis personalizados y disfruta de beneficios exclusivos.
+  <br />
+  <span className="mt-2 block text-lg font-semibold text-primary-dark">
+   ¡Suscríbete Ahora!
+  </span>
+</div>
+        <SubscriptionPlans />
+      </motion.div>
+    </motion.div>
+  </AnimatePresence>
+          )}
+        </div>
+      )}
     </div>
     </div>
   );

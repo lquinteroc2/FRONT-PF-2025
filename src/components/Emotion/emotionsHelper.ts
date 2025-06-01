@@ -1,13 +1,14 @@
 import axios from "axios";
 
-export interface Emotion {
+export interface EmotionAdmin {
   id: string,
   name: string,
   emoji: string,
   clinicalValue: number,
   reflexion: string
+  significado: string
 }
-export const emotionsHelper = async (token: string): Promise<Emotion[]> => {
+export const emotionsHelper = async (token: string): Promise<EmotionAdmin[]> => {
   try {
     const url = process.env.NEXT_PUBLIC_API_URL;
     const endpoint = `${url}/emotions`;
@@ -22,8 +23,8 @@ export const emotionsHelper = async (token: string): Promise<Emotion[]> => {
         Authorization: `Bearer ${token}`,
       },
     });
-
-    return response.data as Emotion[];
+   console.log("Datos recibidos:", response);
+    return response.data as EmotionAdmin[];
   } catch (error: any) {
     if (error.response) {
       console.error("❌ Error en la respuesta del servidor:");

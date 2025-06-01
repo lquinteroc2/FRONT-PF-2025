@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { contactValidationSchema } from './contactValidationSchema';
 import { contactHelper } from '@/components/contactUs/contactHelper';
 import { motion } from 'framer-motion';
-
+import { useToast } from "@/components/ui/use-toast";
 
 const MotionDiv = motion('div');
 
@@ -22,12 +22,15 @@ const ContactUs = () => {
   { resetForm, setSubmitting }: FormikHelpers<ContactFormValues>
 ) => {
   console.log('Datos del formulario:', values);
-
+  const { toast } = useToast();
   const emailResult = await sendContactEmails(values);
 const contactResult = await contactHelper(values.name, values.email);
 
 if (emailResult.success && contactResult.success) {
-  alert("Datos Enviados con Éxito");
+    toast({
+        title: "Éxito",
+        description: "¡Datos enviados con éxito!",
+      });
   resetForm();
 } else {
   console.error("Error al enviar el correo");

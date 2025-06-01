@@ -6,15 +6,15 @@ export interface UserData {
   name: string;
   email: string;
   address: string;
-  profilePicUrl: string | null;
+  profilePicUrl: string;
 }
 
 // Datos iniciales del usuario (simulados)
 export const initialUserData: UserData = {
-  name: "Alex Sentia",
-  email: "alex.sentia@example.com",
-  address: "Calle de las Emociones, 123, Ciudad Bienestar",
-  profilePicUrl: "https://via.placeholder.com/150/A0D2DB/3A405A?text=AS", // Placeholder
+  name: "",
+  email: "",
+  address: "",
+  profilePicUrl: "",
 };
 
 // Componente para un campo editable
