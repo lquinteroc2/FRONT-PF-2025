@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileAudio, FileText, Users, Video } from "lucide-react"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import { getLast7DaysResourceCounts, getTotalResourceCounts } from "./resources-helper"
+import { getLast7DaysHelppoins, getLast7DaysResourceCounts, getLast7DaysUsers, getTotalHelppoins, getTotalResourceCounts, getTotalUsers } from "./resources-helper"
+import { number } from "yup"
 
 
 type ResourceCounts = {
@@ -33,23 +34,50 @@ const [last7DaysCounts, setLast7DaysCounts] = useState<ResourceCounts>({
   other: 0,
 })
 
-useEffect(() => {
-  const fetchStats = async () => {
-    try {
-      const [totalData, last7Data] = await Promise.all([
-        getTotalResourceCounts(),
-        getLast7DaysResourceCounts(),
-      ])
+   const [totalHelppoins, setTotalHelppoins] = useState<number>(0)
+   const [last7DaysHelppoins, setLast7DaysHelppoins] = useState<number>(0)
+   const [totalUsersData, setTotalUsersData] = useState<number>(0)
+   const [last7DaysUsersData, setLast7DaysUsersData] = useState<number>(0)
 
-      setTotalCounts(totalData)
-      setLast7DaysCounts(last7Data)
-    } catch (error) {
-      console.error("Error fetching resource stats:", error)
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [
+          totalData,
+          last7Data,
+          totalHelppoinsData,
+          last7DaysHelppoinsData,
+          totalUsersData,
+          last7DaysUsersData,
+        ] = await Promise.all([
+          getTotalResourceCounts(),
+          getLast7DaysResourceCounts(),
+          getTotalHelppoins(),
+          getLast7DaysHelppoins(),
+          getTotalUsers(),
+          getLast7DaysUsers(),
+        ])
+
+        setTotalCounts(totalData)
+        setLast7DaysCounts(last7Data)
+        setTotalHelppoins(totalHelppoinsData)
+        setLast7DaysHelppoins(last7DaysHelppoinsData)
+        setTotalUsersData(totalUsersData.total)
+        setLast7DaysUsersData(last7DaysUsersData.last7Days)
+
+             console.log({
+        totalHelppoinsData,
+        last7DaysHelppoinsData,
+        totalUsersData,
+        last7DaysUsersData,
+      })
+      } catch (error) {
+        console.error("Error fetching resource stats:", error)
+      }
     }
-  }
 
-  fetchStats()
-}, [])
+    fetchStats()
+  }, [])
 
 
 
@@ -78,6 +106,19 @@ useEffect(() => {
       initial="hidden"
       animate="show"
     >
+      <motion.div variants={item}>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Usuarios</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalUsersData}</div>
+            <p className="text-xs text-muted-foreground">+{last7DaysUsersData}  en los últimos 7 días</p>
+          </CardContent>
+        </Card>
+      </motion.div>
+
       <motion.div variants={item}>
   <Card>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -122,15 +163,17 @@ useEffect(() => {
       <motion.div variants={item}>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Otros</CardTitle>
-            <Video className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Centros de Apoyo</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalCounts.other}</div>
-            <p className="text-xs text-muted-foreground">+{last7DaysCounts.other}  en los últimos 7 días</p>
+             <div className="text-2xl font-bold">{totalHelppoins}</div>
+            <p className="text-xs text-muted-foreground">+{last7DaysHelppoins}  en los últimos 7 días</p>
           </CardContent>
         </Card>
       </motion.div>
+
+
     </motion.div>
   )
 }

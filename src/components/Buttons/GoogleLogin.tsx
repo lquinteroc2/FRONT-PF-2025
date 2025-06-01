@@ -53,7 +53,7 @@ const GoogleLogin = () => {
       onClick={handleSignIn}
       variant="google"
       size="sm"
-      className="w-[60%] flex items-center justify-center gap-2 font-bold"
+      className="w-[60%] mb-4 flex items-center justify-center gap-2 font-bold"
     >
       <Image src="https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960113/google_zas5vr.png" alt="Google" width={20} height={20} />
       Iniciar sesión con Google

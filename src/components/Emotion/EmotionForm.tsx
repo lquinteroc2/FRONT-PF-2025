@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { emotionsHelper } from "@/components/Emotion/emotionsHelper";
-import { Emotion } from "@/components/Emotion/emotionsHelper";
+import { EmotionAdmin } from "@/components/Emotion/emotionsHelper";
 import { useAuth } from "@/context/Auth";
 import emotionCreateHelper from "./emotionCreateHelper"; // Assuming this path is correct
 
@@ -13,8 +13,8 @@ const getStepTransitionClasses = (isActive: boolean) =>
 
 export default function EmotionForm({ onClose }: { onClose: () => void }) {
   const [currentStep, setCurrentStep] = useState<"emotion" | "intensity" | "comment" | "done">("emotion");
-  const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
-  const [emotions, setEmotions] = useState<Emotion[]>([]);
+  const [selectedEmotion, setSelectedEmotion] = useState<EmotionAdmin | null>(null);
+  const [emotions, setEmotions] = useState<EmotionAdmin[]>([]);
   const [intensity, setIntensity] = useState<number | null>(null);
   const [comment, setComment] = useState<string>("");
   const { user } = useAuth();
@@ -42,7 +42,7 @@ useEffect(() => {
 }, []);
 
 
-  const handleEmotionSelect = (emotion: Emotion) => {
+  const handleEmotionSelect = (emotion: EmotionAdmin) => {
     setSelectedEmotion(emotion);
     setCurrentStep("intensity");
   };
@@ -161,7 +161,7 @@ useEffect(() => {
             </h2>
             {emotions.length === 0 && <p className="text-center text-neutro-dark">Cargando emociones...</p>}
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 justify-center max-h-[40vh] overflow-y-auto p-1">
-              {emotions.map((emotion: Emotion) => (
+              {emotions.map((emotion: EmotionAdmin) => (
                 <button
                   key={emotion.id}
                   type="button"
@@ -237,19 +237,19 @@ useEffect(() => {
                   <button type="button" onClick={handleBack} className="text-sm text-primary hover:underline px-4 py-2 rounded-md hover:bg-neutro-light transition-colors">
                     &larr; Cambiar intensidad
                   </button>
-                  <button
-                    onClick={handleSubmit}
-                    type="submit"
-                    disabled={isLoading}
-                    className="bg-primary text-neutro-light px-8 py-3 rounded-lg shadow-md hover:bg-primary transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[180px]"
-                  >
-                    {isLoading ? (
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-neutro-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    ) : "Confirmar Emoción"}
-                  </button>
+                   <button
+  onClick={handleSubmit}
+  type="submit"
+  disabled={isLoading || comment.trim() === ''}
+  className="bg-primary text-neutro-light px-8 py-3 rounded-lg shadow-md hover:bg-primary transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[180px]"
+>
+  {isLoading ? (
+    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-neutro-light" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  ) : "Confirmar Emoción"}
+</button>
                 </div>
               </>
             )}

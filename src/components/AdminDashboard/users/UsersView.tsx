@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import imageCompression from "browser-image-compression";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, UserPlus } from "lucide-react"
 import { toast } from "sonner"
@@ -14,9 +15,10 @@ import { User, UserRole } from "@/lib/types"
 import UserForm from "@/components/AdminDashboard/users/UsersComponent"
 import UserActions from "@/components/AdminDashboard/users/User-actions"
 import { useAuth } from "@/context/Auth"
-import { updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
+import {  compressAndUploadImage, createAdminHelper, updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
 import { adminEditUserHelper, AdminUpdateUserData, profileEditHelper, UpdateUserData } from "@/components/ProfileUser/profileEditHelper"
 import Cookies from "js-cookie"
+import uploadImageToImgBB, { uploadBase64ToImgBB } from "@/components/ProfileUser/uploadImageToImgBB"
 
 
 export default function UsersPageView() {
@@ -32,6 +34,65 @@ export default function UsersPageView() {
   const [currentPage, setCurrentPage] = useState(1)
   const usersPerPage = 999
 
+
+function base64ToFile(base64: string, filename: string): File {
+  const arr = base64.split(',');
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while(n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+}
+
+
+
+  async function compressImage(file: File): Promise<File> {
+  const maxSizeMB = 0.3; // 300 KB
+  const maxWidthOrHeight = 1024;
+
+  let quality = 0.7; // calidad inicial
+  let compressedFile = file;
+
+  try {
+    // Intentamos comprimir con calidad inicial
+    compressedFile = await imageCompression(file, {
+      maxSizeMB,
+      maxWidthOrHeight,
+      useWebWorker: true,
+      initialQuality: quality,
+      maxIteration: 10,
+    });
+
+    // Si sigue muy pesado, vamos bajando calidad progresivamente
+    while (compressedFile.size / 1024 > 300 && quality > 0.2) {
+      quality -= 0.1;
+      compressedFile = await imageCompression(file, {
+        maxSizeMB,
+        maxWidthOrHeight,
+        useWebWorker: true,
+        initialQuality: quality,
+        maxIteration: 10,
+      });
+    }
+
+    if (compressedFile.size / 1024 > 300) {
+      console.warn("No fue posible comprimir la imagen a menos de 300 KB");
+    }
+
+    return compressedFile;
+  } catch (error) {
+    console.error("Error comprimiendo imagen:", error);
+    return file; // En caso de error, retorna la original
+  }
+}
+
+
 const mapStatusToAPI = (filter: string ): "Activo" | "Inactivo" | "all" => {
   switch (filter) {
     case "Activo":
@@ -46,6 +107,7 @@ const mapStatusToAPI = (filter: string ): "Activo" | "Inactivo" | "all" => {
 useEffect(() => {
   const fetchUsers = async () => {
     if (!user?.token) return;
+
 
     
 const params: UserRequestParams = {
@@ -142,6 +204,7 @@ useEffect(() => {
   }
 
   const handleCreateUser = () => {
+    
     setEditingUser(null)
     setIsDialogOpen(true)
   }
@@ -151,66 +214,87 @@ useEffect(() => {
     setIsDialogOpen(true)
   }
 
-const handleSubmitUser = async (userData: Partial<User>) => {
-
-  if (!userData.id || !user?.token) {
-    console.error("Datos incompletos para actualizar el usuario");
-    toast.error("No se puede actualizar el usuario. Datos incompletos.");
+const handleSubmitUser = async (userData: Partial<User>, imageBase64?: string) => {
+  if (!user?.token) {
+    toast.error("No estás autenticado.");
     return;
   }
 
   setIsLoading(true);
 
   try {
-    const updateData: Partial<User> = {};
+    const formUserData: Partial<User> = { ...userData };
 
-    if (userData.name && userData.name.trim() !== "") updateData.name = userData.name;
-    if (userData.email && userData.email.trim() !== "") updateData.email = userData.email;
-    if (userData.address && userData.address.trim() !== "") updateData.address = userData.address;
-    if (userData.profileImage && userData.profileImage.trim() !== "") updateData.profileImage = userData.profileImage;
-    if (userData.role && userData.role.trim() !== "") updateData.role = userData.role;
-    if (userData.status && userData.status.trim() !== "") updateData.status = userData.status;
+    if (userData.id) {
+      // Actualizar usuario
+      const updateData: Partial<User> = {};
 
-    const updatedUser = await updateUserHelper(
-      userData.id,
-      user.token,
-      updateData
-    );
+      if (formUserData.name && formUserData.name.trim() !== "") updateData.name = formUserData.name;
+      if (formUserData.email && formUserData.email.trim() !== "") updateData.email = formUserData.email;
+      if (formUserData.address && formUserData.address.trim() !== "") updateData.address = formUserData.address;
+      if (
+        (typeof formUserData.profileImage === "string" && formUserData.profileImage.trim() !== "") ||
+        formUserData.profileImage instanceof File
+      ) {
+        updateData.profileImage = formUserData.profileImage;
+      }
+      if (formUserData.role && formUserData.role.trim() !== "") updateData.role = formUserData.role;
+      if (formUserData.status && formUserData.status.trim() !== "") updateData.status = formUserData.status;
 
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
-    );
+      const updatedUser = await updateUserHelper(userData.id, user.token, updateData);
 
-    alert("Cambios realizados con éxito");
-    setTimeout(() => {
-    window.location.reload();
-   }, 500); 
-    setIsDialogOpen(false);
+      setUsers((prev) =>
+        prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
+      );
+      alert("Usuario actualizado correctamente");
+    } else {
+      // Crear usuario
+       let imageFile: File | undefined;
+
+  if (formUserData.profileImage && typeof formUserData.profileImage === "string" && formUserData.profileImage.startsWith("data:image")) {
+    imageFile = base64ToFile(formUserData.profileImage, "imagen.png");
+  }
+
+  if (imageFile) {
+  console.log("Tamaño imagen original:", (imageFile.size / 1024).toFixed(2), "KB");
+
+  const compressedImageFile = await compressImage(imageFile);
+
+  console.log("Tamaño imagen comprimida:", (compressedImageFile.size / 1024).toFixed(2), "KB");
+
+  if (compressedImageFile.size / 1024 > 300) {
+    alert("La imagen comprimida sigue siendo mayor a 300 KB. Intenta con otra imagen más ligera.");
+    setIsLoading(false);
+    return;
+  }
+
+  await createAdminHelper(formUserData, user.token, compressedImageFile);
+} else {
+  alert("Debes agregar una imagen para crear el usuario.");
+  setIsLoading(false);
+  return; // Para detener la ejecución si es necesario
+}
+alert("Usuario creado correctamente");
+setIsDialogOpen(false);
+setIsLoading(false);
+setTimeout(() => window.location.reload(), 500)
+}
+    
     
   } catch (error: any) {
-    console.error("Error al actualizar usuario:", error);
-    toast.error("Error al actualizar el usuario");
-  } finally {
+  // Intentamos obtener el mensaje del error de la respuesta si existe
+  const message =
+    error?.response?.data?.message || // Por ejemplo axios error con response.data.message
+    error?.message ||                  // O el mensaje general
+    String(error);                    // O convertimos el error a string
+
+  alert("Error al guardar usuario: " + message);
+  toast.error("Error al guardar el usuario");
+  setIsLoading(false);
+} finally {
     setIsLoading(false);
   }
 };
-
-
-
-
-  const handleDeleteUser = async (userId: string) => {
-      setIsLoading(true)
-    try {
-
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      setUsers((prev) => prev.filter((user) => user.id !== userId))
-      toast.success("Usuario eliminado correctamente")
-    } catch (error) {
-      toast.error("Error al eliminar el usuario")
-    }
-  }
-
 
 const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Inactivo") => {
   
@@ -248,8 +332,7 @@ const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Ina
   }
 }
 
-
-  const handleCloseDialog = () => {
+const handleCloseDialog = () => {
     setIsDialogOpen(false)
     setEditingUser(null)
   }
