@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { emotionsHelper } from "@/components/Emotion/emotionsHelper";
-import { Emotion } from "@/components/Emotion/emotionsHelper";
+import { EmotionAdmin } from "@/components/Emotion/emotionsHelper";
 import { useAuth } from "@/context/Auth";
 import emotionCreateHelper from "./emotionCreateHelper"; // Assuming this path is correct
+import { useToast } from "@/components/ui/use-toast";
 
 // Helper for Tailwind transition classes
 const getStepTransitionClasses = (isActive: boolean) => 
@@ -13,12 +14,13 @@ const getStepTransitionClasses = (isActive: boolean) =>
 
 export default function EmotionForm({ onClose }: { onClose: () => void }) {
   const [currentStep, setCurrentStep] = useState<"emotion" | "intensity" | "comment" | "done">("emotion");
-  const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
-  const [emotions, setEmotions] = useState<Emotion[]>([]);
+  const [selectedEmotion, setSelectedEmotion] = useState<EmotionAdmin | null>(null);
+  const [emotions, setEmotions] = useState<EmotionAdmin[]>([]);
   const [intensity, setIntensity] = useState<number | null>(null);
   const [comment, setComment] = useState<string>("");
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false); // For submit button loading state
+  const { toast } = useToast();
 
 useEffect(() => {
   const rawUser = localStorage.getItem("loginUser");
@@ -42,7 +44,7 @@ useEffect(() => {
 }, []);
 
 
-  const handleEmotionSelect = (emotion: Emotion) => {
+  const handleEmotionSelect = (emotion: EmotionAdmin) => {
     setSelectedEmotion(emotion);
     setCurrentStep("intensity");
   };
@@ -80,11 +82,21 @@ useEffect(() => {
         token // ✅ Aquí sí estás pasando el token
       );
 
-      console.log("👍 Emoción registrada:", result.emotion, result.createdAt);
+      toast({
+        title: "🎉 Emoción registrada",
+        description: `Has registrado ${result.emotion} correctamente.`,
+      });
       setCurrentStep("done");
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ Error al enviar emoción:", error);
-      alert("Hubo un error al registrar tu emoción. Por favor, inténtalo de nuevo.");
+            toast({
+        variant: "destructive",
+        title: "Error al registrar emoción",
+        description:
+          error.message?.includes("UUID") 
+            ? "El ID de usuario o emoción no es válido."
+            : "Hubo un problema al registrar tu emoción. Intenta de nuevo.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +173,7 @@ useEffect(() => {
             </h2>
             {emotions.length === 0 && <p className="text-center text-neutro-dark">Cargando emociones...</p>}
             <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 justify-center max-h-[40vh] overflow-y-auto p-1">
-              {emotions.map((emotion: Emotion) => (
+              {emotions.map((emotion: EmotionAdmin) => (
                 <button
                   key={emotion.id}
                   type="button"

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { IUserDto } from '@/lib/types';
 
-const registerHelper = async (userData: IUserDto) => {
+const registerHelper = async (userData: IUserDto, toast: any) => {
     try {
         const Url = process.env.NEXT_PUBLIC_API_URL;
         console.log('API URL:', Url);
@@ -9,18 +9,22 @@ const registerHelper = async (userData: IUserDto) => {
 
         const res = await axios.post(`${Url}/auth/signup`, userData);
 
-        alert('Registrado con éxito');
+            toast({
+            title: "Registro exitoso",
+            description: "¡Bienvenido a Séntia!",
+            });
         return res.data;
 
     } catch (error: any) {
-        console.error('Error al Registrar:', error);
+    console.error("Error en registerHelper:", error);
 
-        if (error.response) {
-            console.error('Detalles del error:', error.response.data);
-            alert(error.response.data.message || 'No se pudo registrar');
-        } else {
-            alert('No se pudo registrar');
-        }
+    toast({
+      title: "Error en el Registro",
+      description: error?.message || "No se pudo registrar. Intenta nuevamente.",
+      variant: "destructive",
+    });
+
+    throw error;
     }
 };
 

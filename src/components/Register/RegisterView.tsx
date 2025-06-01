@@ -6,10 +6,12 @@ import { IUserDto } from "@/lib/types";
 import { Button } from "../ui/button";
 import { motion } from 'framer-motion';
 import registerHelper from "./registerHelper";
+import { useToast } from "@/components/ui/use-toast";
 
 const MotionDiv = motion('div');
 
 const RegisterView = () => {
+    const { toast } = useToast();
     return (
         <div className="flex flex-col md:flex-row gap-1 bg-secondary-50">
             <MotionDiv
@@ -49,9 +51,13 @@ const RegisterView = () => {
                     }}
                     validationSchema={validationSchemaRegister}
                     onSubmit={async (values, { resetForm }) => {
-                        const result = await registerHelper(values); // Enviamos confirmPassword también
+                        const result = await registerHelper(values, toast); // Enviamos confirmPassword también
                         if (result) {
-                            alert('Registro exitoso');
+                                toast({
+                            title: "Registro exitoso",
+                            description: "¡Bienvenido a Séntia!",
+                            });
+
                             resetForm();
                         }
                     }}

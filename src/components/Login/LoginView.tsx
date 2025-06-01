@@ -11,6 +11,7 @@ import { loginValidationSchema } from "./loginvalidationSchema";
 import { loginHelper } from "./loginHelper";
 import { useAuth } from "@/context/Auth";
 import { useRouter } from 'next/navigation';
+import { useToast } from "@/components/ui/use-toast";
 
 const initialValues: ILoginFormData = {
   email: '',
@@ -21,20 +22,41 @@ const MotionDiv = motion('div');
 
 
 const LoginView = () => {
-    const { setUser } = useAuth();
-    const router = useRouter();
-    const onSubmit = async (
-  values: { email: string; password: string },
-  { resetForm, setSubmitting }: FormikHelpers<{ email: string; password: string }>
-) => {
-   const { token, user } = await loginHelper(values);
+  const { setUser } = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const onSubmit = async (
+    values: { email: string; password: string },
+    { resetForm, setSubmitting }: FormikHelpers<{ email: string; password: string }>
+  ) => {
+    const result = await loginHelper(values);
+
+    if (result.success) {
+      const { token, user } = result.data;
       setUser({ token, user });
+
+      toast({
+        title: "¡Bienvenido!",
+        description: "Logueado exitosamente.",
+      });
+
       resetForm();
       setSubmitting(false);
+
       setTimeout(() => {
-    router.push('/home');
-  }, 2000);
-};
+        router.push("/home");
+      }, 2000);
+    } else {
+      toast({
+        title: "Error al loguear",
+        description: result.error || "Intenta nuevamente",
+        variant: "destructive",
+      });
+
+      setSubmitting(false);
+    }
+  };
 
 return (
     <>
@@ -126,8 +148,7 @@ return (
             </MotionDiv>
     </div>
 </div>
-    
-    </>
+</>
 )
 
 }
