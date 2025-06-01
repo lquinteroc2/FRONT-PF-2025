@@ -10,7 +10,7 @@ import { HelpCenterData } from "@/lib/types"
 import { fetchHelpCenters } from "./api"
 import HelpCentersList from "./components/help-centers-list"
 import HelpCentersMap from "./components/help-centers-map"
-import { AnimatedArrow } from "../Emotion/EmotionalLogView"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function HelpCentersView() {
   const [helpCenters, setHelpCenters] = useState<HelpCenterData[]>([])
@@ -22,13 +22,14 @@ export default function HelpCentersView() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; } | null>(null)
   const [radius, setRadius] = useState<{ radius: number } | null>(null)
   const [isUsingLocation, setIsUsingLocation] = useState(false)
+  const { toast } = useToast()
 
   const categories = [
-  { value: "mental-health", label: "Salud Mental" },
-  { value: "support-group", label: "Grupo de Apoyo" },
-  { value: "therapy", label: "Terapia" },
-  { value: "wellness", label: "Bienestar" },
-  { value: "meditation", label: "Meditación" },
+  { value: "salud-mental", label: "Salud Mental" },
+  { value: "grupo-apoyo", label: "Grupo de Apoyo" },
+  { value: "terapia", label: "Terapia" },
+  { value: "bienestar", label: "Bienestar" },
+  { value: "meditacion", label: "Meditación" },
   { value: "yoga", label: "Yoga" },
 ]
 useEffect(() => {
@@ -147,11 +148,19 @@ useEffect(() => {
                     },
                     (err) => {
                       console.error("No se pudo obtener la ubicación", err)
-                      alert("No se pudo obtener la ubicación")
+                      toast({
+                      title: "Error de ubicación",
+                      description: "No se pudo obtener tu ubicación. Intenta nuevamente.",
+                      variant: "destructive",
+                    })
                     }
                   )
                 } else {
-                  alert("Tu navegador no soporta geolocalización")
+                  toast({
+                  title: "Geolocalización no soportada",
+                  description: "Tu navegador no admite geolocalización.",
+                  variant: "destructive",
+                })
                 }
               }
             }}

@@ -5,6 +5,7 @@ import { emotionsHelper } from "@/components/Emotion/emotionsHelper";
 import { EmotionAdmin } from "@/components/Emotion/emotionsHelper";
 import { useAuth } from "@/context/Auth";
 import emotionCreateHelper from "./emotionCreateHelper"; // Assuming this path is correct
+import { useToast } from "@/components/ui/use-toast";
 
 // Helper for Tailwind transition classes
 const getStepTransitionClasses = (isActive: boolean) => 
@@ -19,6 +20,7 @@ export default function EmotionForm({ onClose }: { onClose: () => void }) {
   const [comment, setComment] = useState<string>("");
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false); // For submit button loading state
+  const { toast } = useToast();
 
 useEffect(() => {
   const rawUser = localStorage.getItem("loginUser");
@@ -80,11 +82,21 @@ useEffect(() => {
         token // ✅ Aquí sí estás pasando el token
       );
 
-      console.log("👍 Emoción registrada:", result.emotion, result.createdAt);
+      toast({
+        title: "🎉 Emoción registrada",
+        description: `Has registrado ${result.emotion} correctamente.`,
+      });
       setCurrentStep("done");
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ Error al enviar emoción:", error);
-      alert("Hubo un error al registrar tu emoción. Por favor, inténtalo de nuevo.");
+            toast({
+        variant: "destructive",
+        title: "Error al registrar emoción",
+        description:
+          error.message?.includes("UUID") 
+            ? "El ID de usuario o emoción no es válido."
+            : "Hubo un problema al registrar tu emoción. Intenta de nuevo.",
+      });
     } finally {
       setIsLoading(false);
     }

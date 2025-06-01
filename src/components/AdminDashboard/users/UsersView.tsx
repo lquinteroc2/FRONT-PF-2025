@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import imageCompression from "browser-image-compression";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, UserPlus } from "lucide-react"
-import { toast } from "sonner"
 import { User, UserRole } from "@/lib/types"
 import UserForm from "@/components/AdminDashboard/users/UsersComponent"
 import UserActions from "@/components/AdminDashboard/users/User-actions"
@@ -18,7 +17,7 @@ import { useAuth } from "@/context/Auth"
 import {  compressAndUploadImage, createAdminHelper, updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
 import { adminEditUserHelper, AdminUpdateUserData, profileEditHelper, UpdateUserData } from "@/components/ProfileUser/profileEditHelper"
 import Cookies from "js-cookie"
-import uploadImageToImgBB, { uploadBase64ToImgBB } from "@/components/ProfileUser/uploadImageToImgBB"
+import { useToast } from "@/components/ui/use-toast"
 
 
 export default function UsersPageView() {
@@ -33,65 +32,7 @@ export default function UsersPageView() {
   const [totalPages, setTotalPages] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState(1)
   const usersPerPage = 999
-
-
-function base64ToFile(base64: string, filename: string): File {
-  const arr = base64.split(',');
-  const mimeMatch = arr[0].match(/:(.*?);/);
-  const mime = mimeMatch ? mimeMatch[1] : 'image/png';
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-
-  while(n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-
-  return new File([u8arr], filename, { type: mime });
-}
-
-
-
-  async function compressImage(file: File): Promise<File> {
-  const maxSizeMB = 0.3; // 300 KB
-  const maxWidthOrHeight = 1024;
-
-  let quality = 0.7; // calidad inicial
-  let compressedFile = file;
-
-  try {
-    // Intentamos comprimir con calidad inicial
-    compressedFile = await imageCompression(file, {
-      maxSizeMB,
-      maxWidthOrHeight,
-      useWebWorker: true,
-      initialQuality: quality,
-      maxIteration: 10,
-    });
-
-    // Si sigue muy pesado, vamos bajando calidad progresivamente
-    while (compressedFile.size / 1024 > 300 && quality > 0.2) {
-      quality -= 0.1;
-      compressedFile = await imageCompression(file, {
-        maxSizeMB,
-        maxWidthOrHeight,
-        useWebWorker: true,
-        initialQuality: quality,
-        maxIteration: 10,
-      });
-    }
-
-    if (compressedFile.size / 1024 > 300) {
-      console.warn("No fue posible comprimir la imagen a menos de 300 KB");
-    }
-
-    return compressedFile;
-  } catch (error) {
-    console.error("Error comprimiendo imagen:", error);
-    return file; // En caso de error, retorna la original
-  }
-}
-
+  const { toast } = useToast()
 
 const mapStatusToAPI = (filter: string ): "Activo" | "Inactivo" | "all" => {
   switch (filter) {
@@ -214,9 +155,15 @@ useEffect(() => {
     setIsDialogOpen(true)
   }
 
-const handleSubmitUser = async (userData: Partial<User>, imageBase64?: string) => {
-  if (!user?.token) {
-    toast.error("No estás autenticado.");
+const handleSubmitUser = async (userData: Partial<User>) => {
+
+  if (!userData.id || !user?.token) {
+    console.error("Datos incompletos para actualizar el usuario");
+    toast({
+        title: "Error",
+        description: "No se puede actualizar el usuario. Datos incompletos.",
+        variant: "destructive",
+      })
     return;
   }
 
@@ -243,58 +190,54 @@ const handleSubmitUser = async (userData: Partial<User>, imageBase64?: string) =
 
       const updatedUser = await updateUserHelper(userData.id, user.token, updateData);
 
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
-      );
-      alert("Usuario actualizado correctamente");
-    } else {
-      // Crear usuario
-       let imageFile: File | undefined;
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
+    );
 
-  if (formUserData.profileImage && typeof formUserData.profileImage === "string" && formUserData.profileImage.startsWith("data:image")) {
-    imageFile = base64ToFile(formUserData.profileImage, "imagen.png");
-  }
-
-  if (imageFile) {
-  console.log("Tamaño imagen original:", (imageFile.size / 1024).toFixed(2), "KB");
-
-  const compressedImageFile = await compressImage(imageFile);
-
-  console.log("Tamaño imagen comprimida:", (compressedImageFile.size / 1024).toFixed(2), "KB");
-
-  if (compressedImageFile.size / 1024 > 300) {
-    alert("La imagen comprimida sigue siendo mayor a 300 KB. Intenta con otra imagen más ligera.");
-    setIsLoading(false);
-    return;
-  }
-
-  await createAdminHelper(formUserData, user.token, compressedImageFile);
-} else {
-  alert("Debes agregar una imagen para crear el usuario.");
-  setIsLoading(false);
-  return; // Para detener la ejecución si es necesario
-}
-alert("Usuario creado correctamente");
-setIsDialogOpen(false);
-setIsLoading(false);
-setTimeout(() => window.location.reload(), 500)
-}
-    
+    toast({
+        title: "Éxito",
+        description: "Cambios realizados con éxito",
+      })
+    setTimeout(() => {
+    window.location.reload();
+   }, 500); 
+    setIsDialogOpen(false);
     
   } catch (error: any) {
-  // Intentamos obtener el mensaje del error de la respuesta si existe
-  const message =
-    error?.response?.data?.message || // Por ejemplo axios error con response.data.message
-    error?.message ||                  // O el mensaje general
-    String(error);                    // O convertimos el error a string
-
-  alert("Error al guardar usuario: " + message);
-  toast.error("Error al guardar el usuario");
-  setIsLoading(false);
-} finally {
+    console.error("Error al actualizar usuario:", error);
+    toast({
+        title: "Error",
+        description: "Error al actualizar el usuario",
+        variant: "destructive",
+      })
+  } finally {
     setIsLoading(false);
   }
 };
+
+
+
+
+  const handleDeleteUser = async (userId: string) => {
+      setIsLoading(true)
+    try {
+
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      setUsers((prev) => prev.filter((user) => user.id !== userId))
+      toast({
+        title: "Usuario eliminado",
+        description: "Usuario eliminado correctamente",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Error al eliminar el usuario",
+        variant: "destructive",
+      })
+    }
+  }
+
 
 const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Inactivo") => {
   
@@ -304,7 +247,11 @@ const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Ina
     const token = parsed?.token || ""
 
     if (!token) {
-      toast.error("Token no encontrado. Inicia sesión nuevamente.")
+        toast({
+          title: "Error",
+          description: "Token no encontrado. Inicia sesión nuevamente.",
+          variant: "destructive",
+        })
       return
     }
 
@@ -320,14 +267,21 @@ const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Ina
         user.id === userId ? { ...user, status: newStatus, updatedAt: new Date() } : user
       )
     )
-    toast.success(`Usuario ${newStatus === "Activo" ? "activado" : "desactivado"} correctamente`)
+      toast({
+        title: `Usuario ${newStatus === "Activo" ? "activado" : "desactivado"}`,
+        description: `Usuario ${newStatus === "Activo" ? "activado" : "desactivado"} correctamente`,
+      })
        setTimeout(() => {
     window.location.reload();
    }, 500); 
     setIsDialogOpen(false);
 
   } catch (error) {
-    toast.error("Error al cambiar el estado del usuario")
+      toast({
+        title: "Error",
+        description: "Error al cambiar el estado del usuario",
+        variant: "destructive",
+      })
     console.error(error)
   }
 }

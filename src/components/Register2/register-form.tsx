@@ -7,7 +7,7 @@ import { validationSchemaRegister } from "./validation-schema"
 import { registerHelper } from "./register-helper"
 import type { IUserDto } from "@/lib/types"
 import { FORM_FIELDS } from "./form-constants"
-import { toast } from "../ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 
 const INITIAL_VALUES: IUserDto = {
   name: "",
@@ -17,11 +17,12 @@ const INITIAL_VALUES: IUserDto = {
 }
 
 export function RegisterForm() {
+  const { toast } = useToast();
   const handleSubmit = async (values: IUserDto, { resetForm }: any) => {
     try {
       console.log("Datos enviados:", values)
 
-      const result = await registerHelper(values)
+      const result = await registerHelper(values, toast)
 
       if (result) {
         toast({

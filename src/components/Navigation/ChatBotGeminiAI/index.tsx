@@ -61,9 +61,14 @@ export default function GlobalChatbot() {
     setIsLoading(true)
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chatbot`, {
+      const token = localStorage.getItem("token") 
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chatbot/message`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({ message: input }),
       })
 
