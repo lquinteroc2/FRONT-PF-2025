@@ -5,7 +5,8 @@ import { FileAudio, FileText, Users, Video } from "lucide-react"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { getLast7DaysHelppoins, getLast7DaysResourceCounts, getLast7DaysUsers, getTotalHelppoins, getTotalResourceCounts, getTotalUsers } from "./resources-helper"
-import { number } from "yup"
+import { useAuth } from "@/context/Auth"
+
 
 
 type ResourceCounts = {
@@ -38,10 +39,16 @@ const [last7DaysCounts, setLast7DaysCounts] = useState<ResourceCounts>({
    const [last7DaysHelppoins, setLast7DaysHelppoins] = useState<number>(0)
    const [totalUsersData, setTotalUsersData] = useState<number>(0)
    const [last7DaysUsersData, setLast7DaysUsersData] = useState<number>(0)
-
+   const { user } = useAuth()
+   const token = user?.token
   useEffect(() => {
     const fetchStats = async () => {
       try {
+
+        if (!token) {
+  throw new Error("Token no disponible");
+}
+ 
         const [
           totalData,
           last7Data,
@@ -50,12 +57,12 @@ const [last7DaysCounts, setLast7DaysCounts] = useState<ResourceCounts>({
           totalUsersData,
           last7DaysUsersData,
         ] = await Promise.all([
-          getTotalResourceCounts(),
-          getLast7DaysResourceCounts(),
-          getTotalHelppoins(),
-          getLast7DaysHelppoins(),
-          getTotalUsers(),
-          getLast7DaysUsers(),
+          getTotalResourceCounts(token),
+          getLast7DaysResourceCounts(token),
+          getTotalHelppoins(token),
+          getLast7DaysHelppoins(token),
+          getTotalUsers(token),
+          getLast7DaysUsers(token),
         ])
 
         setTotalCounts(totalData)

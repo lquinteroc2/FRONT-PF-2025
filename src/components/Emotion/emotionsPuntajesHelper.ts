@@ -15,7 +15,7 @@ export type PuntajeResponse = {
 export async function PuntajesWeeklyHelper(id: string, token: string): Promise<PuntajeResponse> {
   try {
        const url = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.get<PuntajeResponse>(`${url}/emotions/analysis/weekly/${id}`, // ⬅️ Reemplaza con tu endpoint real
+    const response = await axios.get<PuntajeResponse>(`${url}/emotions/analysis/weekly`, // ⬅️ Reemplaza con tu endpoint real
      {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ export async function PuntajesWeeklyHelper(id: string, token: string): Promise<P
 export async function PuntajesDailyHelper(id: string, token: string): Promise<PuntajeResponse> {
   try {
        const url = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.get<PuntajeResponse>(`${url}/emotions/analysis/daily/${id}`, // ⬅️ Reemplaza con tu endpoint real
+    const response = await axios.get<PuntajeResponse>(`${url}/emotions/analysis/daily`, // ⬅️ Reemplaza con tu endpoint real
      {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ export async function PuntajesDailyHelper(id: string, token: string): Promise<Pu
 export async function PuntajesMonthHelper(id: string, token: string): Promise<PuntajeResponse> {
   try {
        const url = process.env.NEXT_PUBLIC_API_URL;
-    const response = await axios.get<PuntajeResponse>(`${url}/emotions/analysis/monthly/${id}`, // ⬅️ Reemplaza con tu endpoint real
+    const response = await axios.get<PuntajeResponse>(`${url}/emotions/analysis/monthly`, // ⬅️ Reemplaza con tu endpoint real
      {
         headers: {
           Authorization: `Bearer ${token}`,
