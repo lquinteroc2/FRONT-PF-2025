@@ -6,6 +6,7 @@ import { useAuth } from '@/context/Auth'
 import { motion, AnimatePresence } from 'framer-motion'
 import SubscriptionPlans from '../Subscription/SubscriptionPlans';
 import { ChevronDown } from 'lucide-react';
+import PuntajesEmotionsMonth from './PuntajesEmotionsMonth';
 
 export const AnimatedArrow = () => {
   const handleClick = () => {
@@ -109,20 +110,18 @@ const EmotionalLogView = () => {
           </motion.section>
 
           {/* Análisis Mensual */}
-          <motion.section
+                    <motion.section
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={sectionVariants}
-            className="w-full max-w-4xl text-center space-y-2"
+            className="w-full max-w-4xl text-center space-y-2 mb-8"
           >
-            <h2 className="text-xl font-semibold text-neutro-dark">Resumen mensual</h2>
+            <h2 className="text-xl font-semibold text-neutro-dark">Resumen Mensual</h2>
             <p className="text-sm text-gray-600">
-              Pronto podrás visualizar un panorama completo de tu estado emocional de los últimos 30 días. <br /> Ideal para observar tu progreso emocional a largo plazo.
+              Observa cómo han fluctuado tus emociones durante los últimos 30 días. <br /> Este resumen te permite identificar patrones, reconocer momentos importantes y ganar claridad sobre tu bienestar emocional.
             </p>
-            <div className="text-sm text-gray-500 italic">
-              Próximamente disponible.
-            </div>
+            <PuntajesEmotionsMonth />
           </motion.section>
         </>
       ) : (
