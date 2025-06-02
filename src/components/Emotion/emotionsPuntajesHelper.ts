@@ -48,3 +48,21 @@ export async function PuntajesDailyHelper(id: string, token: string): Promise<Pu
     throw error
   }
 }
+
+export async function PuntajesMonthHelper(id: string, token: string): Promise<PuntajeResponse> {
+  try {
+       const url = process.env.NEXT_PUBLIC_API_URL;
+    const response = await axios.get<PuntajeResponse>(`${url}/emotions/analysis/monthly/${id}`, // ⬅️ Reemplaza con tu endpoint real
+     {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    console.log(response)
+    return response.data
+  } catch (error) {
+    console.error('Error al obtener puntajes:', error)
+    throw error
+  }
+}

@@ -30,8 +30,7 @@ useEffect(() => {
     return;
   }
 
-  const parsed = JSON.parse(rawUser);
-  const token = parsed.token;
+  const token = user?.token;
 
   if (!token) {
     console.warn("⚠️ No hay token dentro de loginUser.");
@@ -68,9 +67,7 @@ useEffect(() => {
   if (selectedEmotion && intensity && user?.user.id) {
     setIsLoading(true);
     try {
-      const raw = localStorage.getItem("loginUser");
-      const parsed = raw ? JSON.parse(raw) : null;
-      const token = parsed?.token;
+      const token = user?.token;
 
       const result = await emotionCreateHelper(
         {

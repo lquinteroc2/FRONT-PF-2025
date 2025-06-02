@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import SubscriptionPlans from "../Subscription/SubscriptionPlans";
 import { AnimatePresence, motion } from "framer-motion";
 import { AnimatedArrow } from "./EmotionalLogView";
+import EmotionRegister from "../Buttons/EmotionRegister";
 
 export default function EmotionsHistoryUser() {
   const [emotions, setEmotions] = useState<RegisteredEmotion[]>([]);
@@ -112,16 +113,14 @@ const toggleExpand = (id: string | number) => {
 
   if (emotions.length === 0) {
     return (
-      <div className="mx-auto w-full p-4 sm:p-6 md:p-8 lg:w-2/5 flex justify-center items-center min-h-[300px] text-center">
-        <div className="bg-sky-50 border border-sky-200 p-8 rounded-xl shadow-lg"> {/* Cambiado a sky para diferenciarlo del error */}
+      <div className="mt-20 mx-auto w-full p-4 sm:p-6 md:p-8 lg:w-2/5 flex justify-center items-center min-h-[300px] text-center">
+        <div className="bg-neutro-ice border border-neutro p-8 rounded-xl shadow-lg"> {/* Cambiado a sky para diferenciarlo del error */}
           <span className="text-6xl mb-4 inline-block">🤔</span>
-          <h2 className="text-2xl font-semibold text-sky-800 mb-2">Aún no hay nada por aquí</h2>
-          <p className="text-sky-700">Parece que todavía no has registrado ninguna emoción.</p>
-          <p className="text-sky-700 mt-1">¡Anímate a contarnos cómo te sientes!</p>
-          {/* Opcional: Botón para navegar al registro de emociones */}
-          {/* <button className="mt-6 bg-primary text-white px-6 py-2 rounded-lg shadow hover:bg-primary/90 transition">
-            Registrar Emoción
-          </button> */}
+          <h2 className="text-2xl font-semibold text-neutro-dark mb-2">Aún no hay nada por aquí</h2>
+          <p className="text-primary-dark">Parece que todavía no has registrado ninguna emoción.</p>
+          <p className="text-primary-dark mt-1">¡Anímate a contarnos cómo te sientes!</p>
+
+          <EmotionRegister/>
         </div>
       </div>
     );
