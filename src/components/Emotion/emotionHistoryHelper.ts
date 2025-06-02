@@ -18,9 +18,16 @@ export interface RegisteredEmotion {
 }
 
 // HELPER para obtener datos (asumiendo que es correcto y NEXT_PUBLIC_API_URL está configurado)
-const emotionHistoryHelper = async (userId: string): Promise<RegisteredEmotion[]> => {
+const emotionHistoryHelper = async (userId: string, token: string): Promise<RegisteredEmotion[]> => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`);
+    const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
     // console.log("📦 Respuesta completa del backend:", response.data);
 
     // Asumiendo que los registros de emociones están en response.data.states o response.data directamente

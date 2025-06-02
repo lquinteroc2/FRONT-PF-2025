@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
   }
 
   // 🚫 Evita que usuarios autenticados accedan a la landing ("/")
-  if (pathname === "/" && isAuthenticated) {
+  if (pathname === "/" || pathname === "/login" && isAuthenticated) {
     const homeURL = new NextURL("/home", origin);
     return NextResponse.redirect(homeURL);
   }

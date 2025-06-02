@@ -75,7 +75,7 @@ export default function PuntajesEmotionsMonth() {
 const generateChartData = () => {
  if (!data?.puntajes) return [];
 
- const puntajesRecientes = data.puntajes.slice(-7); // Últimos 7 puntajes
+ const puntajesRecientes = data.puntajes.slice(-30); // Últimos 7 puntajes
 
  // Restar 1 día a 'hasta' para graficar hasta ayer
  const hasta = new Date(data.hasta);
