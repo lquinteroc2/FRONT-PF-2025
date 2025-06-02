@@ -1,8 +1,10 @@
 import type { IUserDto } from "@/lib/types"
+import { Toast } from "../ui/toast"
+import { toast } from "../ui/use-toast"
 
 export async function registerHelper(userData: IUserDto, toast:any): Promise<boolean> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}auth/signup`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,7 +23,7 @@ export async function registerHelper(userData: IUserDto, toast:any): Promise<boo
 
     console.error("Error en registerHelper:", error)
     toast({
-      title: "Erro en el Registro",
+      title: "Erro en el Registro"+ error,
       variant: "destructive",
     })
     throw error
