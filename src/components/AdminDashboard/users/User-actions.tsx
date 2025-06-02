@@ -27,28 +27,23 @@ interface User {
   name: string
   email: string
   role: string
-  status: "active" | "inactive"
+  status: "Activo" | "Inactivo"
 }
 
 interface UserActionsProps {
   user: User
   onEdit: (user: User) => void
-  onDelete: (userId: string) => void
-  onToggleStatus: (userId: string, newStatus: "active" | "inactive") => void
-  onViewProfile: (userId: string) => void
+  onToggleStatus: (userId: string, newStatus: "Activo" | "Inactivo") => void
+   token?: string
 }
 
-export default function UserActions({ user, onEdit, onDelete, onToggleStatus, onViewProfile }: UserActionsProps) {
+export default function UserActions({ user, onEdit, onToggleStatus  }: UserActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showStatusDialog, setShowStatusDialog] = useState(false)
 
-  const handleDelete = () => {
-    onDelete(user.id)
-    setShowDeleteDialog(false)
-  }
 
   const handleToggleStatus = () => {
-    const newStatus = user.status === "active" ? "inactive" : "active"
+    const newStatus = user.status === "Activo" ? "Inactivo" : "Activo"
     onToggleStatus(user.id, newStatus)
     setShowStatusDialog(false)
   }
@@ -64,10 +59,6 @@ export default function UserActions({ user, onEdit, onDelete, onToggleStatus, on
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onViewProfile(user.id)}>
-            <Eye className="mr-2 h-4 w-4" />
-            Ver perfil
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => onEdit(user)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar usuario
@@ -75,36 +66,10 @@ export default function UserActions({ user, onEdit, onDelete, onToggleStatus, on
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setShowStatusDialog(true)}>
             <Power className="mr-2 h-4 w-4" />
-            {user.status === "active" ? "Desactivar" : "Activar"}
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-destructive" onClick={() => setShowDeleteDialog(true)}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
+            {user.status === "Activo" ? "Desactivar" : "Activar"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {/* Diálogo de confirmación para eliminar */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta acción no se puede deshacer. Se eliminará permanentemente el usuario <strong>{user.name}</strong> y
-              todos sus datos asociados.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Eliminar
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* Diálogo de confirmación para cambiar estado */}
       <AlertDialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
@@ -112,14 +77,14 @@ export default function UserActions({ user, onEdit, onDelete, onToggleStatus, on
           <AlertDialogHeader>
             <AlertDialogTitle>Cambiar estado del usuario</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Estás seguro de que quieres {user.status === "active" ? "desactivar" : "activar"} al usuario{" "}
+              ¿Estás seguro de que quieres {user.status === "Activo" ? "desactivar" : "activar"} al usuario{" "}
               <strong>{user.name}</strong>?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleToggleStatus}>
-              {user.status === "active" ? "Desactivar" : "Activar"}
+              {user.status === "Activo" ? "Desactivar" : "Activar"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

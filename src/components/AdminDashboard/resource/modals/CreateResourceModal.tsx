@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import React, { useState } from 'react'
 import ResourceForm from '../forms/ResourceForm'
 import { ResourceFormData } from "@/lib/types"
+import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
   open: boolean
@@ -21,6 +22,7 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
 
   const handleChange = (field: keyof ResourceFormData, value: string | File | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -33,7 +35,11 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
     const uploadedById = 'admin-id' // Puedes hacer dinámico esto según tu auth
 
     if (!name || !fileType || !fileExtension || !uploadedById || !files) {
-      alert("Por favor completa todos los campos obligatorios.")
+      toast({
+        title: "Campos incompletos",
+        description: "Por favor completa todos los campos obligatorios.",
+        variant: "destructive",
+      })
       return
     }
 
@@ -56,10 +62,19 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
         body: form,
       })
 
+      toast({
+        title: "Recurso creado",
+        description: "El recurso fue creado exitosamente.",
+      })
+
       onClose()
     } catch (err) {
       console.error("Error al crear el recurso:", err)
-      alert("Ocurrió un error.")
+      toast({
+        title: "Error al crear recurso",
+        description: "Ocurrió un error al subir el recurso.",
+        variant: "destructive",
+      })
     } finally {
       setIsSubmitting(false)
     }

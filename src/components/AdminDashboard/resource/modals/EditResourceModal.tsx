@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useEffect, useState } from 'react'
 import ResourceForm from '../forms/ResourceForm'
 import { Props, ResourceFormData } from "@/lib/types"
+import { useToast } from "@/components/ui/use-toast"
 
 
 const EditResourceModal = ({ resource, onClose }: Props) => {
@@ -17,6 +18,7 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     if (resource) {
@@ -41,7 +43,11 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
     const uploadedById = 'admin-id' // o quien edita
 
     if (!name || !fileType || !fileExtension || !uploadedById) {
-      alert("Por favor completa todos los campos obligatorios.")
+      toast({
+        title: "Campos incompletos",
+        description: "Por favor completa todos los campos obligatorios.",
+        variant: "destructive",
+      })
       return
     }
 
@@ -79,11 +85,20 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
           }),
         })
       }
+      
+      toast({
+        title: "Recurso actualizado",
+        description: "El recurso fue editado exitosamente.",
+      })
 
       onClose()
     } catch (err) {
       console.error("Error al editar el recurso:", err)
-      alert("Ocurrió un error.")
+      toast({
+        title: "Error al editar",
+        description: "Ocurrió un error al editar el recurso.",
+        variant: "destructive",
+      })
     } finally {
       setIsSubmitting(false)
     }

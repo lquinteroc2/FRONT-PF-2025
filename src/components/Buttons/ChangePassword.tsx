@@ -4,10 +4,11 @@ import React, { useState, FormEvent } from "react";
 import { Button } from "../ui/button";
 import { useAuth } from "@/context/Auth";
 import { changePasswordHelper } from "@/components/ProfileUser/changePasswordHelper";
+import { useToast } from "@/components/ui/use-toast";
 
 const ChangePassword = () => {
   const { user } = useAuth();
-
+  const { toast } = useToast();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -68,11 +69,18 @@ const handleChangePassword = async (e: FormEvent) => {
     setConfirmNewPassword("");
     setShowChangePassword(false);
 
-    setTimeout(() => setPasswordSuccess(null), 3000);
+    toast({
+        title: "Éxito",
+        description: "¡Contraseña cambiada exitosamente!",
+      });
   } catch (error: any) {
     // Aquí mostramos el error completo para más detalle
     console.error("Error al cambiar contraseña:", error);
-    setPasswordError(error.message || "Error al cambiar la contraseña");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Error al cambiar la contraseña.",
+      });
   }
 };
 

@@ -8,13 +8,13 @@ import ChangePassword from "../Buttons/ChangePassword";
 import { Button } from "../ui/button";
 import uploadImageToImgBB from "./uploadImageToImgBB"
 import { profileEditHelper } from "./profileEditHelper";
-
+import { useToast } from "@/components/ui/use-toast";
 
 
 export default function ProfileUserView() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 const { user, setUser } = useAuth();
-
+const { toast } = useToast();
 const [userData, setUserData] = useState<UserData>({
   name: "",
   email: "",
@@ -84,11 +84,13 @@ const handleSaveField = (field: keyof UserData) => async (newValue: string) => {
     console.log(`✅ Campo ${field} actualizado correctamente`);
   } catch (error) {
     console.error(`❌ Error actualizando ${field}:`, error);
-    alert(`No se pudo actualizar ${field}. Intenta de nuevo.`);
+    toast({
+      title: "Error al guardar",
+      description: `No se pudo actualizar ${field}. Intenta de nuevo.`,
+      variant: "destructive",
+    });
   }
 };
-
-
 
 const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
@@ -136,7 +138,11 @@ const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
 
       console.log("✅ Foto de perfil actualizada correctamente");
     } catch (error) {
-      alert("❌ Error al actualizar la foto de perfil. Intenta nuevamente.");
+      toast({
+      title: "Error al actualizar la foto",
+      description: "No se pudo subir la nueva foto de perfil. Intenta nuevamente.",
+      variant: "destructive",
+    });
       console.error(error);
     }
   }
@@ -196,11 +202,25 @@ const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
                 </div>
 
                 {/* Badge premium */}
-                {user?.user.role === "premium" && (
-                  <div className="mt-4 px-3 py-1 bg-primary text-white text-sm rounded-full shadow-sm">
-                    Usuario Premium
-                  </div>
-                )}
+{user?.user.role === "premium" && (user?.user?.subscription?.length ?? 0) > 0  && (
+  <div className="mt-4 px-3 py-1 bg-primary text-white text-sm rounded-full shadow-sm">
+    Usuario Premium
+  </div>
+)}
+    <div className="text-xs mt-1">
+{user?.user?.subscription?.[0]?.startDate ? (
+  <>
+    Inicio: {new Date(user.user.subscription[0].startDate).toLocaleDateString("es-ES")}
+    {" | "}
+  </>
+) : null}
+{user?.user?.subscription?.[0]?.endDate ? (
+  <>
+    Fin: {new Date(user.user.subscription[0].endDate).toLocaleDateString("es-ES")}
+  </>
+) : null}
+
+    </div>
               </div>
             </div>
 

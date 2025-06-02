@@ -19,12 +19,12 @@ import { useRouter, useSearchParams } from 'next/navigation'
 const Map = dynamic(() => import('./MapSelector'), { ssr: false })
 
 const categories = [
-  { value: 'mental-health', label: 'Salud Mental' },
-  { value: 'support-group', label: 'Grupo de Apoyo' },
-  { value: 'therapy', label: 'Terapia' },
-  { value: 'wellness', label: 'Bienestar' },
-  { value: 'meditation', label: 'Meditación' },
-  { value: 'yoga', label: 'Yoga' },
+  { value: "salud-mental", label: "Salud Mental" },
+  { value: "grupo-apoyo", label: "Grupo de Apoyo" },
+  { value: "terapia", label: "Terapia" },
+  { value: "bienestar", label: "Bienestar" },
+  { value: "meditacion", label: "Meditación" },
+  { value: "yoga", label: "Yoga" },
 ]
 
 

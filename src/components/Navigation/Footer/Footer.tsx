@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const pathname = usePathname();
-  const hideFullFooterIn = ["/", "/register", "/login", "/contact-us", "/emotions"]; // ← aquí defines dónde NO quieres el footer completo
+  const hideFullFooterIn = ["/", "/register", "/login", "/contact-us", "/help-centers", "/emotions", "/emotions/myEmotionalLog", "/emotions/myHistory"]; // ← aquí defines dónde NO quieres el footer completo
 const showFullFooter = !(
   hideFullFooterIn.includes(pathname) || pathname.startsWith("/subscription-confirm/")
 );
@@ -48,7 +48,7 @@ const showFullFooter = !(
                 </Link>
               </li>
               <li>
-                <Link href="/home" className="hover:text-primary">
+                <Link href="/recursos" className="hover:text-primary">
                   Recursos
                 </Link>
               </li>
@@ -68,11 +68,11 @@ const showFullFooter = !(
                   Contacto
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="#" className="hover:text-primary">
                   Colabora
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 

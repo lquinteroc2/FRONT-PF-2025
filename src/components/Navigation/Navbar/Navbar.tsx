@@ -18,10 +18,10 @@ import Cookies from "js-cookie"
 import { useRouter } from "next/navigation"
 import { usePathname } from "next/navigation";
 
-
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const { user, setUser } = useAuth();
+  const [loggingOut, setLoggingOut] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -29,11 +29,20 @@ export default function Navbar() {
     { name: "Contáctanos", href: "/contact-us", showWhen: "always" },
     { name: "Acerca de Nosotros", href: "/aboutUs", showWhen: "always" },
     { name: "Recomendaciones", href: "/recomendaciones", hidden: false, showWhen: "auth" },
-    { name: "Mis Emociones", href: "/emotions", hidden: false, showWhen: "auth" },
-    { name: "Centros de Apoyo", href: "/centrosApoyo", hidden: false, showWhen: "auth" },
+    { name: "Centros de Apoyo", href: "/help-centers", hidden: false, showWhen: "auth" },
     { name: "Registro", href: "/register", hidden: false, showWhen: "noAuth" },
     { name: "Iniciar Sesión", href: "/login", hidden: false, showWhen: "noAuth" },
+    {
+      name: "Mis Emociones",
+      hidden: false,
+      showWhen: "auth",
+      submenu: [
+        { name: "Historial Emocional", href: "/emotions/myHistory" },
+        { name: "Bitacora Emocional", href: "/emotions/myEmotionalLog" }
+      ]
+    },
   ]
+
   const filteredLinks = navLinks.filter((link) => {
     if (link.href === pathname) return false;
     if (link.showWhen === "noAuth") return !user;
@@ -41,16 +50,18 @@ export default function Navbar() {
     if (link.showWhen === "always") return true;
     return false;
   });
-  const handleLogout = () => {
-    setUser(null);
 
+const handleLogout = () => {
+  setLoggingOut(true);
+
+  setTimeout(() => {
+    setUser(null);
     localStorage.removeItem("loginUser");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
     Cookies.remove("loginUser");
 
     router.push("/");
-  };
+  }, 1000);
+};
 
   return (
     <nav className="overflow-hidden min-w-[100vw] border-b bg-neutro fixed top-0 w-full z-50 shadow-sm">
@@ -64,8 +75,33 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex md:flex-1 md:justify-center">
           <ul className="flex gap-8">
-            {
-              filteredLinks.filter(link => !link.hidden).map((link) => (
+            {filteredLinks.filter(link => !link.hidden).map((link) => {
+              if (link.submenu) {
+                // Render dropdown menu with submenu items, filtering out current path
+                return (
+                  <li key={link.name}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="text-sm font-medium text-neutro-dark transition-colors hover:text-primary-dark hover:font-semibold">
+                          {link.name}
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {link.submenu
+                          .filter(subItem => subItem.href !== pathname)
+                          .map(subItem => (
+                            <DropdownMenuItem asChild key={subItem.href}>
+                              <Link href={subItem.href}>{subItem.name}</Link>
+                            </DropdownMenuItem>
+                          ))
+                        }
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </li>
+                )
+              }
+              // Normal link
+              return (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -74,8 +110,8 @@ export default function Navbar() {
                     {link.name}
                   </Link>
                 </li>
-              ))
-            }
+              )
+            })}
           </ul>
         </div>
 
@@ -128,28 +164,61 @@ export default function Navbar() {
                 <span className="text-xl font-bold text-primary">Séntia</span>
               </div>
               <nav className="flex flex-col gap-2 py-4 flex-grow">
-                {filteredLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="px-4 py-2 text-base font-medium text-neutro-dark transition-colors hover:bg-primary-light hover:text-primary rounded-md"
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
+                <ul className="flex flex-col gap-2">
+                  {filteredLinks.filter(link => !link.hidden).map((link) => {
+                    if (link.submenu) {
+                      return (
+                        <li key={link.name}>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button className="text-sm font-medium text-neutro-dark transition-colors hover:text-primary-dark hover:font-semibold">
+                                {link.name}
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {link.submenu
+                                .filter(subItem => subItem.href !== pathname)
+                                .map(subItem => (
+                                  <DropdownMenuItem asChild key={subItem.href}>
+                                    <Link href={subItem.href}>{subItem.name}</Link>
+                                  </DropdownMenuItem>
+                                ))
+                              }
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </li>
+                      )
+                    }
+                    return (
+                      <li key={link.name}>
+                        <Link
+                          href={link.href}
+                          className="text-sm font-medium text-neutro-dark transition-colors hover:text-primary-dark hover:font-semibold"
+                        >
+                          {link.name}
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
               </nav>
-              {user && (
-                <div className="mt-auto px-4 py-4 border-t">
-                  <Button
-                    onClick={handleLogout}
-                    className="w-full justify-start text-base text-neutro-dark hover:bg-red-100 hover:text-red-700"
-                    variant="ghost"
-                  >
-                    Cerrar sesión
-                  </Button>
-                </div>
-              )}
+   {loggingOut ? (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-xl font-semibold z-50">
+        Cerrando sesión...
+      </div>
+    ) : (
+      user && (
+        <div className="mt-auto px-4 py-4 border-t">
+          <Button
+            onClick={handleLogout}
+            className="w-full justify-start text-base text-neutro-dark hover:bg-primary-100 hover:text-neutro-dark"
+            variant="ghost"
+          >
+            Cerrar sesión
+          </Button>
+        </div>
+      )
+    )}
             </SheetContent>
           </Sheet>
         </div>

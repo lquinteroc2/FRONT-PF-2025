@@ -11,6 +11,7 @@ import { loginValidationSchema } from "./loginvalidationSchema";
 import { loginHelper } from "./loginHelper";
 import { useAuth } from "@/context/Auth";
 import { useRouter } from 'next/navigation';
+import { useToast } from "@/components/ui/use-toast";
 
 const initialValues: ILoginFormData = {
   email: '',
@@ -21,18 +22,41 @@ const MotionDiv = motion('div');
 
 
 const LoginView = () => {
-    const { setUser } = useAuth();
-    const router = useRouter();
-    const onSubmit = async (
-  values: { email: string; password: string },
-  { resetForm, setSubmitting }: FormikHelpers<{ email: string; password: string }>
-) => {
-   const { token, user } = await loginHelper(values);
+  const { setUser } = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const onSubmit = async (
+    values: { email: string; password: string },
+    { resetForm, setSubmitting }: FormikHelpers<{ email: string; password: string }>
+  ) => {
+    const result = await loginHelper(values);
+
+    if (result.success) {
+      const { token, user } = result.data;
       setUser({ token, user });
+
+      toast({
+        title: "¡Bienvenido!",
+        description: "Logueado exitosamente.",
+      });
+
       resetForm();
       setSubmitting(false);
-      router.push('/home');  
-};
+
+      setTimeout(() => {
+        router.push("/home");
+      }, 2000);
+    } else {
+      toast({
+        title: "Error al loguear",
+        description: result.error || "Intenta nuevamente",
+        variant: "destructive",
+      });
+
+      setSubmitting(false);
+    }
+  };
 
 return (
     <>
@@ -61,7 +85,7 @@ return (
 <MotionDiv        
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    transition={{ duration: 6, ease: 'easeOut' }}>
+    transition={{ duration: 3, ease: 'easeOut' }}>
         <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
@@ -74,12 +98,12 @@ return (
                 INICIAR SESION
             </p>
             <div className="w-full">
-        <label className="block text-sm font-semibold text-neutro-dark">Correo Electronico</label>
+        <label className="block text-sm font-semibold  text-neutro-dark">Correo Electronico</label>
         <Field
     type="email"
     name="email"
     placeholder="Correo Electronico"
-    className="w-[60%] text-center border border-neutro"/>
+    className="w-[60%] text-center border border-neutro-dark rounded"/>
     <ErrorMessage name="email" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
 
@@ -89,7 +113,7 @@ return (
     type="password"
     name="password"
     placeholder="Contraseña"
-    className="w-[60%] text-center border border-neutro-dark"
+    className="w-[60%] text-center border border-neutro-dark rounded"
   />
   <ErrorMessage name="password" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
@@ -124,8 +148,7 @@ return (
             </MotionDiv>
     </div>
 </div>
-    
-    </>
+</>
 )
 
 }

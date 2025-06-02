@@ -22,9 +22,9 @@ export enum FileExtension {
 }
 
 export enum UserRole {
-  FREE = "FREE",
-  PREMIUM = "PREMIUM",
-  ADMIN = "ADMIN",
+  FREE = "free",
+  PREMIUM = "premium",
+  ADMIN = "admin",
 }
 
 // Interfaces
@@ -39,10 +39,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  profileImage?: string;
+  profileImage?: string | File;
   address?: string;
   role: string;
-  status: "active" | "inactive";
+  status: "Activo" | "Inactivo";
   createdAt?: string;
   subscription?: Subscription[];  
 }
@@ -126,4 +126,22 @@ export type ResourceFormProps = {
 export type Props = {
   resource: Resource
   onClose: () => void
+}
+
+
+export interface HelpCenterData {
+  id: string
+  name: string
+  description: string
+  contact: string
+  category: string
+  address: string
+  city: string
+  country: string
+  coordinates: {
+    type: "Point"
+    coordinates: [number, number] // [longitude, latitude]
+  }
+  createdAt: Date
+  updatedAt: Date
 }

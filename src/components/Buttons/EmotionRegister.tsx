@@ -3,14 +3,20 @@
 import { useState } from "react";
 import { useAuth } from "@/context/Auth";
 import EmotionForm from "@/components/Emotion/EmotionForm";
+import { useToast } from "@/components/ui/use-toast";
 
 const EmotionRegister = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const toggleModal = () => {
     if (!user) {
-      alert("Debes iniciar sesión para poder registrar emociones.");
+      toast({
+        variant: "destructive",
+        title: "Acceso denegado",
+        description: "Debes iniciar sesión para poder registrar emociones.",
+      });
       return;
     }
     setIsOpen(!isOpen);

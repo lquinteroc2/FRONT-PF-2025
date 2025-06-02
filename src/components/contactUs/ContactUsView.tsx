@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { contactValidationSchema } from './contactValidationSchema';
 import { contactHelper } from '@/components/contactUs/contactHelper';
 import { motion } from 'framer-motion';
-
+import { useToast } from "@/components/ui/use-toast";
 
 const MotionDiv = motion('div');
 
@@ -17,25 +17,31 @@ const initialValues: ContactFormValues = {
 };
 
 const ContactUs = () => {
- const onSubmit = async (
-  values: ContactFormValues,
-  { resetForm, setSubmitting }: FormikHelpers<ContactFormValues>
-) => {
-  console.log('Datos del formulario:', values);
+  const { toast } = useToast(); // ✅ mover aquí
 
-  const emailResult = await sendContactEmails(values);
-const contactResult = await contactHelper(values.name, values.email);
+  const onSubmit = async (
+    values: ContactFormValues,
+    { resetForm, setSubmitting }: FormikHelpers<ContactFormValues>
+  ) => {
+    console.log('Datos del formulario:', values);
 
-if (emailResult.success && contactResult.success) {
-  alert("Datos Enviados con Éxito");
+    const emailResult = await sendContactEmails(values);
+    const contactResult = await contactHelper(values.name, values.email);4
+
+     if (emailResult.success) {
+     toast({
+    title: 'Formulario recibido',
+    description: contactResult.success
+      ? '¡Gracias por escribirnos! Tu mensaje ha sido enviado y pronto nos pondremos en contacto contigo.'
+      : ' Gracias por volver a escribirnos; responderemos tu mensaje a la brevedad.',
+  });
   resetForm();
-} else {
-  console.error("Error al enviar el correo");
-}
+    } else {
+      console.error('Error al enviar el correo');
+    }
 
-  setSubmitting(false);
-};
-
+    setSubmitting(false);
+  };
 
   return (
         <Formik

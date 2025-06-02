@@ -7,12 +7,14 @@ import Image from "next/image";
 import googleHelper from "../Login/GoogleHelper";
 import { useAuth } from "@/context/Auth";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const GoogleLogin = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [sent, setSent] = useState(false); // Para evitar múltiples envíos
-    const { setUser } = useAuth();
+  const { setUser } = useAuth();
+  const { toast } = useToast();
 
   const handleSignIn = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -37,7 +39,10 @@ const GoogleLogin = () => {
         const data = await googleHelper({ name, email, profileImage, sub });
         setUser(data);
         await signOut({ redirect: false });
-        alert("Logueado Correctamente")
+      toast({
+        title: "¡Bienvenido!",
+        description: "Logueado exitosamente.",
+      });
         router.push("/home");
       } catch (err) {
         console.error("❌ Error al enviar datos a backend:", err);
@@ -53,7 +58,7 @@ const GoogleLogin = () => {
       onClick={handleSignIn}
       variant="google"
       size="sm"
-      className="w-[60%] flex items-center justify-center gap-2 font-bold"
+      className="w-[60%] mb-4 flex items-center justify-center gap-2 font-bold"
     >
       <Image src="https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960113/google_zas5vr.png" alt="Google" width={20} height={20} />
       Iniciar sesión con Google
