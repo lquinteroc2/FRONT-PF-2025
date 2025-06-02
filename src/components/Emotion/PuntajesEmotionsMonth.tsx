@@ -148,7 +148,7 @@ const generateChartData = () => {
    className="w-full max-w-3xl mt-24 mx-auto p-6 bg-neutro-light rounded-2xl shadow-xl space-y-6 border border-neutro"
   >
    <motion.h2 variants={itemVariants} className="text-2xl font-bold text-primary">
-    Analisis Semanal
+    Analisis Mensual
    </motion.h2>
 
    <motion.div variants={itemVariants} className="h-64 w-full">

@@ -102,7 +102,7 @@ const EmotionalLogView = () => {
             variants={sectionVariants}
             className="w-full max-w-4xl text-center space-y-2 mb-8"
           >
-            <h2 className="text-xl font-semibold text-neutro-dark">Resumen semanal</h2>
+            <h2 className="text-xl font-semibold text-neutro-dark">Resumen Semanal</h2>
             <p className="text-sm text-gray-600">
               Observa cómo han fluctuado tus emociones durante los últimos 7 días. <br /> Este resumen te ayuda a detectar tendencias, identificar eventos clave y darte perspectiva.
             </p>
