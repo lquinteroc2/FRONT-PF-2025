@@ -13,11 +13,9 @@ interface Message {
 }
 
 export default function GlobalChatbot() {
-  const pathname = usePathname();
-
-    if (pathname === "/" || pathname === "/login" || pathname === "/register") {
-    return null;
-  }
+const pathname = usePathname();
+const shouldHide = pathname === "/" || pathname === "/login" || pathname === "/register";
+const [isPremiumUser, setIsPremiumUser] = useState(false)
 
   const words = [
     "Inteligente",
@@ -52,6 +50,18 @@ export default function GlobalChatbot() {
     }
   }, [messages])
 
+  useEffect(() => {
+  const storedUser = localStorage.getItem("loginUser");
+  if (storedUser) {
+    try {
+      const parsedUser = JSON.parse(storedUser);
+      setIsPremiumUser(parsedUser?.user?.role === "premium");
+    } catch (err) {
+      console.error("Error al parsear el usuario:", err);
+    }
+  }
+  }, []);
+
   const sendMessage = useCallback(async () => {
     if (!input.trim() || isLoading) return
 
@@ -61,7 +71,8 @@ export default function GlobalChatbot() {
     setIsLoading(true)
 
     try {
-      const token = localStorage.getItem("token") 
+      const storedUser = localStorage.getItem("loginUser")
+      const token = storedUser ? JSON.parse(storedUser).token : null
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chatbot/message`, {
         method: "POST",
@@ -102,6 +113,8 @@ export default function GlobalChatbot() {
   const maximizeChat = () => {
     setIsMinimized(false)
   }
+
+  if (!isPremiumUser || shouldHide) return null;
 
   return (
     <>
@@ -190,7 +203,7 @@ export default function GlobalChatbot() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="flex flex-col flex-1 max-h-[500px]"
+                    className="flex flex-col h-[500px]"
                     >
                   {/* Palabras dinámicas */}
                   <div className="p-3 bg-neutro.ice border-b border-border">
@@ -207,7 +220,7 @@ export default function GlobalChatbot() {
                   </div>
 
                   {/* Mensajes */}
-                  <div ref={chatContainerRef} className="flex-1 p-3 overflow-y-auto space-y-2 bg-neutro.ice">
+                  <div ref={chatContainerRef} className="grow overflow-y-auto p-3 space-y-2 bg-neutro.ice max-h-[300px]">
                     {messages.map((msg, i) => (
                       <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
                         <div className={`px-3 py-2 rounded-lg max-w-[80%] text-sm ${msg.sender === "user" ? "bg-primary text-white rounded-br-none" : "bg-card text-card-foreground rounded-bl-none shadow-sm"}`}>

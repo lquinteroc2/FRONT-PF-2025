@@ -7,13 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import imageCompression from "browser-image-compression";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search, UserPlus } from "lucide-react"
 import { User, UserRole } from "@/lib/types"
 import UserForm from "@/components/AdminDashboard/users/UsersComponent"
 import UserActions from "@/components/AdminDashboard/users/User-actions"
 import { useAuth } from "@/context/Auth"
-import { updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
+import {  compressAndUploadImage, createAdminHelper, updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
 import { adminEditUserHelper, AdminUpdateUserData, profileEditHelper, UpdateUserData } from "@/components/ProfileUser/profileEditHelper"
 import Cookies from "js-cookie"
 import { useToast } from "@/components/ui/use-toast"
@@ -47,6 +48,7 @@ const mapStatusToAPI = (filter: string ): "Activo" | "Inactivo" | "all" => {
 useEffect(() => {
   const fetchUsers = async () => {
     if (!user?.token) return;
+
 
     
 const params: UserRequestParams = {
@@ -143,6 +145,7 @@ useEffect(() => {
   }
 
   const handleCreateUser = () => {
+    
     setEditingUser(null)
     setIsDialogOpen(true)
   }
@@ -167,20 +170,25 @@ const handleSubmitUser = async (userData: Partial<User>) => {
   setIsLoading(true);
 
   try {
-    const updateData: Partial<User> = {};
+    const formUserData: Partial<User> = { ...userData };
 
-    if (userData.name && userData.name.trim() !== "") updateData.name = userData.name;
-    if (userData.email && userData.email.trim() !== "") updateData.email = userData.email;
-    if (userData.address && userData.address.trim() !== "") updateData.address = userData.address;
-    if (userData.profileImage && userData.profileImage.trim() !== "") updateData.profileImage = userData.profileImage;
-    if (userData.role && userData.role.trim() !== "") updateData.role = userData.role;
-    if (userData.status && userData.status.trim() !== "") updateData.status = userData.status;
+    if (userData.id) {
+      // Actualizar usuario
+      const updateData: Partial<User> = {};
 
-    const updatedUser = await updateUserHelper(
-      userData.id,
-      user.token,
-      updateData
-    );
+      if (formUserData.name && formUserData.name.trim() !== "") updateData.name = formUserData.name;
+      if (formUserData.email && formUserData.email.trim() !== "") updateData.email = formUserData.email;
+      if (formUserData.address && formUserData.address.trim() !== "") updateData.address = formUserData.address;
+      if (
+        (typeof formUserData.profileImage === "string" && formUserData.profileImage.trim() !== "") ||
+        formUserData.profileImage instanceof File
+      ) {
+        updateData.profileImage = formUserData.profileImage;
+      }
+      if (formUserData.role && formUserData.role.trim() !== "") updateData.role = formUserData.role;
+      if (formUserData.status && formUserData.status.trim() !== "") updateData.status = formUserData.status;
+
+      const updatedUser = await updateUserHelper(userData.id, user.token, updateData);
 
     setUsers((prev) =>
       prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
@@ -278,8 +286,7 @@ const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Ina
   }
 }
 
-
-  const handleCloseDialog = () => {
+const handleCloseDialog = () => {
     setIsDialogOpen(false)
     setEditingUser(null)
   }

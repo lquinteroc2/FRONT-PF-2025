@@ -85,7 +85,7 @@ return (
 <MotionDiv        
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    transition={{ duration: 6, ease: 'easeOut' }}>
+    transition={{ duration: 3, ease: 'easeOut' }}>
         <Formik
         initialValues={initialValues}
         onSubmit={onSubmit}
@@ -98,12 +98,12 @@ return (
                 INICIAR SESION
             </p>
             <div className="w-full">
-        <label className="block text-sm font-semibold text-neutro-dark">Correo Electronico</label>
+        <label className="block text-sm font-semibold  text-neutro-dark">Correo Electronico</label>
         <Field
     type="email"
     name="email"
     placeholder="Correo Electronico"
-    className="w-[60%] text-center border border-neutro"/>
+    className="w-[60%] text-center border border-neutro-dark rounded"/>
     <ErrorMessage name="email" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
 
@@ -113,7 +113,7 @@ return (
     type="password"
     name="password"
     placeholder="Contraseña"
-    className="w-[60%] text-center border border-neutro-dark"
+    className="w-[60%] text-center border border-neutro-dark rounded"
   />
   <ErrorMessage name="password" component="div" className="text-sm text-primary-dark font-bold" />
         </div>

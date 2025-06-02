@@ -25,10 +25,9 @@ const googleHelper = async (userData: {
     const { token, user } = response.data;
     return response.data;
   } catch (error: any) {
-    console.error(
-      "Error enviando usuario de Google al backend:",
-      error.response?.data?.message || error.message
-    );
+    const message = error.response?.data?.message || error.message || "Error desconocido";
+    alert(` ${message} Contactate con soporte, para dar mayor informacion`);
+    throw new Error(message);
   }
 };
 
