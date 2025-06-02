@@ -5,9 +5,12 @@ import { FileAudio, FileText, ImageIcon, Video } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getLast5Resource } from "./resources-helper"
 import { Resource } from "@/lib/types"
+import { useAuth } from "@/context/Auth"
 
 export function RecentResources() {
   const [resources, setResources] =  useState<Partial<Resource>[]>([])
+  const { user } = useAuth()
+  const token = user?.token
 
 const getFileIcon = (fileType: string) => {
   switch (fileType.toUpperCase()) {
@@ -36,7 +39,10 @@ const getFileIcon = (fileType: string) => {
   useEffect(() => {
   const fetchResources = async () => {
     try {
-      const data = await getLast5Resource()
+      if (!token) {
+    throw new Error("Token no disponible");}
+    
+      const data = await getLast5Resource(token)
       console.log("📦 Recursos obtenidos:", data) // <- log del cliente
       setResources(data)
     } catch (error) {

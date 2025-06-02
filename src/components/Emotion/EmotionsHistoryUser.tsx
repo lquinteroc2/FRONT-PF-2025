@@ -40,7 +40,7 @@ const toggleExpand = (id: string | number) => {
     if (user?.user.id) {
       setIsLoading(true);
       setError(null);
-      emotionHistoryHelper(user.user.id)
+      emotionHistoryHelper(user.user.id, user.token)
         .then(fetchedEmotions => {
           // Ordenar emociones por fecha, las más nuevas primero
           const sortedEmotions = fetchedEmotions.sort((a, b) =>

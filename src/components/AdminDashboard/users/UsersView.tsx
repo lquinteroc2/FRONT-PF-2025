@@ -202,7 +202,7 @@ const handleSubmitUser = async (userData: Partial<User>) => {
     window.location.reload();
    }, 500); 
     setIsDialogOpen(false);
-    
+  }
   } catch (error: any) {
     console.error("Error al actualizar usuario:", error);
     toast({
