@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
 
   // 🔐 Protección de rutas privadas (si no está logueado)
   if (
-    ( pathname === "/home" ||
+    ( 
       pathname === "/emotions/myHistory" ||
       pathname === "/emotions/myEmotionalLog" ||
       pathname === "/recomendaciones" ||
