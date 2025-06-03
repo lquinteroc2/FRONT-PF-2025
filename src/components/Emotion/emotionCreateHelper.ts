@@ -23,15 +23,9 @@ const emotionCreateHelper = async (
   try {
     const url = process.env.NEXT_PUBLIC_API_URL;
 
-    console.log("🧪 Verificando UUIDs:", {
-      userId: data.userId,
-      emotionId: data.emotionId,
-    });
-
     if (!isValidUUID(data.emotionId) || !isValidUUID(data.userId)) {
       throw new Error("UUID inválido");
     }
-
     const payload = {
       userId: data.userId,
       emotionId: data.emotionId,
@@ -39,17 +33,13 @@ const emotionCreateHelper = async (
       comentario: data.comment || "",
     };
 
-    console.log("📤 Enviando payload a /user_state", payload);
-    console.log("🔒 Token enviado:", token);
-
     const response = await axios.post(`${url}/user_state`, payload, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    const { emotion, createdAt } = response.data;
-    console.log("📤 retornando:", emotion, createdAt);
+    const { emotion, createdAt } = response.data
 
     return { emotion, createdAt };
   } catch (error: any) {

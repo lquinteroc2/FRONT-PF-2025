@@ -28,7 +28,7 @@ export default function Navbar() {
   const navLinks = [
     { name: "Contáctanos", href: "/contact-us", showWhen: "always" },
     { name: "Acerca de Nosotros", href: "/aboutUs", showWhen: "always" },
-    { name: "Recomendaciones", href: "/recomendaciones", hidden: false, showWhen: "auth" },
+    { name: "Recomendaciones", href: "/recursos", hidden: false, showWhen: "auth" },
     { name: "Centros de Apoyo", href: "/help-centers", hidden: false, showWhen: "auth" },
     { name: "Registro", href: "/register", hidden: false, showWhen: "noAuth" },
     { name: "Iniciar Sesión", href: "/login", hidden: false, showWhen: "noAuth" },
@@ -133,11 +133,13 @@ const handleLogout = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href="/admin" className="cursor-pointer">
-                    Admin
-                  </Link>
-                </DropdownMenuItem >
+                {user?.user?.role === "admin" && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="cursor-pointer">
+                      Admin
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <Link href="/profile" className="cursor-pointer">
                     Perfil
