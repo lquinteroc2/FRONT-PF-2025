@@ -195,7 +195,7 @@ const generateChartData = () => {
    
       <motion.div
      variants={itemVariants}
-     className="bg-white p-5 rounded-xl shadow-md border border-neutro-dark/80"
+     className="bg-neutro-ice p-5 rounded-xl shadow-md border border-neutro-dark/80"
    >
      <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left md:space-x-6">
        {/* Bloque Izquierdo: IEG */}
@@ -221,12 +221,12 @@ const generateChartData = () => {
      </div>
    
      {/* Sección Inferior: Consejo y Acción */}
-     <div className="mt-6 border-t border-gray-200 pt-4 text-center md:text-left">
-       <p className="text-sm text-gray-600">
+      <div className="mt-6 border-t border-neutro-ice pt-4 text-center md:text-left">
+       <p className="text-sm text-neutro-dark">
          <span className="font-semibold text-neutro-dark">Consejo: </span>
          {data.consejo}
        </p>
-       <p className="text-sm text-gray-600 mt-2">
+       <p className="text-sm text-neutro-dark mt-2">
          <span className="font-semibold text-neutro-dark">Acción sugerida: </span>
          {data.accion}
        </p>

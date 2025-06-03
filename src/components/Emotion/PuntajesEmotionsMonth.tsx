@@ -208,7 +208,46 @@ const generateChartData = () => {
   )}
 </motion.div>
 
-
+     <motion.div
+     variants={itemVariants}
+     className="bg-neutro-ice p-5 rounded-xl shadow-md border border-neutro-dark/80"
+   >
+     <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left md:space-x-6">
+       {/* Bloque Izquierdo: IEG */}
+       <div className="flex-shrink-0 mb-4 md:mb-0">
+         <p className="text-sm font-medium text-neutro-dark">Tu Índice General</p>
+         <p className="text-6xl font-bold text-primary tracking-tight shadow-sm">
+           {data.IEG.toFixed(1)}
+         </p>
+       </div>
+   
+       {/* Bloque Derecho: Interpretación */}
+       <div className={`flex-grow p-4 rounded-lg ${interpretationStyle.bgColor}`}>
+         <div className="flex items-center justify-center md:justify-start space-x-3">
+           <span className={`h-3 w-3 rounded-full ${interpretationStyle.dotColor}`}></span>
+           <h4 className={`text-lg font-semibold ${interpretationStyle.textColor}`}>
+             {interpretationStyle.title}
+           </h4>
+         </div>
+         <p className={`mt-1 text-sm ${interpretationStyle.textColor}`}>
+           {data.interpretacion}
+         </p>
+       </div>
+     </div>
+   
+     {/* Sección Inferior: Consejo y Acción */}
+      <div className="mt-6 border-t border-neutro-ice pt-4 text-center md:text-left">
+       <p className="text-sm text-neutro-dark">
+         <span className="font-semibold text-neutro-dark">Consejo: </span>
+         {data.consejo}
+       </p>
+       <p className="text-sm text-neutro-dark mt-2">
+         <span className="font-semibold text-neutro-dark">Acción sugerida: </span>
+         {data.accion}
+       </p>
+     </div>
+   </motion.div>
   </motion.div>
+  
  )
 }

@@ -134,7 +134,7 @@ export default function SubscriptionPlansModal({
               <p className="text-xs text-neutro-dark text-center">Acceso por 3 Meses $10.17</p>
             </CardHeader>
             <CardContent className="space-y-2 text-xs flex-grow">
-                <Feature>Suscripción por 90 días con 15% de descuento</Feature>
+                <Feature>Suscripción por 90 días con 15% de descuento - $10.17</Feature>
                 <Feature>Chat de ayuda emocional 24/7</Feature>
   <Feature>Registro emocional ilimitado</Feature>
   <Feature>Acceso completo a recursos</Feature>
