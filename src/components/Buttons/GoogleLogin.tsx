@@ -43,7 +43,9 @@ const GoogleLogin = () => {
         title: "¡Bienvenido!",
         description: "Logueado exitosamente.",
       });
-        router.push("/home");
+      setTimeout(() => {
+          router.push("/home");
+      }, 1000);
       } catch (err) {
         console.error("❌ Error al enviar datos a backend:", err);
       }
