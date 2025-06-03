@@ -9,10 +9,6 @@ const registerHelper = async (userData: IUserDto, toast: any) => {
 
         const res = await axios.post(`${Url}/auth/signup`, userData);
 
-            toast({
-            title: "Registro exitoso",
-            description: "¡Bienvenido a Séntia!",
-            });
         return res.data;
 
     } catch (error: any) {

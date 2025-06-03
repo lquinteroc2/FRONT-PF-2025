@@ -73,25 +73,34 @@ export default function PuntajesEmotionsDaily() {
  }, [user?.user.id, user?.token])
 
 const generateChartData = () => {
-  if (!data?.puntajes) return [];
+   if (!data?.puntajes || !data?.desde || !data?.hasta) return [];
 
-  const hasta = new Date(data.hasta); // Hoy
-  const ayer = new Date(hasta);
-  ayer.setDate(hasta.getDate() - 1); // Ayer (sin UTC, por si usas zona local)
+  // Convertimos las fechas desde y hasta a objetos Date
+  const start = new Date(data.desde);
+  const end = new Date(data.hasta);
 
-  // Tomamos sólo los últimos 2 puntajes (de ayer y hoy)
-  const ultimosDosPuntajes = data.puntajes.slice(-2);
+  // Calculamos el número de días entre start y end (inclusive)
+  const diffTime = end.getTime() - start.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
-  // Mapeamos cada puntaje con su fecha (ayer o hoy)
-  return ultimosDosPuntajes.map((p, i) => {
-    const fecha = i === 0 ? ayer : hasta;
-    return {
-      dia: fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
-      puntaje: p
-    };
-  });
+  // Aseguramos que los puntajes no excedan la cantidad de días
+  const puntajes = data.puntajes.slice(-diffDays);
+
+  // Generamos array de fechas para cada puntaje SIN modificar 'start'
+  const fechas: Date[] = [];
+  for (let i = 0; i < puntajes.length; i++) {
+    // Aquí creamos una nueva fecha para cada iteración
+    const fecha = new Date(start);
+    fecha.setDate(start.getDate() + i);
+    fechas.push(fecha);
+  }
+
+  // Mapeamos fechas y puntajes
+  return puntajes.map((puntaje, i) => ({
+    dia: fechas[i].toLocaleDateString("es-ES", { day: "numeric", month: "short" }),
+    puntaje,
+  }));
 };
-
 
 
 
