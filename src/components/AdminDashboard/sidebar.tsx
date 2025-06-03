@@ -40,6 +40,9 @@ export function Sidebar({ className }: React.HTMLAttributes<HTMLDivElement>) {
         <div className="py-4">
           <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">General</h2>
           <div className="space-y-1">
+            <NavItem href="/profile" icon={<LayoutDashboard className="mr-2 h-4 w-4" />} isActive={pathname === "/"}>
+              Volver a <br/>Mi Perfil
+            </NavItem>
             <NavItem href="/admin" icon={<LayoutDashboard className="mr-2 h-4 w-4" />} isActive={pathname === "/"}>
               Dashboard
             </NavItem>
