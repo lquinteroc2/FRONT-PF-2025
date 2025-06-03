@@ -9,7 +9,7 @@ import { PlusCircle, Search } from "lucide-react";
 import { EmotionAdmin, emotionsHelper, emotionsHelperAdmin } from "@/components/Emotion/emotionsHelper"; // Ajusta ruta si es necesario
 import { useAuth } from "@/context/Auth";
 import EmotionFormAdmin from "@/components/Emotion/EmotionsFormAdmin";
-
+import { useToast } from "@/components/ui/use-toast";
 
 export default function EmotionsPage() {
   const [emotions, setEmotions] = useState<EmotionAdmin[]>([]);
@@ -27,18 +27,36 @@ export default function EmotionsPage() {
   token: string | undefined,
   onClose: () => void
 ) => {
+  const { toast } = useToast();
+
+
   if (!token) {
-    alert("No tienes autorización para crear una emoción.");
+    toast({
+        title: "Error al crear emoción",
+        description: "No tienes autorización para crear una emoción.",
+        variant: "destructive",
+      });
     return;
   }
 
-  try {
+try {
     const result = await emotionsHelperAdmin(token, emotion);
-    alert("Emoción creada con éxito");
+    const createdEmotion = result[0];
+
+    toast({
+      title: "Emoción creada",
+      description: `La emoción "${createdEmotion.name}" fue añadida correctamente.`,
+      variant: "default", // puedes omitirlo o personalizarlo
+    });
+
     onClose();
   } catch (error) {
     console.error("Error al crear la emoción:", error);
-    alert("Error al crear la emoción");
+    toast({
+      title: "Error al crear emoción",
+      description: "Ocurrió un error al intentar crear la emoción.",
+      variant: "destructive",
+    });
   }
 };
 

@@ -32,12 +32,15 @@ interface User {
 
 interface UserActionsProps {
   user: User
-  onEdit: (user: User) => void
+  // onEdit: (user: User) => void
   onToggleStatus: (userId: string, newStatus: "Activo" | "Inactivo") => void
    token?: string
 }
 
-export default function UserActions({ user, onEdit, onToggleStatus  }: UserActionsProps) {
+export default function UserActions({ 
+  user, 
+  // onEdit,
+   onToggleStatus  }: UserActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showStatusDialog, setShowStatusDialog] = useState(false)
 
@@ -59,11 +62,11 @@ export default function UserActions({ user, onEdit, onToggleStatus  }: UserActio
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => onEdit(user)}>
+          {/* <DropdownMenuItem onClick={() => onEdit(user)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar usuario
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator /> */}
           <DropdownMenuItem onClick={() => setShowStatusDialog(true)}>
             <Power className="mr-2 h-4 w-4" />
             {user.status === "Activo" ? "Desactivar" : "Activar"}

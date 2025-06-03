@@ -28,21 +28,19 @@ const ProfileUserView = () => {
     profilePicUrl: "",
   });
 
-  useEffect(() => {
-    if (user) {
-      setUserData({
-        name: user.user.name || "",
-        email: user.user.email || "",
-        address: user.user.address || "",
+useEffect(() => {
+  if (user) {
+    setUserData({
+      name: user.user.name || "",
+      email: user.user.email || "",
+      address: user.user.address || "",
         profilePicUrl:
-          typeof user.user.profileImage === "string"
-            ? user.user.profileImage
-            : user.user.profileImage instanceof File
-            ? URL.createObjectURL(user.user.profileImage)
-            : "",
-      });
-    }
-  }, [user]);
+    typeof user.user.profileImage === "string"
+      ? user.user.profileImage
+      : "",
+    });
+  }
+}, [user]);
 
   const handleSaveField = (field: keyof UserData) => async (newValue: string) => {
     if (!user || !setUser) return;
