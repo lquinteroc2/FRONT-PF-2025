@@ -68,30 +68,41 @@ export default function ResourcesPage() {
   // Cargar recursos del backend
   // Reemplazar la función fetchResources
   useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
+  const fetchResources = async () => {
+    try {
+      setLoading(true)
+      // Obtener el token del usuario autenticado
+      const storedUser = localStorage.getItem("loginUser")
+      const token = storedUser ? JSON.parse(storedUser).token : null
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data = await response.json()
-        setResources(data || [])
-        setFilteredResources(data || [])
-      } catch (error) {
-        console.error("Error fetching resources:", error)
-        // Mostrar mensaje de error al usuario
-        setResources([])
-        setFilteredResources([])
-      } finally {
-        setLoading(false)
+      if (!token) {
+        throw new Error("Usuario no autenticado")
       }
-    }
 
-    fetchResources()
-  }, [])
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setResources(data || [])
+      setFilteredResources(data || [])
+    } catch (error) {
+      console.error("Error fetching resources:", error)
+      setResources([])
+      setFilteredResources([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchResources()
+}, [])
 
   // Aplicar filtros
   // Actualizar la lógica de filtros
