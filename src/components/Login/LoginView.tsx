@@ -41,12 +41,12 @@ const LoginView = () => {
         description: "Logueado exitosamente.",
       });
 
+      setTimeout(() => {
+        router.push("/home");
+      }, 3000);
       resetForm();
       setSubmitting(false);
 
-      setTimeout(() => {
-        router.push("/home");
-      }, 2000);
     } else {
       toast({
         title: "Error al loguear",
