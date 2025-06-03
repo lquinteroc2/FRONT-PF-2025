@@ -49,35 +49,35 @@ export default function ResetPasswordForm() {
   }
 
   // Validar token al cargar
-  useEffect(() => {
-    const validateToken = async () => {
-      if (!token) {
-        setTokenValid(false)
-        setSubmitMessage("Token de restablecimiento no encontrado")
-        return
-      }
+  // useEffect(() => {
+  //   const validateToken = async () => {
+  //     if (!token) {
+  //       setTokenValid(false)
+  //       setSubmitMessage("Token de restablecimiento no encontrado")
+  //       return
+  //     }
 
-      try {
-        const response = await fetch("https://sentia-back.onrender.com/auth/validate-reset", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token }),
-        })
+  //     try {
+  //       const response = await fetch("https://sentia-back.onrender.com/auth/validate-reset", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ token,newPassword: initialValues.password }),
+  //       })
 
-        const data = await response.json()
-        setTokenValid(data.valid)
+  //       const data = await response.json()
+  //       setTokenValid(data.valid)
 
-        if (!data.valid) {
-          setSubmitMessage(data.error || "Token inválido o expirado")
-        }
-      } catch (error) {
-        setTokenValid(false)
-        setSubmitMessage("Error al validar el token")
-      }
-    }
+  //       if (!data.valid) {
+  //         setSubmitMessage(data.error || "Token inválido o expirado")
+  //       }
+  //     } catch (error) {
+  //       setTokenValid(false)
+  //       setSubmitMessage("Error al validar el token")
+  //     }
+  //   }
 
-    validateToken()
-  }, [token])
+  //   validateToken()
+  // }, [token])
 
   const handleSubmit = async (values: FormValues, { setSubmitting }: any) => {
     if (!token) return
@@ -86,12 +86,12 @@ export default function ResetPasswordForm() {
     setSubmitMessage("")
 
     try {
-      const response = await fetch("/api/auth/reset-password", {
+      const response = await fetch("https://sentia-back.onrender.com/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           token,
-          password: values.password,
+          newPassword: values.password,
         }),
       })
 

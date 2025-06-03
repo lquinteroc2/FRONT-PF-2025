@@ -44,12 +44,11 @@ export default function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProp
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: values.email,
-        }),
+        body: JSON.stringify({email: values.email}),
       })
 
       const data = await response.json()
+      console.log("Response data:", data)
 
       if (response.ok) {
         setSubmitStatus("success")
