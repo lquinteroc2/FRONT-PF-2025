@@ -6,8 +6,6 @@ const PageProfile = () => {
     return (
         <div > 
         <ProfileUserView/>
-        <EmotionsHistoryUser/> 
-        <SubscriptionPlans/>
          </div>
     )
 }

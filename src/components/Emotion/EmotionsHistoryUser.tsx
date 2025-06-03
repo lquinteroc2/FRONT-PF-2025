@@ -127,8 +127,7 @@ const toggleExpand = (id: string | number) => {
   }
 
 return (
-  <div className="px-4">
-    {/* Encabezado principal */}
+  <>
 <motion.div
   initial="hidden"
   animate="visible"
@@ -143,6 +142,7 @@ return (
   >
     🧠✨ Tu Diario Emocional
   </motion.h1>
+    {/* Encabezado principal */}
 
   <motion.p
     initial={{ opacity: 0, y: 20 }}
@@ -157,6 +157,7 @@ return (
 
   <AnimatedArrow />
 </motion.div>
+  <div className="px-4">
 
 
     {/* Lista de emociones */}
@@ -278,5 +279,6 @@ return (
       </div>
     )}
   </div>
+  </>
 );
 }
