@@ -53,15 +53,18 @@ const RegisterView = () => {
                     }}
                     validationSchema={validationSchemaRegister}
                     onSubmit={async (values, { resetForm }) => {
-                        const result = await registerHelper(values, toast); // Enviamos confirmPassword también
+                        const result = await registerHelper(values, toast); 
+                        console.log("Resultado del registro:", result);// Enviamos confirmPassword también
                         if (result) {
                                 toast({
                             title: "Registro exitoso",
                             description: "¡Bienvenido a Séntia!",
                             });
+                            resetForm(); 
+                              setTimeout(() => {
+                             router.push("/login");
+                            }, 1000);
 
-                            router.push("/login")
-                            resetForm();
                         }
                     }}
                 >
