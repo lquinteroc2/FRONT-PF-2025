@@ -119,7 +119,7 @@ return (
         </div>
             <li className="list-none">
                 <Link
-                href="/terminos"
+                href="/olvido-contrasena"
                 className="block text-sm font-medium text-neutro-dark mt-2"
                 >
                 ¿Olvido su Contraseña?
