@@ -193,12 +193,13 @@ useEffect(() => {
                   accept="image/*"
                   className="hidden"
                 />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-sm text-neutro-dark hover:text-primary-dark transition-colors mt-3"
-                >
-                  Cambiar foto
-                </button>
+<button
+  onClick={() => fileInputRef.current?.click()}
+  className="text-sm text-neutro-dark hover:text-primary-dark transition-colors mt-3 mx-auto block"
+>
+  Cambiar foto
+</button>
+
               </div>
 
               {role === "premium" && hasSubscription && (

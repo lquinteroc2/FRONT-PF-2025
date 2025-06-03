@@ -21,10 +21,10 @@ export function middleware(request: NextRequest) {
   }
 
   // 🚫 Evita que usuarios autenticados accedan a la landing ("/")
-  if (pathname === "/" || pathname === "/login" && isAuthenticated) {
-    const homeURL = new NextURL("/home", origin);
-    return NextResponse.redirect(homeURL);
+ if (isAuthenticated && (pathname === "/" || pathname === "/login")) {
+    return NextResponse.redirect(new NextURL("/home", origin));
   }
 
+  // De lo contrario, deja continuar la request
   return NextResponse.next();
 }
