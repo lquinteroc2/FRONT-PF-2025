@@ -35,7 +35,6 @@ interface FormValues {
 export default function ResetPasswordForm() {
   const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [submitMessage, setSubmitMessage] = useState("")
-  const [tokenValid, setTokenValid] = useState<boolean | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
@@ -116,36 +115,8 @@ export default function ResetPasswordForm() {
     }
   }
 
-  // Token inválido o expirado
-  if (tokenValid === false) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="mx-auto max-w-md space-y-6 rounded-lg bg-white p-8 shadow-lg"
-      >
-        <div className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-            <AlertCircle className="h-8 w-8 text-red-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Enlace Inválido</h2>
-          <p className="mt-2 text-sm text-gray-600">{submitMessage}</p>
-        </div>
 
-        <div className="space-y-3">
-          <Link href="/olvido-contrasena" className="block">
-            <Button className="w-full bg-teal-600 hover:bg-teal-700">Solicitar nuevo enlace</Button>
-          </Link>
-          <Link href="/login" className="block">
-            <Button variant="outline" className="w-full">
-              Volver al inicio de sesión
-            </Button>
-          </Link>
-        </div>
-      </motion.div>
-    )
-  }
+  
 
   // Éxito
   if (submitStatus === "success") {
@@ -185,17 +156,8 @@ export default function ResetPasswordForm() {
     )
   }
 
-  // Cargando validación de token
-  if (tokenValid === null) {
-    return (
-      <div className="mx-auto max-w-md space-y-6 rounded-lg bg-white p-8 shadow-lg">
-        <div className="text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-teal-600" />
-          <p className="mt-2 text-sm text-gray-600">Validando enlace...</p>
-        </div>
-      </div>
-    )
-  }
+  
+  
 
   // Formulario principal
   return (
