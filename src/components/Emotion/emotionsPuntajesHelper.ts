@@ -41,7 +41,7 @@ export async function PuntajesDailyHelper(id: string, token: string): Promise<Pu
         },
       }
     )
-    console.log(response)
+    console.log("Datos recibidos:", response); 
     return response.data
   } catch (error) {
     console.error('Error al obtener puntajes:', error)
@@ -59,7 +59,7 @@ export async function PuntajesMonthHelper(id: string, token: string): Promise<Pu
         },
       }
     )
-    console.log(response)
+    console.log("Datos recibidos:", response); 
     return response.data
   } catch (error) {
     console.error('Error al obtener puntajes:', error)

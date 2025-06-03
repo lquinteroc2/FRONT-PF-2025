@@ -73,23 +73,32 @@ export default function PuntajesEmotionsMonth() {
  }, [user?.user.id, user?.token])
 
 const generateChartData = () => {
- if (!data?.puntajes) return [];
+  if (!data?.puntajes || !data?.desde || !data?.hasta) return [];
 
- const puntajesRecientes = data.puntajes.slice(-30); // Últimos 7 puntajes
+  // Convertimos las fechas desde y hasta a objetos Date
+  const start = new Date(data.desde);
+  const end = new Date(data.hasta);
 
- // Restar 1 día a 'hasta' para graficar hasta ayer
- const hasta = new Date(data.hasta);
- hasta.setUTCDate(hasta.getUTCDate() - 1); // ahora es 26 may
+  // Calculamos el número de días entre start y end (inclusive)
+  const diffTime = end.getTime() - start.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  
+  if (diffDays < 30 || data.puntajes.length < 30) return [];
+  // Recortamos puntajes en caso que haya menos puntajes que días
+  const puntajes = data.puntajes.slice(-diffDays);
 
- // Crear fechas desde el 20 hasta el 26
- return puntajesRecientes.map((p, i) => {
-  const date = new Date(hasta);
-  date.setUTCDate(hasta.getUTCDate() - (puntajesRecientes.length - 1 - i));
-  return {
-   dia: date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
-   puntaje: p
-  };
- });
+  // Generamos array de fechas para cada puntaje
+    const fechas: Date[] = [];
+  for (let i = 0; i < puntajes.length; i++) {
+  const fecha = new Date(start);
+  fecha.setDate(start.getDate() + i);
+  fechas.push(fecha);
+}
+  // Mapear fechas y puntajes
+  return puntajes.map((puntaje, i) => ({
+    dia: fechas[i].toLocaleDateString("es-ES", { day: "numeric", month: "short" }),
+    puntaje,
+  }));
 };
 
 
@@ -151,76 +160,54 @@ const generateChartData = () => {
     Analisis Mensual
    </motion.h2>
 
-   <motion.div variants={itemVariants} className="h-64 w-full">
-    {chartData.length > 0 ? (
-     <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-       <defs>
-        <linearGradient id="colorPuntaje" x1="0" y1="0" x2="0" y2="1">
-         <stop offset="5%" stopColor={`${(interpretationStyle.dotColor === 'bg-primary') ? '#ccfbf1' : '#f3f4f6'}`} stopOpacity={0.8} />
-         <stop offset="95%" stopColor={`${interpretationStyle.dotColor.replace('bg-', '#')}`} stopOpacity={0.2} />
-        </linearGradient>
-       </defs>
-       <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
-       <XAxis dataKey="dia" stroke="#4b5563" fontSize={12} />
-       <YAxis stroke="#4b5563" fontSize={12} />
-       <Tooltip content={<CustomTooltip />} />
-       <Area
-       type="monotone"
-       dataKey="puntaje"
-       stroke="#16a34a" // verde oscuro (primary-dark)
-       strokeWidth={2.5}
-       fillOpacity={1}
-       fill="url(#colorPuntaje)"
-    />
+<motion.div variants={itemVariants} className="h-64 w-full">
+  {chartData.length >= 30 ? (
+    <ResponsiveContainer width="100%" height="100%">
+      <AreaChart
+        data={chartData}
+        margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
+      >
+        <defs>
+          <linearGradient id="colorPuntaje" x1="0" y1="0" x2="0" y2="1">
+            <stop
+              offset="5%"
+              stopColor={
+                interpretationStyle.dotColor === 'bg-primary'
+                  ? '#ccfbf1'
+                  : '#f3f4f6'
+              }
+              stopOpacity={0.8}
+            />
+            <stop
+              offset="95%"
+              stopColor={interpretationStyle.dotColor.replace('bg-', '#')}
+              stopOpacity={0.2}
+            />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
+        <XAxis dataKey="dia" stroke="#4b5563" fontSize={12} />
+        <YAxis stroke="#4b5563" fontSize={12} />
+        <Tooltip content={<CustomTooltip />} />
+        <Area
+          type="monotone"
+          dataKey="puntaje"
+          stroke="#16a34a"
+          strokeWidth={2.5}
+          fillOpacity={1}
+          fill="url(#colorPuntaje)"
+        />
       </AreaChart>
-     </ResponsiveContainer>
-    ) : (
-     <div className="flex items-center justify-center h-full">
-      <p className="text-neutro-dark">No hay suficientes datos para mostrar la gráfica.</p>
-     </div>
-    )}
-   </motion.div>
-
-   <motion.div
-  variants={itemVariants}
-  className="bg-white p-5 rounded-xl shadow-md border border-neutro-dark/80"
->
-  <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left md:space-x-6">
-    {/* Bloque Izquierdo: IEG */}
-    <div className="flex-shrink-0 mb-4 md:mb-0">
-      <p className="text-sm font-medium text-neutro-dark">Tu Índice General</p>
-      <p className="text-6xl font-bold text-primary tracking-tight shadow-sm">
-        {data.IEG.toFixed(1)}
+    </ResponsiveContainer>
+  ) : (
+    <div className="flex items-center justify-center h-full">
+      <p className="text-neutro-dark text-sm text-center px-4">
+        No hay suficientes datos (30 días) para mostrar la gráfica.
       </p>
     </div>
-
-    {/* Bloque Derecho: Interpretación */}
-    <div className={`flex-grow p-4 rounded-lg ${interpretationStyle.bgColor}`}>
-      <div className="flex items-center justify-center md:justify-start space-x-3">
-        <span className={`h-3 w-3 rounded-full ${interpretationStyle.dotColor}`}></span>
-        <h4 className={`text-lg font-semibold ${interpretationStyle.textColor}`}>
-          {interpretationStyle.title}
-        </h4>
-      </div>
-      <p className={`mt-1 text-sm ${interpretationStyle.textColor}`}>
-        {data.interpretacion}
-      </p>
-    </div>
-  </div>
-
-  {/* Sección Inferior: Consejo y Acción */}
-  <div className="mt-6 border-t border-gray-200 pt-4 text-center md:text-left">
-    <p className="text-sm text-gray-600">
-      <span className="font-semibold text-neutro-dark">Consejo: </span>
-      {data.consejo}
-    </p>
-    <p className="text-sm text-gray-600 mt-2">
-      <span className="font-semibold text-neutro-dark">Acción sugerida: </span>
-      {data.accion}
-    </p>
-  </div>
+  )}
 </motion.div>
+
 
   </motion.div>
  )

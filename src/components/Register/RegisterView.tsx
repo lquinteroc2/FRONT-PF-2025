@@ -7,11 +7,13 @@ import { Button } from "../ui/button";
 import { motion } from 'framer-motion';
 import registerHelper from "./registerHelper";
 import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const MotionDiv = motion('div');
 
 const RegisterView = () => {
     const { toast } = useToast();
+    const router = useRouter()
     return (
         <div className="flex flex-col md:flex-row gap-1 bg-secondary-50">
             <MotionDiv
@@ -59,6 +61,7 @@ const RegisterView = () => {
                             });
 
                             resetForm();
+                            router.push("/login")
                         }
                     }}
                 >
