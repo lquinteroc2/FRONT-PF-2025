@@ -23,6 +23,18 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const getToken = () => {
+  const stored = localStorage.getItem("loginUser")
+  if (!stored) return null
+
+  try {
+    const parsed = JSON.parse(stored)
+    return parsed.token // Asegúrate de que la clave sea exactamente esa
+  } catch (e) {
+    console.error("Error parsing token:", e)
+    return null
+  }
+}
 
   const handleChange = (field: keyof ResourceFormData, value: string | File | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -56,10 +68,13 @@ const CreateResourceModal = ({ open, onClose }: Props) => {
       form.append("fileExtension", fileExtension)
       form.append("description", description)
       form.append("uploadedById", uploadedById)
-
+      const token = getToken()
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`, {
         method: "POST",
         body: form,
+        headers: {
+        Authorization: `Bearer ${token}`,
+      },
       })
 
       toast({
