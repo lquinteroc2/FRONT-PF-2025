@@ -45,11 +45,12 @@ export default function SubscriptionPlansModal({
               </CardTitle>
               <p className="text-sm text-neutro-dark">Acceso básico sin costo</p>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm flex-grow">
-              <Feature>Funcionalidades esenciales</Feature>
-              <Feature>Historial limitado de emociones</Feature>
-              <Feature>Recomendaciones básicas</Feature>
-            </CardContent>
+          <CardContent className="space-y-2 text-sm flex-grow">
+  <Feature>Registro diario de emociones</Feature>
+  <Feature>Acceso a recursos del inicio</Feature>
+  <Feature>Historial de 3 emociones recientes</Feature>
+  <Feature>Mensajes personalizados según emoción</Feature>
+         </CardContent>
             <CardFooter>
               <Button
                 disabled={userCurrentPlan === "Gratuito"}
@@ -71,14 +72,16 @@ export default function SubscriptionPlansModal({
                 Prueba Gratuita
                 <Badge className="bg-primary-light text-primary-dark">7 Días</Badge>
               </CardTitle>
-              <p className="text-sm text-neutro-dark text-center">Para Nuevos Usuarios <br/> Unica Vez </p>
+              <p className="text-xs text-neutro-dark text-center">Para Nuevos Usuarios <br/> Unica Vez </p>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm flex-grow">
-              <Feature>Todas las funciones del plan mensual</Feature>
-              <Feature>Soporte básico</Feature>
-              <Feature>Acceso completo por 7 días</Feature>
-              <Feature>Requiere tarjeta (no se cobra hasta el final)</Feature>
-            </CardContent>
+            <CardContent className="space-y-2 text-xs flex-grow">
+  <Feature>7 días de acceso premium gratuito (una sola vez)</Feature>
+  <Feature>Chat de ayuda emocional 24/7</Feature>
+  <Feature>Registro emocional ilimitado</Feature>
+  <Feature>Acceso completo a recursos</Feature>
+  <Feature>Mapa interactivo de centros de apoyo</Feature>
+  <Feature>Bitácora emocional avanzada (diaria, semanal y mensual)</Feature>
+</CardContent>
             <CardFooter>
               {userHasHadSubscription || userCurrentPlan === "Prueba" ? (
                 <Button disabled className="w-full">
@@ -100,14 +103,16 @@ export default function SubscriptionPlansModal({
                 Mensual
                 <Badge className="bg-primary text-white">1 Mes</Badge>
               </CardTitle>
-              <p className="text-sm text-neutro-dark text-center">Acceso por 1 Mes $3.99</p>
+              <p className="text-xs text-neutro-dark text-center">Acceso por 1 Mes $3.99</p>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm flex-grow">
-              <Feature>Emociones y registros ilimitados</Feature>
-              <Feature>Estadísticas y gráficos avanzados</Feature>
-              <Feature>Recomendaciones personalizadas</Feature>
-              <Feature>Soporte estándar</Feature>
-            </CardContent>
+             <CardContent className="space-y-2 text-xs flex-grow">
+  <Feature>Suscripción activa por 30 días</Feature>
+  <Feature>Chat de ayuda emocional 24/7</Feature>
+  <Feature>Registro emocional ilimitado</Feature>
+  <Feature>Acceso completo a recursos</Feature>
+  <Feature>Mapa interactivo de centros de apoyo</Feature>
+  <Feature>Bitácora emocional avanzada (diaria, semanal y mensual)</Feature>
+</CardContent>
             <CardFooter>
               {userCurrentPlan === "Mensual" ? (
                 <Button disabled className="w-full">
@@ -126,13 +131,15 @@ export default function SubscriptionPlansModal({
                 Trimestral
                 <Badge className="bg-neutro-light text-neutro-dark text-xs text-center">3 Meses <br/>¡Ahorra 15%!</Badge>
               </CardTitle>
-              <p className="text-sm text-neutro-dark text-center">Acceso por 3 Meses $10.17</p>
+              <p className="text-xs text-neutro-dark text-center">Acceso por 3 Meses $10.17</p>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm flex-grow">
-              <Feature>Todas las funciones del plan mensual</Feature>
-              <Feature>Soporte prioritario 24/7</Feature>
-              <Feature>Acceso anticipado a nuevas funciones beta</Feature>
-              <Feature>Reportes de progreso detallados</Feature>
+            <CardContent className="space-y-2 text-xs flex-grow">
+                <Feature>Suscripción por 90 días con 15% de descuento</Feature>
+                <Feature>Chat de ayuda emocional 24/7</Feature>
+  <Feature>Registro emocional ilimitado</Feature>
+  <Feature>Acceso completo a recursos</Feature>
+  <Feature>Mapa interactivo de centros de apoyo</Feature>
+  <Feature>Bitácora emocional avanzada (diaria, semanal y mensual)</Feature>
             </CardContent>
             <CardFooter>
               {userCurrentPlan === "Trimestral" ? (
