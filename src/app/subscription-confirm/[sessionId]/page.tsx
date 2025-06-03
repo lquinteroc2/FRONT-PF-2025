@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import SubscriptionConfirmSelector from "@/components/Subscription/SubscriptionConfirmSelector";
+import { useAuth } from "@/context/Auth";
 
 export default function ConfirmSubscriptionPage({
   params,
@@ -10,6 +11,12 @@ export default function ConfirmSubscriptionPage({
 }) {
   // Desempaquetar params (promesa) con use()
   const { sessionId } = use(params);
+  const { user } = useAuth()
+  const token = user?.token
+
+  if (!user?.user.id || !token) {
+  return <p>Cargando datos del usuario...</p>; // o null, spinner, etc.
+}
 
   const [planType, setPlanType] = useState<"normal" | "extended" | "trial">("normal");
 
@@ -31,5 +38,5 @@ export default function ConfirmSubscriptionPage({
     );
   }
 
-  return <SubscriptionConfirmSelector sessionId={sessionId} planType={planType} />;
+  return <SubscriptionConfirmSelector sessionId={sessionId} planType={planType} userId={user?.user.id} token={token}/>;
 }

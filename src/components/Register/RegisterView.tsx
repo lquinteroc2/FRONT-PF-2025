@@ -60,8 +60,8 @@ const RegisterView = () => {
                             description: "¡Bienvenido a Séntia!",
                             });
 
-                            resetForm();
                             router.push("/login")
+                            resetForm();
                         }
                     }}
                 >
