@@ -78,13 +78,6 @@ const params: UserRequestParams = {
   fetchUsers();
 }, [user, currentPage, searchTerm, roleFilter, statusFilter]);
 
-
-
-useEffect(() => {
-
-  console.log("🔁 Página actual:", currentPage);
-  console.log("📄 Usuarios paginados (estado actualizado):", users);
-}, [users, currentPage]);
   
 const filteredUsers = users.filter((user) => {
   const matchesSearch =
@@ -106,18 +99,6 @@ useEffect(() => {
   setCurrentPage(1)
 }, [searchTerm, roleFilter, statusFilter])
 
-useEffect(() => {
-  console.log("Página actual:", currentPage)
-  console.log("Usuarios paginados:", filteredUsers)
-}, [currentPage, filteredUsers])
-  
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("es-ES", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }).format(date)
-  }
 
   const getInitials = (name: string) => {
     return name
@@ -300,10 +281,10 @@ const handleCloseDialog = () => {
     >
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Usuarios</h1>
-        <Button onClick={handleCreateUser}>
+        {/* <Button onClick={handleCreateUser}>
           <UserPlus className="mr-2 h-4 w-4" />
           Nuevo Usuario
-        </Button>
+        </Button> */}
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -399,7 +380,7 @@ const handleCloseDialog = () => {
                   <TableCell>
                     <UserActions
                       user={user}
-                      onEdit={handleEditUser}
+                      // onEdit={handleEditUser}
                       onToggleStatus={handleToggleUserStatus}
                     />
                   </TableCell>
@@ -412,7 +393,7 @@ const handleCloseDialog = () => {
       </div>
 
       {/* Diálogo para crear/editar usuario */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingUser ? "Editar Usuario" : "Crear Nuevo Usuario"}</DialogTitle>
@@ -430,7 +411,7 @@ const handleCloseDialog = () => {
             mode={editingUser ? "edit" : "create"}
           />
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </motion.div>
   )
 }
