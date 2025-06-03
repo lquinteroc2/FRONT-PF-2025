@@ -41,12 +41,12 @@ const LoginView = () => {
         description: "Logueado exitosamente.",
       });
 
+      setTimeout(() => {
+        router.push("/home");
+      }, 3000);
       resetForm();
       setSubmitting(false);
 
-      setTimeout(() => {
-        router.push("/home");
-      }, 2000);
     } else {
       toast({
         title: "Error al loguear",
@@ -119,7 +119,7 @@ return (
         </div>
             <li className="list-none">
                 <Link
-                href="/terminos"
+                href="/olvido-contrasena"
                 className="block text-sm font-medium text-neutro-dark mt-2"
                 >
                 ¿Olvido su Contraseña?

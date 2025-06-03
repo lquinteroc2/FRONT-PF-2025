@@ -18,7 +18,6 @@ const googleHelper = async (userData: {
       sub: userData.sub,
     };
 
-    console.log("📤 Datos enviados:", payload); // ✅ ya no aparecerá como "image"
 
     const response = await axios.post(`${url}/auth/google`, payload);
 

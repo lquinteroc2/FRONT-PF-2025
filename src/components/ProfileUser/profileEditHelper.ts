@@ -1,34 +1,55 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export interface UpdateUserData {
   name?: string;
   address?: string;
   profileImage?: string;
 }
-export async function profileEditHelper(userId: string, data: UpdateUserData, token: string) {
+
+export async function profileEditHelper(
+  userId: string,
+  data: UpdateUserData,
+  token: string
+) {
   try {
-    const response = await axios.patch(
+    const { data: resData } = await axios.patch(
       `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
       data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
-    return response.data;
-     
-  } catch (error: any) {
-    if (error.response) {
-      console.error("❌ Error en la respuesta del servidor:");
-    } else if (error.request) {
-      console.error(error.request);
-    } else {
-      console.error("❌ Error al configurar la petición:");
+    return resData;
+  } catch (err) {
+    const error = err as AxiosError;
+
+    // 1️⃣ Consola detallada
+    console.groupCollapsed("🚨 profileEditHelper error");
+    console.error("Message:", error.message);
+    if (error.config) {
+      console.error("Request URL:", error.config.url);
+      console.error("Method:", error.config.method);
+      console.error("Headers:", error.config.headers);
+      console.error("Payload:", error.config.data);
     }
-    throw error;
+    if (error.response) {
+      console.error("Status:", error.response.status);
+      console.error("Response headers:", error.response.headers);
+      console.error("Response data:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received. Raw request:", error.request);
+    }
+    console.groupEnd();
+
+    // 2️⃣ Dev-friendly throw
+    throw new Error(
+      `profileEditHelper failed: ${
+        error.response?.status
+          ? `HTTP ${error.response.status}`
+          : error.message
+      }`
+    );
   }
-};
+}
+
 
 
 export interface AdminUpdateUserData {
