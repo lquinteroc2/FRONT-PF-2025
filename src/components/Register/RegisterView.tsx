@@ -11,6 +11,16 @@ import { useRouter } from "next/navigation";
 
 const MotionDiv = motion('div');
 
+// Define this interface somewhere accessible
+interface MyExpectedError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string; // For standard JS errors or other error structures
+}
+
 const RegisterView = () => {
     const { toast } = useToast();
     const router = useRouter()
@@ -53,17 +63,73 @@ const RegisterView = () => {
                     }}
                     validationSchema={validationSchemaRegister}
                     onSubmit={async (values, { resetForm }) => {
-                        const result = await registerHelper(values, toast); // Enviamos confirmPassword también
-                        if (result) {
-                                toast({
-                            title: "Registro exitoso",
-                            description: "¡Bienvenido a Séntia!",
-                            });
+  try {
+    // Assuming registerHelper might throw an error on failure
+    const result = await registerHelper(values, toast); // Pass toast if registerHelper uses it for other generic errors
 
-                            router.push("/login")
-                            resetForm();
-                        }
-                    }}
+    // Log the result to understand its structure, especially on success
+    console.log("Resultado del registro (success):", result);
+
+    // If registerHelper doesn't throw on business logic errors but returns a specific falsy value or an object indicating success/failure
+    // You might need to inspect 'result' here if it's not throwing for "email exists"
+    // For instance, if result = { success: true, data: ... } or { success: false, message: "..." }
+    // However, the try...catch below is more standard for actual exceptions.
+
+    // If we reach here without an error, it means registration was successful
+    // or registerHelper handled the error display itself and returned a truthy value.
+    // The original code implies 'result' being truthy means success.
+    if (result) { // This check might be redundant if errors are always thrown
+                  // Or, it might be that registerHelper returns null/false for handled errors
+                  // without throwing, but not for these specific "email exists" errors we want to catch.
+      toast({
+        title: "Registro exitoso",
+        description: "¡Bienvenido a Séntia!",
+      });
+      resetForm();
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
+    }
+    // If 'result' can be an object like { success: false, message: '...' } for non-exception errors:
+    // else if (result && result.success === false && result.message) {
+    //   // Handle non-exception errors returned by registerHelper if necessary
+    //   // This part depends heavily on registerHelper's return contract
+    //   toast({
+    //     title: "Error de Registro",
+    //     description: result.message,
+    //     variant: "destructive",
+    //   });
+    // }
+
+  } catch (err) {
+  console.error("❌ Error durante el registro:", err); // Log the error to the console
+
+  const error = err as MyExpectedError; // Type assertion: You're telling TypeScript to treat 'err' as 'MyExpectedError'
+
+  // This line attempts to get a user-friendly error message from different possible locations
+  const errorMessage = error?.response?.data?.message || error?.message || ""; 
+
+  if (
+    errorMessage.includes("El correo está registrado mediante Google") ||
+    errorMessage.includes("El correo ya está registrado manualmente")
+  ) {
+    // FIRST TOAST: Specific error for already registered email
+    toast({
+      title: "Correo ya registrado",
+      description: "Este correo electrónico ya está en uso. Por favor, intenta iniciar sesión o utiliza otro correo.",
+      variant: "destructive", // Likely styles the toast as an error
+    });
+  } else {
+    // SECOND TOAST: Generic error for other types of registration failures
+    toast({
+      title: "Error de Registro",
+      description: errorMessage || "No se pudo completar el registro. Por favor, inténtalo de nuevo.",
+      variant: "destructive",
+    });
+  }
+  // resetForm(); // Optionally reset form even on error, or based on error type
+}
+}}
                 >
                     <Form className="flex flex-col w-full">
                         {/* Campo: Nombre */}
