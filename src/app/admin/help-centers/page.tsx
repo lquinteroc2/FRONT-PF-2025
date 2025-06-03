@@ -46,10 +46,26 @@ export default function HelpCenterPage() {
   const [helpPoints, setHelpPoints] = useState<HelpCenterData[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const router = useRouter()
+  const getToken = () => {
+  const stored = localStorage.getItem("loginUser")
+  if (!stored) return null
 
+  try {
+    const parsed = JSON.parse(stored)
+    return parsed.token // Asegúrate de que la clave sea exactamente esa
+  } catch (e) {
+    console.error("Error parsing token:", e)
+    return null
+  }
+}
   const fetchHelpPoints = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints`)
+      const token = getToken()
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       const data = await response.json()
       if (Array.isArray(data)) {
         setHelpPoints(data)
@@ -95,7 +111,12 @@ export default function HelpCenterPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este punto de ayuda?")) return
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints/${id}`, { method: "DELETE" })
+      const token = getToken()
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints/${id}`, { method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       setHelpPoints((prev) => prev.filter((p) => p.id !== id))
     } catch (error) {
       console.error("Error al eliminar el punto de ayuda:", error)
