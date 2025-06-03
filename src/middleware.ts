@@ -13,7 +13,8 @@ export function middleware(request: NextRequest) {
       pathname === "/recomendaciones" ||
       pathname === "/emotions" ||
       pathname === "/centrosApoyo" ||
-      pathname === "/profile"
+      pathname === "/profile" ||
+      pathname === "/recursos" 
     ) && !isAuthenticated
   ) {
     const loginURL = new NextURL("/login", origin);
