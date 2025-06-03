@@ -28,7 +28,10 @@ useEffect(() => {
       name: user.user.name || "",
       email: user.user.email || "",
       address: user.user.address || "",
-      profilePicUrl: user.user.profileImage || "",
+        profilePicUrl:
+    typeof user.user.profileImage === "string"
+      ? user.user.profileImage
+      : "",
     });
   }
 }, [user]);
