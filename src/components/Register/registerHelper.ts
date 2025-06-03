@@ -8,18 +8,10 @@ const registerHelper = async (userData: IUserDto, toast: any) => {
         console.log('Datos enviados al backend:', userData); // Aquí se verá confirmPassword
 
         const res = await axios.post(`${Url}/auth/signup`, userData);
-
         return res.data;
 
     } catch (error: any) {
     console.error("Error en registerHelper:", error);
-
-    toast({
-      title: "Error en el Registro",
-      description: error?.message || "No se pudo registrar. Intenta nuevamente.",
-      variant: "destructive",
-    });
-
     throw error;
     }
 };
