@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { emotionsHelper } from "@/components/Emotion/emotionsHelper";
 import { EmotionAdmin } from "@/components/Emotion/emotionsHelper";
 import { useAuth } from "@/context/Auth";
 import emotionCreateHelper from "./emotionCreateHelper"; // Assuming this path is correct
 import { useToast } from "@/components/ui/use-toast";
+import SubscriptionPlans from "../Subscription/SubscriptionPlans";
 
 // Helper for Tailwind transition classes
 const getStepTransitionClasses = (isActive: boolean) => 
@@ -18,18 +19,11 @@ export default function EmotionForm({ onClose }: { onClose: () => void }) {
   const [emotions, setEmotions] = useState<EmotionAdmin[]>([]);
   const [intensity, setIntensity] = useState<number | null>(null);
   const [comment, setComment] = useState<string>("");
-  const { user } = useAuth();
+  const { user , setUser} = useAuth();
   const [isLoading, setIsLoading] = useState(false); // For submit button loading state
   const { toast } = useToast();
 
 useEffect(() => {
-  const rawUser = localStorage.getItem("loginUser");
-
-  if (!rawUser) {
-    console.warn("⚠️ No se encontró loginUser en localStorage.");
-    return;
-  }
-
   const token = user?.token;
 
   if (!token) {
@@ -57,42 +51,56 @@ useEffect(() => {
     if (currentStep === "comment") {
       setCurrentStep("intensity");
     } else if (currentStep === "intensity") {
-      // Optional: deselect intensity if going back from comment to intensity
-      // setIntensity(null); 
       setCurrentStep("emotion");
     }
   };
 
-  const handleSubmit = async () => {
+ const handleSubmit = async () => {
   if (selectedEmotion && intensity && user?.user.id) {
     setIsLoading(true);
     try {
       const token = user?.token;
 
-      const result = await emotionCreateHelper(
+      await emotionCreateHelper(
         {
           userId: user.user.id,
           emotionId: selectedEmotion.id.toString(),
           intensity,
           comment,
         },
-        token // ✅ Aquí sí estás pasando el token
+        token
       );
 
-      toast({
-        title: "🎉 Emoción registrada",
-        description: `Has registrado ${result.emotion} correctamente.`,
-      });
+      // Si todo salió bien, avanzamos a done
       setCurrentStep("done");
+
     } catch (error: any) {
       console.error("❌ Error al enviar emoción:", error);
-            toast({
+
+      // Por defecto el mensaje genérico
+      let description: string | JSX.Element = "Hubo un problema al registrar tu emoción. Intenta de nuevo.";
+
+      // Mensaje personalizado según el error del backend
+      const backendMessage = error?.response?.data?.message || error.message || "";
+
+      if (backendMessage.includes("Ya existe un estado para este usuario")) {
+        description = (
+          <div className="flex flex-col items-center gap-2 text-center">
+            <span>
+              Solo puedes registrar una emoción al día. Si deseas registrar más
+              de una emoción <br /> ¡Suscríbete a Premium!
+            </span>
+            <SubscriptionPlans />
+          </div>
+        );
+      } else if (backendMessage.includes("UUID")) {
+        description = "El ID de usuario o emoción no es válido.";
+      }
+
+      toast({
         variant: "destructive",
-        title: "Error al registrar emoción",
-        description:
-          error.message?.includes("UUID") 
-            ? "El ID de usuario o emoción no es válido."
-            : "Hubo un problema al registrar tu emoción. Intenta de nuevo.",
+        title: "Error al Registrar Emoción", // Título centrado
+        description,
       });
     } finally {
       setIsLoading(false);
@@ -101,10 +109,10 @@ useEffect(() => {
 };
 
 
+
   if (currentStep === "done") {
     return (
       <div className="text-center p-8 flex flex-col items-center space-y-6 animate-fadeIn">
-        <div className="text-6xl">🎉</div>
         <h2 className="text-2xl font-bold text-neutro-dark">¡Emoción Registrada!</h2>
         {selectedEmotion && (
           <p className="text-lg text-neutro-dark">

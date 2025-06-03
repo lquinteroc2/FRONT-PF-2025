@@ -45,6 +45,18 @@ export default function AdminHelppointsComponent() {
     country: '',
     coordinates: null as { type: 'Point'; coordinates: [number, number] } | null,
   })
+  const getToken = () => {
+  const stored = localStorage.getItem("loginUser")
+  if (!stored) return null
+
+  try {
+    const parsed = JSON.parse(stored)
+    return parsed.token // Asegúrate de que la clave sea exactamente esa
+  } catch (e) {
+    console.error("Error parsing token:", e)
+    return null
+  }
+}
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -79,6 +91,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   setIsSubmitting(true)
 
   try {
+    const token = getToken()
     const url = editId
       ? `${process.env.NEXT_PUBLIC_API_URL}/helppoints/${editId}`
       : `${process.env.NEXT_PUBLIC_API_URL}/helppoints`
@@ -87,7 +100,10 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     const res = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+        headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(formData),
     })
 
@@ -129,7 +145,12 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   const fetchHelpPoint = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints/${editId}`)
+      const token = getToken()
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/helppoints/${editId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       const data = await res.json()
 
       if (!res.ok) throw new Error("No se pudo cargar el punto")

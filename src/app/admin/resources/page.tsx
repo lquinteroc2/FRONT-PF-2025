@@ -29,21 +29,39 @@ export default function ResourcesPage() {
   const [fileTypeFilter, setFileTypeFilter] = useState<string>("all")
   const { toast } = useToast()
 
- const fetchResources = async () => {
+const getToken = () => {
+  const stored = localStorage.getItem("loginUser")
+  if (!stored) return null
+
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`)
+    const parsed = JSON.parse(stored)
+    return parsed.token // Asegúrate de que la clave sea exactamente esa
+  } catch (e) {
+    console.error("Error parsing token:", e)
+    return null
+  }
+}
+
+const fetchResources = async () => {
+  try {
+    const token = getToken()
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
     const data = await response.json()
 
-    // Validar que data sea un array
     if (Array.isArray(data)) {
       setResources(data)
     } else {
       console.error("La respuesta no es un array:", data)
-      setResources([]) // fallback seguro
+      setResources([])
     }
   } catch (error) {
     console.error("Error fetching resources:", error)
-    setResources([]) // fallback en caso de error
+    setResources([])
   }
 }
 
@@ -100,8 +118,12 @@ const handleDelete = async (id: string) => {
   if (!confirmed) return
 
   try {
+    const token = getToken()
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
 
     if (!res.ok) throw new Error("Falló la eliminación")
@@ -111,7 +133,6 @@ const handleDelete = async (id: string) => {
     toast({
       title: "Recurso eliminado",
       description: "El recurso ha sido eliminado exitosamente.",
-      variant: "default",
     })
   } catch (error) {
     console.error("Error al eliminar el recurso:", error)
@@ -123,11 +144,16 @@ const handleDelete = async (id: string) => {
   }
 }
 
+
 const toggleShowInSection = async (id: string, show: boolean, section: FileType) => {
   try {
+    const token = getToken()
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-section/${section}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ show }),
     })
 
@@ -140,7 +166,6 @@ const toggleShowInSection = async (id: string, show: boolean, section: FileType)
       description: show
         ? `Recurso ahora visible en la sección ${section}`
         : `Recurso oculto de la sección ${section}`,
-      variant: "default",
     })
   } catch (error) {
     console.error("Error actualizando visibilidad en sección:", error)
@@ -153,11 +178,16 @@ const toggleShowInSection = async (id: string, show: boolean, section: FileType)
 }
 
 
+
 const toggleShowInCardList = async (id: string, show: boolean) => {
   try {
+    const token = getToken()
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${id}/show-in-cardlist`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ show }),
     })
 
@@ -168,7 +198,6 @@ const toggleShowInCardList = async (id: string, show: boolean) => {
     toast({
       title: "Inicio actualizado",
       description: show ? "Recurso ahora visible en el inicio" : "Recurso ocultado del inicio",
-      variant: "default",
     })
   } catch (error) {
     console.error("Error actualizando visibilidad en CardList:", error)
@@ -179,6 +208,7 @@ const toggleShowInCardList = async (id: string, show: boolean) => {
     })
   }
 }
+
 
 
   return (

@@ -39,11 +39,28 @@ export function MostViewedResources() {
 
   const [resources, setResources] = useState<Resource[]>([])
   const [shuffledCards, setShuffledCards] = useState<any[]>([])
+  const getToken = () => {
+  const stored = localStorage.getItem("loginUser")
+  if (!stored) return null
+
+  try {
+    const parsed = JSON.parse(stored)
+    return parsed.token // Asegúrate de que la clave sea exactamente esa
+  } catch (e) {
+    console.error("Error parsing token:", e)
+    return null
+  }
+}
 
   useEffect(() => {
   const fetchResources = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/featured`)
+      const token = getToken()
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/featured`, {
+        headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      })
       const data = await response.json()
 
       if (Array.isArray(data)) {

@@ -34,12 +34,29 @@ const cardsData = [
 export function DocumentList() {
   const [documentResources, setDocumentResources] = useState<Resource[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  
+        const getToken = () => {
+        const stored = localStorage.getItem("loginUser")
+        if (!stored) return null
+
+        try {
+          const parsed = JSON.parse(stored)
+          return parsed.token // Asegúrate de que la clave sea exactamente esa
+        } catch (e) {
+          console.error("Error parsing token:", e)
+          return null
+        }
+      }
+        
         useEffect(() => {
           const fetchFeaturedImages = async () => {
           try {
+            const token = getToken()
             const response = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL}/resources/featured/section/document`
+              `${process.env.NEXT_PUBLIC_API_URL}/resources/featured/section/document`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
             );
             const data = await response.json();
             if (Array.isArray(data)) setDocumentResources(data);

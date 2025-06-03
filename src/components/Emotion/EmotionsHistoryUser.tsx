@@ -7,7 +7,8 @@ import { Button } from "../ui/button";
 import SubscriptionPlans from "../Subscription/SubscriptionPlans";
 import { AnimatePresence, motion } from "framer-motion";
 import { AnimatedArrow } from "./EmotionalLogView";
-import EmotionRegister from "../Buttons/EmotionRegister";
+import { useRouter } from "next/navigation";
+
 
 export default function EmotionsHistoryUser() {
   const [emotions, setEmotions] = useState<RegisteredEmotion[]>([]);
@@ -67,6 +68,13 @@ const toggleExpand = (id: string | number) => {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
+const router = useRouter()
+
+  const handleRegister = () => {
+    // Aquí puedes añadir lógica de guardado si es necesario
+    router.push('/'); // Redirige al Home
+  };
+
   // Componente interno para mostrar los puntos de intensidad
   const IntensityDots = ({ level }: { level: number }) => (
     <div className="flex space-x-1 items-center">
@@ -120,15 +128,19 @@ const toggleExpand = (id: string | number) => {
           <p className="text-primary-dark">Parece que todavía no has registrado ninguna emoción.</p>
           <p className="text-primary-dark mt-1">¡Anímate a contarnos cómo te sientes!</p>
 
-          <EmotionRegister/>
+          <Button
+        onClick={handleRegister}
+        
+      >
+        Registra tu emoción
+      </Button>
         </div>
       </div>
     );
   }
 
 return (
-  <div className="px-4">
-    {/* Encabezado principal */}
+  <>
 <motion.div
   initial="hidden"
   animate="visible"
@@ -143,6 +155,7 @@ return (
   >
     🧠✨ Tu Diario Emocional
   </motion.h1>
+    {/* Encabezado principal */}
 
   <motion.p
     initial={{ opacity: 0, y: 20 }}
@@ -157,6 +170,7 @@ return (
 
   <AnimatedArrow />
 </motion.div>
+  <div className="px-4">
 
 
     {/* Lista de emociones */}
@@ -278,5 +292,6 @@ return (
       </div>
     )}
   </div>
+  </>
 );
 }

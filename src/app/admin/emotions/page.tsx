@@ -6,16 +6,60 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { PlusCircle, Search } from "lucide-react";
-import { EmotionAdmin, emotionsHelper } from "@/components/Emotion/emotionsHelper"; // Ajusta ruta si es necesario
+import { EmotionAdmin, emotionsHelper, emotionsHelperAdmin } from "@/components/Emotion/emotionsHelper"; // Ajusta ruta si es necesario
 import { useAuth } from "@/context/Auth";
-
+import EmotionFormAdmin from "@/components/Emotion/EmotionsFormAdmin";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function EmotionsPage() {
   const [emotions, setEmotions] = useState<EmotionAdmin[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const { user } = useAuth()
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const closeDialog = () => setIsOpen(false);
+
+  const handleCreateEmotion = async (
+  emotion: Omit<EmotionAdmin, "id">,
+  token: string | undefined,
+  onClose: () => void
+) => {
+  const { toast } = useToast();
+
+
+  if (!token) {
+    toast({
+        title: "Error al crear emoción",
+        description: "No tienes autorización para crear una emoción.",
+        variant: "destructive",
+      });
+    return;
+  }
+
+try {
+    const result = await emotionsHelperAdmin(token, emotion);
+    const createdEmotion = result[0];
+
+    toast({
+      title: "Emoción creada",
+      description: `La emoción "${createdEmotion.name}" fue añadida correctamente.`,
+      variant: "default", // puedes omitirlo o personalizarlo
+    });
+
+    onClose();
+  } catch (error) {
+    console.error("Error al crear la emoción:", error);
+    toast({
+      title: "Error al crear emoción",
+      description: "Ocurrió un error al intentar crear la emoción.",
+      variant: "destructive",
+    });
+  }
+};
+
 
   useEffect(() => {
     async function fetchEmotions() {
@@ -37,14 +81,19 @@ export default function EmotionsPage() {
     fetchEmotions();
   }, []);
 
-  const filteredEmotions = emotions.filter((emotion) =>
-    emotion.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredEmotions = emotions.filter((emotion) => {
+  const matchesSearch = emotion.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const category = getCategory(emotion.clinicalValue);
+  const matchesCategory = selectedCategory === "" || category === selectedCategory;
+  return matchesSearch && matchesCategory;
+});
+
+
 
   function getCategory(clinicalValue: number) {
-  if (clinicalValue >= -3 && clinicalValue <= -1) return "Negativa";
-  if (clinicalValue === 0) return "Neutra";
-  if (clinicalValue >= 1 && clinicalValue <= 3) return "Positiva";
+  if (clinicalValue >= -3 && clinicalValue <= -2) return "Negativa";
+  if (clinicalValue >= -1 && clinicalValue <= 1)  return "Neutra";
+  if (clinicalValue >= 2 && clinicalValue <= 3) return "Positiva";
   return "Indefinida";
 }
 
@@ -56,6 +105,8 @@ function getCategoryColor(category: string) {
     default: return "text-neutro-dark";
   }
 }
+
+
 
   return (
     <motion.div
@@ -80,27 +131,47 @@ function getCategoryColor(category: string) {
                 Completa los detalles de la emoción que deseas añadir al sistema.
               </DialogDescription>
             </DialogHeader>
-            {/* Aquí va tu formulario para nueva emoción */}
+            <EmotionFormAdmin onSubmit={(emotion) => handleCreateEmotion(emotion, user?.token, closeDialog)} />
             <DialogFooter>
-              <Button type="submit">Guardar emoción</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
 
-      <div className="relative w-full max-w-md">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <input
-          type="search"
-          placeholder="Buscar emociones..."
-          className="pl-8 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+<div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center">
+  <div className="w-full sm:max-w-xs">
+    <label className="text-sm font-medium block mb-1 invisible">Búsqueda</label>
+    <div className="relative">
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <input
+        type="search"
+        placeholder="Buscar emociones..."
+        className="pl-9 h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+    </div>
+  </div>
+
+  <div className="w-full sm:max-w-xs">
+    <label className="text-sm font-medium block mb-1 text-neutro-dark">Filtrar por categoría</label>
+    <select
+      value={selectedCategory}
+      onChange={(e) => setSelectedCategory(e.target.value)}
+      className="h-10 w-full border border-input bg-background px-3 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+    >
+      <option value="">Todas</option>
+      <option value="Positiva">Positiva</option>
+      <option value="Negativa">Negativa</option>
+      <option value="Neutra">Neutra</option>
+    </select>
+  </div>
+</div>
+
+
 
       {loading && <p>Cargando emociones...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-neutro-dark">{error}</p>}
 
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
   {filteredEmotions.map((emotion) => (
@@ -124,10 +195,10 @@ function getCategoryColor(category: string) {
 
         <CardContent className="pt-3 flex justify-between items-center mt-auto text-sm">
           <p className="text-gray-600 font-medium">
-            <span className="text-gray-500 font-normal">Valor:</span> {emotion.clinicalValue}
+           {emotion.clinicalValue}
           </p>
           <p
-            className={`font-semibold px-2 py-1 rounded-md text-white text-xs ${getCategoryColor(
+            className={`font-semibold px-2 py-1 rounded-md text-xs ${getCategoryColor(
               getCategory(emotion.clinicalValue)
             )}`}
           >
@@ -138,10 +209,6 @@ function getCategoryColor(category: string) {
     </motion.div>
   ))}
 </div>
-
-
-
-
     </motion.div>
   );
 }
