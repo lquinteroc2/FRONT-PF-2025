@@ -74,6 +74,10 @@ useEffect(() => {
 
       setUser(updatedContextUser);
       localStorage.setItem("loginUser", JSON.stringify(updatedContextUser));
+      toast({
+        title: "Cambio realizado con Exito",
+        description: "¡Se ha actualizado la informacion correctamente!",
+      });
     } catch (error) {
       toast({
         title: "Error al guardar",
@@ -82,51 +86,65 @@ useEffect(() => {
       });
     }
   };
-
-  const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && user && setUser) {
-      try {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setUserData((prev) => ({
-            ...prev,
-            profilePicUrl: reader.result as string,
-          }));
-        };
-        reader.readAsDataURL(file);
-
-        const imageUrl = await uploadImageToImgBB(file);
-        const updatedUser = await profileEditHelper(
-          user.user.id,
-          { profileImage: imageUrl },
-          user.token
-        );
-
+const handleProfilePicChange = async (event: ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file && user && setUser) {
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
         setUserData((prev) => ({
           ...prev,
-          profilePicUrl: updatedUser.profileImage || imageUrl,
+          profilePicUrl: reader.result as string,
         }));
+      };
+      reader.readAsDataURL(file);
 
-        const updatedContextUser = {
-          ...user,
-          user: {
-            ...user.user,
-            profileImage: updatedUser.profileImage || imageUrl,
-          },
-        };
+      const imageUrl = await uploadImageToImgBB(file);
 
-        setUser(updatedContextUser);
-        localStorage.setItem("loginUser", JSON.stringify(updatedContextUser));
-      } catch (error) {
-        toast({
-          title: "Error al actualizar la foto",
-          description: "No se pudo subir la nueva foto de perfil. Intenta nuevamente.",
-          variant: "destructive",
-        });
-      }
+      const updatedUser = await profileEditHelper(
+        user.user.id,
+        { profileImage: imageUrl },
+        user.token
+      );
+
+      setUserData((prev) => ({
+        ...prev,
+        profilePicUrl: updatedUser.profileImage || imageUrl,
+      }));
+
+      const updatedContextUser = {
+        ...user,
+        user: {
+          ...user.user,
+          profileImage: updatedUser.profileImage || imageUrl,
+        },
+      };
+
+      setUser(updatedContextUser);
+      localStorage.setItem("loginUser", JSON.stringify(updatedContextUser));
+
+      toast({
+        title: "Cambio realizado con Exito",
+        description: "¡Se ha actualizado la foto correctamente!",
+      });
+
+    } catch (error: any) {
+      console.error("❌ Error en handleProfilePicChange:", error);
+
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "No se pudo subir la nueva foto de perfil.";
+
+      toast({
+        title: "Error al actualizar la foto",
+        description: errorMessage,
+        variant: "destructive",
+      });
     }
-  };
+  }
+};
+
 
   const role = user?.user.role;
   const hasSubscription = (user?.user?.subscription?.length ?? 0) > 0;
