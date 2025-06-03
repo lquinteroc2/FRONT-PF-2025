@@ -53,54 +53,57 @@ export default function PuntajesEmotionsWeekly() {
  const [isLoading, setIsLoading] = useState(true);
  const { user } = useAuth()
 
- useEffect(() => {
-  if (!user?.user.id || !user?.token) return
+    useEffect(() => {
+    if (!user?.user.id || !user?.token) return;
 
-  const fetchData = async () => {
-   setIsLoading(true);
-   try {
-    const response = await PuntajesWeeklyHelper(user.user.id, user.token)
-    setData(response)
-   } catch (error) {
-    console.error('Error cargando puntajes:', error)
-    setData(null);
-   } finally {
-    setIsLoading(false);
-   }
-  }
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await PuntajesWeeklyHelper(user.user.id, user.token);
+        setData(response);
+      } catch (error) {
+        console.error("Error cargando puntajes:", error);
+        setData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  fetchData()
- }, [user?.user.id, user?.token])
+    fetchData();
+  }, [user?.user.id, user?.token]);
 
-const generateChartData = () => {
-  if (!data?.puntajes || !data?.desde || !data?.hasta) return [];
+  if (isLoading) return <p>Cargando...</p>;
+  if (!data) return <p>No hay datos disponibles</p>;
 
-  // Convertimos las fechas desde y hasta a objetos Date
   const start = new Date(data.desde);
   const end = new Date(data.hasta);
-
-  // Calculamos el número de días entre start y end (inclusive)
   const diffTime = end.getTime() - start.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-  
-  if (diffDays < 7 || data.puntajes.length < 7) return [];
-  // Recortamos puntajes en caso que haya menos puntajes que días
-  const puntajes = data.puntajes.slice(-diffDays);
 
-  // Generamos array de fechas para cada puntaje
+  const generateChartData = () => {
+    if (!data?.puntajes || !data?.desde || !data?.hasta) return [];
+
+    const start = new Date(data.desde);
+    const end = new Date(data.hasta);
+    const diffTime = end.getTime() - start.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    if (diffDays < 7 || data.puntajes.length < 7) return [];
+
+    const puntajes = data.puntajes.slice(-diffDays);
+
     const fechas: Date[] = [];
-  for (let i = 0; i < puntajes.length; i++) {
-  const fecha = new Date(start);
-  fecha.setDate(start.getDate() + i);
-  fechas.push(fecha);
-}
-  // Mapear fechas y puntajes
-  return puntajes.map((puntaje, i) => ({
-    dia: fechas[i].toLocaleDateString("es-ES", { day: "numeric", month: "short" }),
-    puntaje,
-  }));
-};
+    for (let i = 0; i < puntajes.length; i++) {
+      const fecha = new Date(start);
+      fecha.setDate(start.getDate() + i);
+      fechas.push(fecha);
+    }
 
+    return puntajes.map((puntaje, i) => ({
+      dia: fechas[i].toLocaleDateString("es-ES", { day: "numeric", month: "short" }),
+      puntaje,
+    }));
+  };
 
  if (isLoading) {
   return (
@@ -148,66 +151,107 @@ const generateChartData = () => {
    hidden: { opacity: 0, y: 15 },
    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
   };
+  
  
   return (
-   <motion.div
-    variants={containerVariants}
-    initial="hidden"
-    animate="visible"
-    className="w-full max-w-3xl mt-24 mx-auto p-6 bg-neutro-light rounded-2xl shadow-xl space-y-6 border border-neutro"
-   >
-    <motion.h2 variants={itemVariants} className="text-2xl font-bold text-primary">
-     Analisis Semanal
-    </motion.h2>
- 
- <motion.div variants={itemVariants} className="h-64 w-full">
-   {chartData.length >= 7 ? (
-     <ResponsiveContainer width="100%" height="100%">
-       <AreaChart
-         data={chartData}
-         margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
-       >
-         <defs>
-           <linearGradient id="colorPuntaje" x1="0" y1="0" x2="0" y2="1">
-             <stop
-               offset="5%"
-               stopColor={
-                 interpretationStyle.dotColor === 'bg-primary'
-                   ? '#ccfbf1'
-                   : '#f3f4f6'
-               }
-               stopOpacity={0.8}
-             />
-             <stop
-               offset="95%"
-               stopColor={interpretationStyle.dotColor.replace('bg-', '#')}
-               stopOpacity={0.2}
-             />
-           </linearGradient>
-         </defs>
-         <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
-         <XAxis dataKey="dia" stroke="#4b5563" fontSize={12} />
-         <YAxis stroke="#4b5563" fontSize={12} />
-         <Tooltip content={<CustomTooltip />} />
-         <Area
-           type="monotone"
-           dataKey="puntaje"
-           stroke="#16a34a"
-           strokeWidth={2.5}
-           fillOpacity={1}
-           fill="url(#colorPuntaje)"
-         />
-       </AreaChart>
-     </ResponsiveContainer>
-   ) : (
-     <div className="flex items-center justify-center h-full">
-       <p className="text-neutro-dark text-sm text-center px-4">
-         No hay suficientes datos (7 días) para mostrar la gráfica.
-       </p>
-     </div>
-   )}
- </motion.div>
- 
-   </motion.div>
-  )
- }
+    
+  <div className="w-full max-w-3xl mt-24 mx-auto p-6 bg-neutro-light rounded-2xl shadow-xl space-y-6 border border-neutro">
+    <h2 className="text-2xl font-bold text-primary">Analisis Semanal</h2>
+
+    {chartData.length >= 7 ? (
+      <>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="h-64 w-full"
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={chartData}
+              margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
+            >
+              <defs>
+                <linearGradient id="colorPuntaje" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor={
+                      interpretationStyle.dotColor === "bg-primary"
+                        ? "#ccfbf1"
+                        : "#f3f4f6"
+                    }
+                    stopOpacity={0.8}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor={interpretationStyle.dotColor.replace("bg-", "#")}
+                    stopOpacity={0.2}
+                  />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#d1d5db" />
+              <XAxis dataKey="dia" stroke="#4b5563" fontSize={12} />
+              <YAxis stroke="#4b5563" fontSize={12} />
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="puntaje"
+                stroke="#16a34a"
+                strokeWidth={2.5}
+                fillOpacity={1}
+                fill="url(#colorPuntaje)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <div className="bg-white p-5 rounded-xl shadow-md border border-neutro-dark/80">
+          <div className="flex flex-col md:flex-row items-center justify-center text-center md:text-left md:space-x-6">
+            {/* Bloque Izquierdo: IEG */}
+            <div className="flex-shrink-0 mb-4 md:mb-0">
+              <p className="text-sm font-medium text-neutro-dark">Tu Índice General</p>
+              <p className="text-6xl font-bold text-primary tracking-tight shadow-sm">
+                {data.IEG.toFixed(1)}
+              </p>
+            </div>
+
+            {/* Bloque Derecho: Interpretación */}
+            <div className={`flex-grow p-4 rounded-lg ${interpretationStyle.bgColor}`}>
+              <div className="flex items-center justify-center md:justify-start space-x-3">
+                <span className={`h-3 w-3 rounded-full ${interpretationStyle.dotColor}`}></span>
+                <h4 className={`text-lg font-semibold ${interpretationStyle.textColor}`}>
+                  {interpretationStyle.title}
+                </h4>
+              </div>
+              <p className={`mt-1 text-sm ${interpretationStyle.textColor}`}>
+                {data.interpretacion}
+              </p>
+            </div>
+          </div>
+
+          {/* Sección Inferior: Consejo y Acción */}
+          {diffDays >= 7 && (
+            <div className="mt-6 border-t border-neutro-ice pt-4 text-center md:text-left">
+              <p className="text-sm text-neutro-dark">
+                <span className="font-semibold text-neutro-dark">Consejo: </span>
+                {data.consejo}
+              </p>
+              <p className="text-sm text-neutro-dark mt-2">
+                <span className="font-semibold text-neutro-dark">Acción sugerida: </span>
+                {data.accion}
+              </p>
+            </div>
+          )}
+        </div>
+      </>
+    ) : (
+      <div className="flex items-center justify-center h-64 w-full">
+        <p className="text-neutro-dark text-sm text-center px-4">
+          No hay suficientes datos (7 días) para mostrar la gráfica.
+        </p>
+      </div>
+    )}
+  </div>
+  
+)
+}

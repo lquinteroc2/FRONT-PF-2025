@@ -1,5 +1,6 @@
 "use client"
 
+import { AnimatedArrow } from "@/components/Emotion/EmotionalLogView"
 import SubscriptionPlans from "@/components/Subscription/SubscriptionPlans"
 import { motion } from "framer-motion"
 import { icon } from "leaflet"
@@ -74,55 +75,56 @@ export default function AboutUs() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen  font-[family-name:var(--font-geist-sans)]">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-teal-600/10"></div>
-        <div className="container relative mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mx-auto max-w-4xl text-center"
-          >
-            <h1 className="mb-6 text-4xl font-bold tracking-tight text-neutro-dark md:text-6xl lg:text-7xl">
-              Acerca de 
-              <span className="bg-gradient-to-r from-teal-600 to-primary bg-clip-text text-transparent"> Séntia</span>
-            </h1>
-            <p className="mx-auto mb-8 max-w-2xl text-lg text-neutro-dark md:text-xl">
-              Somos una plataforma dedicada a democratizar el acceso a la salud mental, conectando a las personas con
-              los recursos y el apoyo que necesitan para florecer emocionalmente.
-            </p>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              className="flex justify-center"
-            >
-              <div className="rounded-full bg-white p-4 shadow-lg">
-                <Brain className="h-12 w-12 text-teal-600" />
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+         <motion.div
+  initial={{ opacity: 0, y: 50 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1, ease: "easeOut" }}
+  viewport={{ once: true }}
+  className="w-full max-w-6xl mx-auto text-center mt-56 mb-40 px-4"
+>
+  <motion.h1
+    initial={{ opacity: 0, scale: 0.95 }}
+    whileInView={{ opacity: 1, scale: 1 }}
+    transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+    className="text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight drop-shadow-[0_0_15px_rgba(109,40,217,0.4)]"
+  > <span className="inline-flex items-center">
+    <Brain className="ml-1 h-12 w-12 text-primary-dark" />
+  </span>
+     Acerca de Séntia
+  </motion.h1>
+
+  <motion.p
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+    className="text-base md:text-lg text-neutro-dark font-medium max-w-2xl mx-auto"
+  >
+    Somos una plataforma dedicada a democratizar el acceso a la salud mental, conectando a las personas con
+    los recursos y el apoyo que necesitan para florecer emocionalmente.
+  </motion.p>
+
+   <AnimatedArrow />
+</motion.div>
+
 
       {/* Mission & Vision */}
       <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
+        <div id="emotion-list" className="container mx-auto px-4">
           <div className="grid gap-12 md:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 1 }}
               viewport={{ once: true }}
-              className="rounded-2xl bg-white p-8 shadow-lg"
+              className="rounded-2xl bg-neutro-ice p-8 shadow-lg"
             >
-              <div className="mb-4 inline-flex rounded-full bg-teal-100 p-3">
-                <Target className="h-6 w-6 text-teal-600" />
+              <div className="mb-4 inline-flex rounded-full bg-neutro-ice p-3">
+                <Target className="h-6 w-6 text-primary-dark" />
               </div>
-              <h2 className="mb-4 text-2xl font-bold text-gray-900">Nuestra Misión</h2>
-              <p className="text-gray-600 leading-relaxed">
+              <h2 className="mb-4 text-2xl font-bold text-neutro-dark">Nuestra Misión</h2>
+              <p className="text-neutro-dark leading-relaxed">
                 Crear un espacio seguro y accesible donde las personas puedan explorar, entender y cuidar su bienestar
                 emocional. Facilitamos el acceso a herramientas, recursos y comunidades que apoyen el crecimiento
                 personal y la salud mental.
@@ -134,10 +136,10 @@ export default function AboutUs() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="rounded-2xl bg-gradient-to-br from-teal-500 to-primary p-8 text-white shadow-lg"
+              className="rounded-2xl bg-gradient-to-br from-primary to-neutro p-8 text-neutro-ice shadow-lg"
             >
               <div className="mb-4 inline-flex rounded-full bg-white/20 p-3">
-                <Award className="h-6 w-6 text-white" />
+                <Award className="h-6 w-6 text-neutro-ice" />
               </div>
               <h2 className="mb-4 text-2xl font-bold">Nuestra Visión</h2>
               <p className="leading-relaxed opacity-90">
@@ -152,7 +154,7 @@ export default function AboutUs() {
       </section>
 
       {/* Values */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      <section className="bg-neutro-light py-16 md:py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -161,8 +163,8 @@ export default function AboutUs() {
             viewport={{ once: true }}
             className="mb-12 text-center"
           >
-            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">Nuestros Valores</h2>
-            <p className="mx-auto max-w-2xl text-gray-600">
+            <h2 className="mb-4 text-3xl font-bold text-neutro-dark md:text-4xl">Nuestros Valores</h2>
+            <p className="mx-auto max-w-2xl text-neutro-dark">
               Los principios que guían cada decisión y acción en nuestra misión de apoyar tu bienestar emocional.
             </p>
           </motion.div>
@@ -175,13 +177,13 @@ export default function AboutUs() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="rounded-xl bg-white p-6 text-center shadow-md transition-all hover:shadow-lg"
+                className="rounded-xl bg-neutro-ice p-6 text-center shadow-md transition-all hover:shadow-lg"
               >
-                <div className="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-teal-100">
-                  <value.icon className="h-6 w-6 text-teal-600" />
+                <div className="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-neutro-light">
+                  <value.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-2 text-xl font-semibold text-gray-900">{value.title}</h3>
-                <p className="text-sm text-gray-600">{value.description}</p>
+                <h3 className="mb-2 text-xl font-semibold text-neutro-dark">{value.title}</h3>
+                <p className="text-sm text-neutro-dark">{value.description}</p>
               </motion.div>
             ))}
           </div>
@@ -198,8 +200,8 @@ export default function AboutUs() {
             viewport={{ once: true }}
             className="mb-12 text-center"
           >
-            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">Nuestro Impacto</h2>
-            <p className="mx-auto max-w-2xl text-gray-600">
+            <h2 className="mb-4 text-3xl font-bold text-neutro-dark md:text-4xl">Nuestro Impacto</h2>
+            <p className="mx-auto max-w-2xl text-neutro-dark">
               Números que reflejan nuestro compromiso con la comunidad y el bienestar emocional.
             </p>
           </motion.div>
@@ -214,8 +216,8 @@ export default function AboutUs() {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="mb-2 text-4xl font-bold text-teal-600 md:text-5xl">{stat.number}</div>
-                <div className="text-gray-600">{stat.label}</div>
+                <div className="mb-2 text-4xl font-bold text-primary md:text-5xl">{stat.number}</div>
+                <div className="text-neutro-dark">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -223,7 +225,7 @@ export default function AboutUs() {
       </section>
 
       {/* Team */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      <section className="bg-neutro-ice py-16 md:py-24">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -232,8 +234,8 @@ export default function AboutUs() {
             viewport={{ once: true }}
             className="mb-12 text-center"
           >
-            <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">Nuestro Equipo</h2>
-            <p className="mx-auto max-w-2xl text-gray-600">
+            <h2 className="mb-4 text-3xl font-bold text-neutro-dark md:text-4xl">Nuestro Equipo</h2>
+            <p className="mx-auto max-w-2xl text-neutro-dark">
               Profesionales apasionados por hacer que la salud mental sea accesible para todos.
             </p>
           </motion.div>
@@ -246,7 +248,7 @@ export default function AboutUs() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="rounded-xl bg-white p-6 text-center shadow-md transition-all hover:shadow-lg"
+                className="rounded-xl bg-neutro-ice p-6 text-center shadow-md transition-all hover:shadow-lg"
               >
                 <div className="mx-auto mb-4 h-24 w-24 overflow-hidden rounded-full">
                   {member.image?
@@ -260,9 +262,9 @@ export default function AboutUs() {
                  
                   
                 </div>
-                <h3 className="mb-1 text-xl font-semibold text-gray-900">{member.name}</h3>
-                <p className="mb-3 text-sm font-medium text-teal-600">{member.role}</p>
-                <p className="text-sm text-gray-600">{member.description}</p>
+                <h3 className="mb-1 text-xl font-semibold text-neutro-dark">{member.name}</h3>
+                <p className="mb-3 text-sm font-medium text-primary-dark">{member.role}</p>
+                <p className="text-sm text-neutro-dark">{member.description}</p>
               </motion.div>
             ))}
           </div>
@@ -277,7 +279,7 @@ export default function AboutUs() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="rounded-2xl bg-gradient-to-r from-primary-light to-secondary p-8 text-center text-white md:p-12"
+            className="rounded-2xl bg-gradient-to-r from-neutro to-primary-dark p-8 text-center text-neutro-ice md:p-12"
           >
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">¿Listo para comenzar tu viaje?</h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg opacity-90">

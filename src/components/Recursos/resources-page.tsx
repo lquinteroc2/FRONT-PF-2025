@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Image from "next/image"
+import { AnimatedArrow } from "../Emotion/EmotionalLogView"
 
 // Tipos de datos
 // Actualizar la interfaz Resource para coincidir con tu API
@@ -299,32 +300,55 @@ export default function ResourcesPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white font-[family-name:var(--font-geist-sans)">
+    <div className="min-h-screen  font-[family-name:var(--font-geist-sans)">
       {/* Header */}
-      <section className="bg-gradient-to-r from-secondary to-primary-light py-16 text-white md:py-24">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mx-auto max-w-4xl text-center"
-          >
-            <div className="mb-6 flex justify-center">
-              <div className="rounded-full bg-white/20 p-4">
-                <Shield className="h-12 w-12" />
-              </div>
-            </div>
-            <h1 className="mb-4 text-4xl font-bold md:text-5xl">Recursos de Bienestar</h1>
-            <p className="mx-auto max-w-2xl text-lg opacity-90">
-              Descubre herramientas, contenido y productos diseñados para apoyar tu viaje hacia el bienestar emocional
-            </p>
-          </motion.div>
+      <motion.section
+  initial={{ opacity: 0, y: 50 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1, ease: "easeOut" }}
+  viewport={{ once: true }}
+  className=" py-16 text-primary-dark mt-12 mb-20 md:py-24"
+>
+  <div className="container mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+      className="mx-auto max-w-4xl text-center"
+    >
+      <div className="mb-6 flex justify-center">
+        <div className="rounded-full bg-neutro-ice p-4 shadow-lg">
+          <Shield className="h-12 w-12 text-neutro-dark" />
         </div>
-      </section>
+      </div>
+
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+        className="text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight drop-shadow-[0_0_15px_rgba(109,40,217,0.4)]"
+      >
+        Recursos de Bienestar
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
+        className="mx-auto max-w-2xl text-lg opacity-90 font-medium"
+      >
+        Descubre herramientas, contenido y productos diseñados para apoyar tu viaje hacia el bienestar emocional
+      </motion.p>
+    </motion.div>
+
+  </div>
+  <AnimatedArrow />
+</motion.section>
+
 
       {/* Filtros */}
       <section className="border-b bg-white py-6">
-        <div className="container mx-auto px-4">
+        <div id="emotion-list" className="container mx-auto px-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             {/* Búsqueda */}
             <div className="relative flex-1 lg:max-w-md">
