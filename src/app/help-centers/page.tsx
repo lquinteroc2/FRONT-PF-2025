@@ -1,4 +1,5 @@
-import HelpCentersView from "@/components/Help-centers";
+import HelpCentersView from "@/components/Help-centers/HelperCenterView";
+
 
 
 

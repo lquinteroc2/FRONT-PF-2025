@@ -13,7 +13,7 @@ import HelpCentersMap from "./components/help-centers-map"
 import { useToast } from "@/components/ui/use-toast"
 import { AnimatedArrow } from "../Emotion/EmotionalLogView"
 
-export default function HelpCentersView() {
+export default function HelpCenters() {
   const [helpCenters, setHelpCenters] = useState<HelpCenterData[]>([])
   const [filteredCenters, setFilteredCenters] = useState<HelpCenterData[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -76,37 +76,7 @@ useEffect(() => {
 
   return (
     <>
-      <motion.div
-  initial={{ opacity: 0, y: 50 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 1, ease: "easeOut" }}
-  viewport={{ once: true }}
-  className="w-full max-w-6xl mx-auto text-center my-56 px-4"
->
-  <motion.h1
-    initial={{ opacity: 0, scale: 0.95 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
-    className="text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight drop-shadow-[0_0_15px_rgba(109,40,217,0.4)]"
-  >
-    🆘 Centros de Ayuda
-  </motion.h1>
-
-  <motion.p
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-    className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto"
-  >
-    Encuentra centros de asistencia emocional cerca de tu ubicación.
-    <br />
-    Porque pedir ayuda también es un acto de valentía 💙
-  </motion.p>
-  <AnimatedArrow/>
-</motion.div>
-
-
-      <div id="emotion-list" className="flex flex-col md:flex-row gap-4 mb-6">
+      <div id="emotion-list" className="flex flex-col md:flex-row gap-4 mb-6 mt-12">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
