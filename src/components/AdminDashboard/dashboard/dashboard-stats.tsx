@@ -9,7 +9,7 @@ import { useAuth } from "@/context/Auth"
 
 
 
-type ResourceCounts = {
+export type ResourceCounts = {
   document: number
   image: number
   audio: number
