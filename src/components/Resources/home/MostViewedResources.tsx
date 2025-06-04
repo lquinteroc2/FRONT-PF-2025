@@ -58,17 +58,23 @@ export function MostViewedResources() {
       const token = getToken()
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/featured`, {
         headers: {
-        Authorization: `Bearer ${token}`,
-      },
+          Authorization: `Bearer ${token}`,
+        },
       })
-      const data = await response.json()
 
-      if (Array.isArray(data)) {
-        setResources(data)
-      } else {
-        console.error("La respuesta no es un array:", data)
-        setResources([])
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error("Error HTTP:", response.status, errorText)
+        return
       }
+    const data = await response.json()
+
+if (!Array.isArray(data)) {
+  console.error("La respuesta no es un array:", data)
+  return
+}
+
+setResources(data)
     } catch (error) {
       console.error("Error fetching featured resources:", error)
       setResources([])
