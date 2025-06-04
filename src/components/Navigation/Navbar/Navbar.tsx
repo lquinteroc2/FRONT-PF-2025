@@ -12,14 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useAuth } from "@/context/Auth"
 import Cookies from "js-cookie"
 import { useRouter } from "next/navigation"
 import { usePathname } from "next/navigation";
-// Agrega los imports para el modal/dialog
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { SubscriptionButton } from "@/components/Buttons/SubscriptionButton"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -28,13 +27,10 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Estado para el modal de acceso restringido
-  const [modalOpen, setModalOpen] = useState(false);
-
   const navLinks = [
     { name: "Contáctanos", href: "/contact-us", showWhen: "always" },
-    { name: "Acerca de Nosotros", href: "/aboutUs", showWhen: "always" },
-    { name: "Recursos Emocionales", href: "/recursos", hidden: false, showWhen: "auth" },
+    { name: "Nosotros", href: "/aboutUs", showWhen: "always" },
+    { name: "Recursos", href: "/recursos", hidden: false, showWhen: "auth" },
     { name: "Centros de Apoyo", href: "/help-centers", hidden: false, showWhen: "auth" },
     { name: "Registro", href: "/register", hidden: false, showWhen: "noAuth" },
     { name: "Iniciar Sesión", href: "/login", hidden: false, showWhen: "noAuth" },
@@ -67,15 +63,6 @@ export default function Navbar() {
 
       router.push("/");
     }, 1000);
-  };
-
-  // Handler para el enlace de Recursos Emocionales
-  const handleRecursosClick = (e: React.MouseEvent) => {
-    if (user && (user.user.role === "free" || user.user.role === "admin")) {
-      e.preventDefault();
-      setModalOpen(true);
-    }
-    // Si es premium, no se hace nada y navega normalmente
   };
 
   return (
@@ -120,13 +107,12 @@ export default function Navbar() {
                 if (link.href === "/recursos") {
                   return (
                     <li key={link.name}>
-                      <Link
-                        href={link.href}
-                        onClick={handleRecursosClick}
-                        className="text-sm font-medium text-neutro-dark transition-colors hover:text-primary-dark hover:font-semibold"
-                      >
-                        {link.name}
-                      </Link>
+                  <Link
+                    href={link.href}
+                    className="text-sm font-medium text-neutro-dark transition-colors hover:text-primary-dark hover:font-semibold"
+                  >
+                    {link.name}
+                  </Link>
                     </li>
                   )
                 }
@@ -190,7 +176,12 @@ export default function Navbar() {
                   <span className="sr-only">Abrir menú</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[260px] sm:w-[320px] flex flex-col">
+              <SheetContent side="right" className="w-[260px] flex flex-col items-center justify-center text-center">
+                  <SheetHeader>
+                    <VisuallyHidden>
+                      <SheetTitle>Menú principal</SheetTitle>
+                    </VisuallyHidden>
+                  </SheetHeader>
                 <div className="flex items-center gap-2 px-4 py-4 border-b">
                   <Brain className="w-6 h-6 text-primary" />
                   <span className="text-xl font-bold text-primary">Séntia</span>
@@ -227,7 +218,6 @@ export default function Navbar() {
                           <li key={link.name}>
                             <Link
                               href={link.href}
-                              onClick={handleRecursosClick}
                               className="text-sm font-medium text-neutro-dark transition-colors hover:text-primary-dark hover:font-semibold"
                             >
                               {link.name}
@@ -270,17 +260,6 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
-      {/* Modal de acceso restringido */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Acceso restringido</DialogTitle>
-            <p>Este recurso no está disponible para tu tipo de usuario.</p>
-            <SubscriptionButton/>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
