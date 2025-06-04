@@ -52,7 +52,7 @@ const ContactUs = () => {
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 1, ease: "easeOut" }}
     viewport={{ once: true }}
-    className="w-full max-w-6xl mx-auto text-center my-56 px-4"
+    className="w-full max-w-6xl mx-auto text-center my-20 lg:my-56 px-4"
   >
     <motion.h1
       initial={{ opacity: 0, scale: 0.95 }}
