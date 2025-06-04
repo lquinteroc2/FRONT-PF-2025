@@ -11,7 +11,6 @@ import { fetchHelpCenters } from "./api"
 import HelpCentersList from "./components/help-centers-list"
 import HelpCentersMap from "./components/help-centers-map"
 import { useToast } from "@/components/ui/use-toast"
-import { AnimatedArrow } from "../Emotion/EmotionalLogView"
 
 export default function HelpCenters() {
   const [helpCenters, setHelpCenters] = useState<HelpCenterData[]>([])
