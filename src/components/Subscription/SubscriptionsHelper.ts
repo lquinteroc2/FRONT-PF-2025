@@ -11,8 +11,8 @@ export const subscribeUser = async ({ userId, sessionId, token }: SubscribeUserP
     const url = process.env.NEXT_PUBLIC_API_URL;
     const res = await axios.post(
       `${url}/subscription`,
-      { userId, sessionId },                             // ← data
-      { headers: { Authorization: `Bearer ${token}` } }  // ← config (¡coma!)
+      { userId, sessionId },                           
+      { headers: { Authorization: `Bearer ${token}` } }  
     );
     return res.data;
   } catch (err) {

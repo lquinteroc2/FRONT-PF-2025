@@ -7,115 +7,109 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import imageCompression from "browser-image-compression";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search, UserPlus } from "lucide-react"
+import { Search } from "lucide-react"
 import { User, UserRole } from "@/lib/types"
-import UserForm from "@/components/AdminDashboard/users/UsersComponent"
+import UserFormEdit from "./User-form"
 import UserActions from "@/components/AdminDashboard/users/User-actions"
 import { useAuth } from "@/context/Auth"
-import {  compressAndUploadImage, createAdminHelper, updateUserHelper, UserRequestParams, usersHelper, userStatusHelper } from "@/components/AdminDashboard/users/Users-helper"
-import { adminEditUserHelper, AdminUpdateUserData, profileEditHelper, UpdateUserData } from "@/components/ProfileUser/profileEditHelper"
-import Cookies from "js-cookie"
+import { usersHelper, updateUserHelper, userStatusHelper, UserRequestParams } from "@/components/AdminDashboard/users/Users-helper"
 import { useToast } from "@/components/ui/use-toast"
-
+import { useRouter } from "next/navigation"
 
 export default function UsersPageView() {
   const [users, setUsers] = useState<User[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [roleFilter, setRoleFilter] = useState<UserRole | "all">("all")
   const [statusFilter, setStatusFilter] = useState<"all" | "Activo" | "Inactivo">("all")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [editingUser, setEditingUser] = useState<Partial<User> | null>(null)
   const { user } = useAuth()
   const [totalPages, setTotalPages] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState(1)
   const usersPerPage = 999
   const { toast } = useToast()
+  const router = useRouter()
 
-const mapStatusToAPI = (filter: string ): "Activo" | "Inactivo" | "all" => {
-  switch (filter) {
-    case "Activo":
-      return "Activo";
-    case "Inactivo":
-      return "Inactivo";
-    default:
-      return "all";
+  if (!user?.token) {
+    console.error("Token no definido")
+    return null
   }
-}
 
-useEffect(() => {
-  const fetchUsers = async () => {
-    if (!user?.token) return;
+  const handleEditUser = (u: Partial<User>) => {
+    setEditingUser(u)
+    setIsDialogOpen(true)
+  }
 
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
+    setEditingUser(null)
+  }
 
-    
-const params: UserRequestParams = {
-  page: currentPage,
-  limit: usersPerPage,
-  search: searchTerm || undefined,
-  role: roleFilter !== "all" ? roleFilter : undefined,
-  status: mapStatusToAPI(statusFilter),
-};
-    try {
-      console.log("📦 Pidiendo usuarios. Página:", currentPage, "Params:", params);
+  const mapStatusToAPI = (filter: string): "Activo" | "Inactivo" | "all" => {
+    if (filter === "Activo") return "Activo"
+    if (filter === "Inactivo") return "Inactivo"
+    return "all"
+  }
 
-      const response = await usersHelper(user.token, params);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (!user?.token) return
 
-      console.log("✅ Respuesta recibida:", response);
-      console.log("🧍 Usuarios recibidos:", response.data.length);
+      const params: UserRequestParams = {
+        page: currentPage,
+        limit: usersPerPage,
+        search: searchTerm || undefined,
+        role: roleFilter !== "all" ? roleFilter : undefined,
+        status: mapStatusToAPI(statusFilter),
+      }
 
-      setUsers(response.data);
-      console.log(setUsers)
-      setTotalPages(response.totalPages || 1);
-
-    } catch (error) {
-      console.error("❌ Error al obtener usuarios:", error);
+      try {
+        const response = await usersHelper(user.token, params)
+        setUsers(response.data)
+        setTotalPages(response.totalPages || 1)
+      } catch (error) {
+        console.error("Error al obtener usuarios:", error)
+      }
     }
-  };
 
-  fetchUsers();
-}, [user, currentPage, searchTerm, roleFilter, statusFilter]);
+    fetchUsers()
+  }, [user, currentPage, searchTerm, roleFilter, statusFilter])
 
-  
-const filteredUsers = users.filter((user) => {
-  const matchesSearch =
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredUsers = users.filter(user => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
 
-  const matchesRole =
-    roleFilter === "all" || user.role === roleFilter;
+    const matchesRole = roleFilter === "all" || user.role === roleFilter
 
-  const mappeStatusFilter = mapStatusToAPI(statusFilter)
+    const mappedStatusFilter = mapStatusToAPI(statusFilter)
+    const matchesStatus = mappedStatusFilter === "all" || user.status === mappedStatusFilter
 
-  const matchesStatus =
-    mappeStatusFilter  === "all" || user.status === mappeStatusFilter;
+    return matchesSearch && matchesRole && matchesStatus
+  })
 
-  return matchesSearch && matchesRole && matchesStatus;
-});
-
-useEffect(() => {
-  setCurrentPage(1)
-}, [searchTerm, roleFilter, statusFilter])
-
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, roleFilter, statusFilter])
 
   const getInitials = (name: string) => {
     return name
       .split(" ")
-      .map((n) => n[0])
+      .map(n => n[0])
       .join("")
       .toUpperCase()
   }
 
   const isUserRole = (value: string): value is UserRole => {
-  return ["admin", "premium", "free"].includes(value)
- }
+    return ["admin", "premium", "free"].includes(value)
+  }
 
   const getRoleLabel = (role: UserRole) => {
     switch (role) {
       case UserRole.ADMIN:
-        return "Administrador"
+        return "Admin"
       case UserRole.PREMIUM:
         return "Premium"
       case UserRole.FREE:
@@ -124,296 +118,226 @@ useEffect(() => {
         return role
     }
   }
+  
 
-  const handleCreateUser = () => {
-    
-    setEditingUser(null)
-    setIsDialogOpen(true)
-  }
-
-  const handleEditUser = (user: User) => {
-    setEditingUser(user)
-    setIsDialogOpen(true)
-  }
-
-const handleSubmitUser = async (userData: Partial<User>) => {
-
-  if (!userData.id || !user?.token) {
-    console.error("Datos incompletos para actualizar el usuario");
-    toast({
+  const handleSubmitUser = async (userData: Partial<User>): Promise<void> => {
+    if (!userData.id || !user?.token) {
+      toast({
         title: "Error",
         description: "No se puede actualizar el usuario. Datos incompletos.",
         variant: "destructive",
       })
-    return;
-  }
+      return
+    }
 
-  setIsLoading(true);
+    setIsLoading(true)
 
-  try {
-    const formUserData: Partial<User> = { ...userData };
+    try {
+      const updateData: Partial<User> = {}
 
-    if (userData.id) {
-      // Actualizar usuario
-      const updateData: Partial<User> = {};
-
-      if (formUserData.name && formUserData.name.trim() !== "") updateData.name = formUserData.name;
-      if (formUserData.email && formUserData.email.trim() !== "") updateData.email = formUserData.email;
-      if (formUserData.address && formUserData.address.trim() !== "") updateData.address = formUserData.address;
+      if (userData.name?.trim()) updateData.name = userData.name.trim()
+      if (userData.email?.trim()) updateData.email = userData.email.trim()
+      if (userData.address?.trim()) updateData.address = userData.address.trim()
       if (
-        (typeof formUserData.profileImage === "string" && formUserData.profileImage.trim() !== "") ||
-        formUserData.profileImage instanceof File
+        userData.profileImage &&
+        (typeof userData.profileImage === "string"
+          ? userData.profileImage.trim() !== ""
+          : true)
       ) {
-        updateData.profileImage = formUserData.profileImage;
+        updateData.profileImage = userData.profileImage
       }
-      if (formUserData.role && formUserData.role.trim() !== "") updateData.role = formUserData.role;
-      if (formUserData.status && formUserData.status.trim() !== "") updateData.status = formUserData.status;
+      if (userData.role?.trim()) updateData.role = userData.role.trim() as UserRole
+      if (userData.status?.trim()) updateData.status = userData.status.trim() as "Activo" | "Inactivo"
 
-      const updatedUser = await updateUserHelper(userData.id, user.token, updateData);
+      const updatedUser = await updateUserHelper(userData.id, user.token, updateData)
 
-    setUsers((prev) =>
-      prev.map((u) => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
-    );
+      setUsers(prev =>
+        prev.map(u => (u.id === userData.id ? { ...u, ...updatedUser, updatedAt: new Date().toISOString() } : u))
+      )
 
-    toast({
+      toast({
         title: "Éxito",
-        description: "Cambios realizados con éxito",
+        description: "Usuario actualizado con éxito",
       })
-    setTimeout(() => {
-    window.location.reload();
-   }, 500); 
-    setIsDialogOpen(false);
-  }
-  } catch (error: any) {
-    console.error("Error al actualizar usuario:", error);
-    toast({
+
+      // Cerrar diálogo sin recargar la página
+      setIsDialogOpen(false)
+      setEditingUser(null)
+
+    } catch (error) {
+      console.error("Error al actualizar usuario:", error)
+      toast({
         title: "Error",
         description: "Error al actualizar el usuario",
         variant: "destructive",
       })
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-
-
-  const handleDeleteUser = async (userId: string) => {
-      setIsLoading(true)
-    try {
-
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      setUsers((prev) => prev.filter((user) => user.id !== userId))
-      toast({
-        title: "Usuario eliminado",
-        description: "Usuario eliminado correctamente",
-      })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Error al eliminar el usuario",
-        variant: "destructive",
-      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
-
-const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Inactivo") => {
-  
-  try {
-    const cookieValue = Cookies.get("loginUser")
-    const parsed = cookieValue ? JSON.parse(cookieValue) : null
-    const token = parsed?.token || ""
-
-    if (!token) {
+   const handleChangeRole = (userId: string, newRole: UserRole) => {
+  handleSubmitUser({ id: userId, role: newRole })
+}
+   
+  const handleToggleUserStatus = async (userId: string, newStatus: "Activo" | "Inactivo") => {
+    try {
+      if (!user?.token) {
         toast({
           title: "Error",
           description: "Token no encontrado. Inicia sesión nuevamente.",
           variant: "destructive",
         })
-      return
-    }
+        return
+      }
 
-    console.log("Datos enviados a userStatusHelper:", {
-  id: userId,
-  token: token,
-  data: newStatus,
-});
-    await userStatusHelper(userId, newStatus, token)
+      await userStatusHelper(userId, newStatus, user.token)
 
-    setUsers((prev) =>
-      prev.map((user) =>
-        user.id === userId ? { ...user, status: newStatus, updatedAt: new Date() } : user
+      setUsers(prev =>
+        prev.map(user => (user.id === userId ? { ...user, status: newStatus, updatedAt: new Date().toISOString() } : user))
       )
-    )
       toast({
         title: `Usuario ${newStatus === "Activo" ? "activado" : "desactivado"}`,
         description: `Usuario ${newStatus === "Activo" ? "activado" : "desactivado"} correctamente`,
       })
-       setTimeout(() => {
-    window.location.reload();
-   }, 500); 
-    setIsDialogOpen(false);
 
-  } catch (error) {
+      setIsDialogOpen(false)
+      setEditingUser(null)
+    } catch (error) {
       toast({
         title: "Error",
         description: "Error al cambiar el estado del usuario",
         variant: "destructive",
       })
-    console.error(error)
-  }
-}
-
-const handleCloseDialog = () => {
-    setIsDialogOpen(false)
-    setEditingUser(null)
+      console.error(error)
+    }
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-6"
-    >
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Usuarios</h1>
-        {/* <Button onClick={handleCreateUser}>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Nuevo Usuario
-        </Button> */}
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="flex items-center space-x-2 flex-1 max-w-sm">
+          <Search className="h-5 w-5 text-muted-foreground" />
           <Input
-            type="search"
-            placeholder="Buscar por nombre o email..."
-            className="pl-8 w-full"
+            placeholder="Buscar usuario por nombre o email"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
           />
         </div>
-           <Select
-          value={roleFilter}
-          onValueChange={(value) => {
-            if (value === "all") {
-              setRoleFilter("all")
-            } else if (isUserRole(value)) {
-              setRoleFilter(value)
-            }
-          }}
-        >
-          <SelectTrigger className="w-full sm:w-[180px]">
+
+        <Select value={roleFilter} onValueChange={value => setRoleFilter(value as UserRole | "all")}>
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filtrar por rol" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos los roles</SelectItem>
-            <SelectItem value={UserRole.ADMIN}>Administrador</SelectItem>
-            <SelectItem value={UserRole.PREMIUM}>Premium</SelectItem>
-            <SelectItem value={UserRole.FREE}>Gratuito</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="admin">Admin</SelectItem>
+            <SelectItem value="premium">Premium</SelectItem>
+            <SelectItem value="free">Free</SelectItem>
           </SelectContent>
         </Select>
 
-        <Select
-          value={statusFilter}
-          onValueChange={(value) => setStatusFilter(value as "all" | "Activo" | "Inactivo")}
-        >
-          <SelectTrigger className="w-full sm:w-[180px]">
+        <Select value={statusFilter} onValueChange={value => setStatusFilter(value as "all" | "Activo" | "Inactivo")}>
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filtrar por estado" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos los estados</SelectItem>
+            <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="Activo">Activo</SelectItem>
             <SelectItem value="Inactivo">Inactivo</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Usuario</TableHead>
-              <TableHead>Rol</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead className="w-[50px]">Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredUsers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No se encontraron usuarios.
-                </TableCell>
-              </TableRow>
+      <Table>
+        <TableHeader>
+  <TableRow>
+    <TableHead>Usuario</TableHead>
+    <TableHead>Email</TableHead>
+    <TableHead>Rol</TableHead>
+    <TableHead>Estado</TableHead>
+    <TableHead className="text-center">Acciones</TableHead>{/* Una sola columna */}
+  </TableRow>
+</TableHeader>
+
+<TableBody>
+  {filteredUsers.map(u => (
+    <TableRow key={u.id}>
+      <TableCell>
+        <div className="flex items-center space-x-2">
+          <Avatar>
+            {u.profileImage ? (
+              <AvatarImage src={u.profileImage} alt={`Avatar de ${u.name}`} />
             ) : (
-              filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={user.profileImage || "/placeholder.svg"} alt={user.name} />
-                        <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-medium">{user.name}</div>
-                        <div className="text-sm text-muted-foreground">{user.email}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{getRoleLabel(user.role as UserRole)}</TableCell>
-                  <TableCell>
-                <div
-  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-    user.status === "Activo" ? "bg-primary text-neutro-dark" : "bg-neutro-dark text-neutro-ice"
-  }`}
->
-  {user.status === "Activo" ? "Activo" : "Inactivo"}
-</div>
-
-                  </TableCell>
-                  <TableCell>
-                    <UserActions
-                      user={user}
-                      // onEdit={handleEditUser}
-                      onToggleStatus={handleToggleUserStatus}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
+              <AvatarFallback>{getInitials(u.name)}</AvatarFallback>
             )}
-          </TableBody>
-        </Table>
+          </Avatar>
+          <div className="font-medium">{u.name}</div>
+        </div>
+      </TableCell>
 
-      </div>
+      <TableCell>{u.email}</TableCell>
 
-      {/* Diálogo para crear/editar usuario */}
-      {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editingUser ? "Editar Usuario" : "Crear Nuevo Usuario"}</DialogTitle>
-            <DialogDescription>
-              {editingUser
-                ? "Modifica los detalles del usuario seleccionado."
-                : "Completa los detalles del usuario que deseas añadir al sistema."}
-            </DialogDescription>
-          </DialogHeader>
-          <UserForm
-            user={editingUser}
-            onSubmit={handleSubmitUser}
-            onCancel={handleCloseDialog}
-            isLoading={isLoading}
-            mode={editingUser ? "edit" : "create"}
-          />
-        </DialogContent>
-      </Dialog> */}
+      <TableCell>{getRoleLabel(u.role as UserRole)}</TableCell>
+
+      <TableCell>{u.status}</TableCell>
+
+      {/* Columna Acciones con select y botón lado a lado */}
+      <TableCell>
+        <div className="flex items-center gap-3 justify-center">
+          {/* Select para cambiar rol */}
+          <Select
+            value="select"
+            onValueChange={(newRole) => {
+              if (isUserRole(newRole)) {
+                handleChangeRole(u.id, newRole);
+              }
+            }}
+          >
+            <SelectTrigger className="w-[120px] text-center">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="select" disabled>
+                Cambiar rol
+              </SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="premium">Premium</SelectItem>
+              <SelectItem value="free">Free</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Botón activar / desactivar */}
+          {u.status === "Activo" ? (
+            <Button
+              variant="google"
+              size="sm"
+              onClick={() => handleToggleUserStatus(u.id, "Inactivo")}
+              className="whitespace-nowrap"
+            >
+              Desactivar
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => handleToggleUserStatus(u.id, "Activo")}
+              className="whitespace-nowrap"
+            >
+              Activar
+            </Button>
+          )}
+        </div>
+      </TableCell>
+    </TableRow>
+  ))}
+</TableBody>
+
+      </Table>
     </motion.div>
   )
 }
-
-

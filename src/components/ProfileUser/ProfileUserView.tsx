@@ -146,7 +146,7 @@ const ProfileUserView: React.FC = () => {
 
   /* ─────────────── FLAGS AUXILIARES ─────────────── */
   const role = user?.user.role;
-  const hasSubscription = (user?.user?.subscription?.length ?? 0) > 0;
+  const hasSubscription = (user?.user?.subscriptions?.length ?? 0) > 0;
 
   /* ─────────────── RENDER ─────────────── */
   return (
@@ -241,7 +241,7 @@ const ProfileUserView: React.FC = () => {
   viewport={{ once: true, amount: 0.5 }}
   transition={{ duration: 0.6, ease: "easeOut" }}
 >
-  {user?.user?.subscription?.[0]?.startDate && (
+  {user?.user?.subscriptions?.[0]?.startDate && (
     <motion.span
       initial={{ opacity: 0, x: -10 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -251,13 +251,13 @@ const ProfileUserView: React.FC = () => {
     >
       Inicio:{" "}
       <span className="font-semibold text-primary">
-        {formatDate(user.user.subscription[0].startDate)}
+        {formatDate(user.user.subscriptions[0].startDate)}
       </span>
       {" | "}
     </motion.span>
   )}
 
-  {user?.user?.subscription?.[0]?.endDate && (
+  {user?.user?.subscriptions?.[0]?.endDate && (
     <motion.span
       initial={{ opacity: 0, x: 10 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -267,7 +267,7 @@ const ProfileUserView: React.FC = () => {
     >
       Fin:{" "}
       <span className="font-semibold text-primary">
-        {formatDate(user.user.subscription[0].endDate)}
+        {formatDate(user.user.subscriptions[0].endDate)}
       </span>
     </motion.span>
   )}

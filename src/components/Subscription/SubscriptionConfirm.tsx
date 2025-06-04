@@ -49,7 +49,7 @@ const SubscriptionConfirm = ({ sessionId, subscribeFn }: Props) => {
       }
 
       // 3️⃣ Prepara el array de suscripciones
-      const prevSubs = user.user.subscription ?? [];
+      const prevSubs = user.user.subscriptions ?? [];
 
       // Si no hay suscripciones → agrega la nueva completa
       // Si ya hay → actualiza la primera (o la que quieras identificar)

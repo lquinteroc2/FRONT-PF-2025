@@ -44,7 +44,7 @@ export interface User {
   role: string;
   status: "Activo" | "Inactivo";
   createdAt?: string;
-  subscription?: Subscription[];  
+  subscriptions?: Subscription[];  
 }
 
 export interface Resource {
