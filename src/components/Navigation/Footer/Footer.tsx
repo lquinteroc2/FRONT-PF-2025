@@ -62,7 +62,7 @@ const showFullFooter = !(
         </Link>
       </li>
       <li>
-        <Link href="#" className="hover:text-primary transition-colors">
+        <Link href="/cookies" className="hover:text-primary transition-colors">
           Cookies
         </Link>
       </li>
