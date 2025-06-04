@@ -149,6 +149,7 @@ useEffect(() => {
               <option value={10000}>10 km</option>
               <option value={20000}>20 km</option>
               <option value={30000}>30 km</option>
+              <option value={100000}>100 km</option>
             </select>
           )}
           <select

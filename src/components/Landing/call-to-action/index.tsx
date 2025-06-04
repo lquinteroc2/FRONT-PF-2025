@@ -23,7 +23,7 @@ export default function CallToAction() {
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button  
-              onClick={() => window.location.href = '/login'}
+              onClick={() => window.location.href = '/register'}
               size="lg" 
               className="bg-neutro-light text-primary hover:bg-primary-dark"
             >

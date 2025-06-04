@@ -45,7 +45,7 @@ const GoogleLogin = () => {
       });
       setTimeout(() => {
           router.push("/home");
-      }, 2000);
+      }, 1000);
       } catch (err) {
         console.error("❌ Error al enviar datos a backend:", err);
       }

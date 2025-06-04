@@ -26,44 +26,73 @@ const SubscriptionConfirm = ({ sessionId, subscribeFn }: Props) => {
   const [subscriptionInfo, setSubscriptionInfo] = useState<SubscriptionData | null>(null);
 
   useEffect(() => {
-    if (!user || hasSubscribed.current) return;
+  if (!user || hasSubscribed.current) return;
 
-    const handleSubscribe = async () => {
-      hasSubscribed.current = true;
+  const handleSubscribe = async () => {
+    hasSubscribed.current = true;
 
-      if (!sessionId) {
-        console.error("⚠️ No se encontró sessionId.");
-        setIsLoading(false);
-        return;
+    if (!sessionId) {
+      console.error("⚠️ No se encontró sessionId.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // 1️⃣ Llamas al backend
+      const response = await subscribeFn({ userId: user.user.id, sessionId });
+
+      // 2️⃣ Actualizas el rol si vino uno nuevo
+      let nextRole = user.user.role;
+      if (response.role) {
+        nextRole = response.role;
+        localStorage.setItem("role", response.role);
       }
 
-      try {
-        const response = await subscribeFn({ userId: user.user.id, sessionId });
+      // 3️⃣ Prepara el array de suscripciones
+      const prevSubs = user.user.subscriptions ?? [];
 
-        if (response.role) {
-          localStorage.setItem("role", response.role);
-          setUser({
-            ...user,
-            user: { ...user.user, role: response.role },
-          });
-        }
+      // Si no hay suscripciones → agrega la nueva completa
+      // Si ya hay → actualiza la primera (o la que quieras identificar)
+      const updatedSubs =
+        prevSubs.length === 0
+          ? [response]
+          : prevSubs.map((sub, idx) =>
+              idx === 0
+                ? { ...sub, ...response } // sobrescribe campos existentes
+                : sub
+            );
 
-        setSubscriptionInfo({
-          name: response.name,
-          email: response.email,
-          role: response.role,
-          startDate: response.startDate,
-          endDate: response.endDate,
-        });
-      } catch (error) {
-        console.error("❌ Error al suscribirse:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      // 4️⃣ Actualiza el contexto y localStorage
+      const updatedContextUser = {
+        ...user,
+        user: {
+          ...user.user,
+          role: nextRole,
+          subscriptions: updatedSubs,
+        },
+      };
 
-    handleSubscribe();
-  }, [user, setUser, sessionId, subscribeFn]);
+      setUser(updatedContextUser);
+      localStorage.setItem("loginUser", JSON.stringify(updatedContextUser));
+
+      // 5️⃣ Guarda la info para la UI
+      setSubscriptionInfo({
+        name: response.name,
+        email: response.email,
+        role: response.role,
+        startDate: response.startDate,
+        endDate: response.endDate,
+      });
+    } catch (error) {
+      console.error("❌ Error al suscribirse:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  handleSubscribe();
+}, [user, setUser, sessionId, subscribeFn]);
+
 
   if (isLoading) {
     return (
