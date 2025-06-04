@@ -146,7 +146,7 @@ const ProfileUserView: React.FC = () => {
 
   /* ─────────────── FLAGS AUXILIARES ─────────────── */
   const role = user?.user.role;
-  const hasSubscription = (user?.user?.subscription?.length ?? 0) > 0;
+  const hasSubscription = (user?.user?.subscriptions?.length ?? 0) > 0;
 
   /* ─────────────── RENDER ─────────────── */
   return (
@@ -229,10 +229,16 @@ const ProfileUserView: React.FC = () => {
               </div>
 
               {role === "premium" && hasSubscription && (
-                <div className="mt-4 px-3 py-1 bg-primary text-white text-sm rounded-full shadow-sm">
+                <div className="mt-4 px-3 py-1 bg-primary text-neutro-ice text-sm rounded-full shadow-sm">
                   Usuario Premium
                 </div>
               )}
+
+              {role === "admin" &&  (
+  <div className="mt-2 px-3 py-1 bg-neutro text-neutro-dark text-sm rounded-full shadow-sm">
+    Usuario Administrador
+  </div>
+)}
 
 <motion.div
   className="text-xs mt-1 text-center text-neutro-dark"
@@ -241,7 +247,7 @@ const ProfileUserView: React.FC = () => {
   viewport={{ once: true, amount: 0.5 }}
   transition={{ duration: 0.6, ease: "easeOut" }}
 >
-  {user?.user?.subscription?.[0]?.startDate && (
+  {user?.user?.subscriptions?.[0]?.startDate &&  role === "premium" && hasSubscription &&  (
     <motion.span
       initial={{ opacity: 0, x: -10 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -251,13 +257,13 @@ const ProfileUserView: React.FC = () => {
     >
       Inicio:{" "}
       <span className="font-semibold text-primary">
-        {formatDate(user.user.subscription[0].startDate)}
+        {formatDate(user.user.subscriptions[0].startDate)}
       </span>
       {" | "}
     </motion.span>
   )}
 
-  {user?.user?.subscription?.[0]?.endDate && (
+  {user?.user?.subscriptions?.[0]?.endDate &&  role === "premium" && hasSubscription &&  (
     <motion.span
       initial={{ opacity: 0, x: 10 }}
       whileInView={{ opacity: 1, x: 0 }}
@@ -267,7 +273,7 @@ const ProfileUserView: React.FC = () => {
     >
       Fin:{" "}
       <span className="font-semibold text-primary">
-        {formatDate(user.user.subscription[0].endDate)}
+        {formatDate(user.user.subscriptions[0].endDate)}
       </span>
     </motion.span>
   )}
