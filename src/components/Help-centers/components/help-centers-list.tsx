@@ -68,12 +68,12 @@ export default function HelpCentersList({ centers }: HelpCentersListProps) {
                     <Info className="h-4 w-4 mr-2" />
                     Detalles
                   </Button>
-                  <Button variant="ghost" size="sm" asChild>
+                  {/* <Button variant="ghost" size="sm" asChild>
                     <a href={`tel:${center.contact}`}>
                       <Phone className="h-4 w-4 mr-2" />
                       Contactar
                     </a>
-                  </Button>
+                  </Button> */}
                 </CardFooter>
               </Card>
             </motion.div>
