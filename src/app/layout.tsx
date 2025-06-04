@@ -11,6 +11,7 @@ import { AuthProvider } from "@/context/Auth";
 import ClientLayoutWrapper from "@/components/Navigation/ClientLayoutWrapper";
 import { authOptions } from "@/lib/authOptions";
 import GlobalChatbot from "@/components/Navigation/ChatBotGeminiAI";
+import CookieBanner from "@/components/Cookies-Banner/cookie-banner";
 
 
 const geistSans = Geist({
@@ -61,6 +62,7 @@ export default async function RootLayout({
        <main className="flex-grow flex flex-col ">
         {children}
        </main>
+       <CookieBanner />
           <GlobalChatbot />
           </ClientLayoutWrapper>
         </AuthProviderGoogle>
