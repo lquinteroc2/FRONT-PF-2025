@@ -7,6 +7,7 @@ import { useAuth } from "@/context/Auth";
 import emotionCreateHelper from "./emotionCreateHelper"; // Assuming this path is correct
 import { useToast } from "@/components/ui/use-toast";
 import SubscriptionPlans from "../Subscription/SubscriptionPlans";
+import { Button } from "../ui/button";
 
 // Helper for Tailwind transition classes
 const getStepTransitionClasses = (isActive: boolean) => 
@@ -82,20 +83,31 @@ useEffect(() => {
 
       // Mensaje personalizado según el error del backend
       const backendMessage = error?.response?.data?.message || error.message || "";
+if (
+  backendMessage.includes("límite de 1 estados por día para tu plan (free)") ||
+  backendMessage.includes("límite de 5 estados por día para tu plan (premium)")
+) {
+ description = (
+  <div className="flex flex-col items-center gap-2 text-center">
+    <span>
+      Has alcanzado el límite diario de registros emocionales. <br />
+      En el plan <strong>Free</strong> puedes registrar 1 emoción por día. <br />
+      En el plan <strong>Premium</strong> puedes registrar hasta 5 por día.
+    </span>
 
-      if (backendMessage.includes("Ya existe un estado para este usuario")) {
-        description = (
-          <div className="flex flex-col items-center gap-2 text-center">
-            <span>
-              Solo puedes registrar una emoción al día. Si deseas registrar más
-              de una emoción <br /> ¡Suscríbete a Premium!
-            </span>
-            <SubscriptionPlans />
-          </div>
-        );
-      } else if (backendMessage.includes("UUID")) {
-        description = "El ID de usuario o emoción no es válido.";
-      }
+    {user?.user.role !== "premium" && (
+      <>
+        <span>¿Quieres aumentar tu límite? ¡Suscríbete a Premium!</span>
+        <SubscriptionPlans />
+      </>
+    )}
+  </div>
+);
+
+} else if (backendMessage.includes("UUID")) {
+  description = "El ID de usuario o emoción no es válido.";
+}
+
 
       toast({
         variant: "destructive",
@@ -206,7 +218,7 @@ useEffect(() => {
                 <h2 className="text-xl sm:text-2xl font-semibold mb-1 text-center text-neutro-dark">
                   Intensidad de {selectedEmotion.name.toLowerCase()} {selectedEmotion.emoji}
                 </h2>
-                <p className="text-sm text-neutro mb-4 sm:mb-6 text-center">Del 1 (muy baja) al 5 (muy alta)</p>
+                <p className="text-sm text-neutro-dark mb-4 sm:mb-6 text-center">Del 1 (muy baja) al 5 (muy alta)</p>
                 
                 <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
                   {[...Array(5)].map((_, i) => (
@@ -254,7 +266,7 @@ useEffect(() => {
                   <button type="button" onClick={handleBack} className="text-sm text-primary hover:underline px-4 py-2 rounded-md hover:bg-neutro-light transition-colors">
                     &larr; Cambiar intensidad
                   </button>
-                   <button
+                   <Button
   onClick={handleSubmit}
   type="submit"
   disabled={isLoading || comment.trim() === ''}
@@ -266,7 +278,7 @@ useEffect(() => {
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
     </svg>
   ) : "Confirmar Emoción"}
-</button>
+</Button>
                 </div>
               </>
             )}
