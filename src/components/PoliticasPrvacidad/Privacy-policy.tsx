@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Calendar, Shield, Lock, Eye, Database, UserCheck, Globe, Mail } from "lucide-react"
+import Link from "next/link"
 
 export default function PrivacyPolicy() {
   const lastUpdated = "15 de enero de 2024"
@@ -447,32 +448,34 @@ Si descubrimos que hemos recopilado datos de un menor sin consentimiento apropia
           >
             <div className="text-center mb-8">
               <h2 className="mb-4 text-2xl font-bold text-gray-900">Gestione su Privacidad</h2>
-              <p className="text-gray-600">Acciones rápidas para controlar su información personal</p>
+              {/* <p className="text-gray-600">Acciones rápidas para controlar su información personal</p> */}
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
-              <div className="rounded-lg bg-white p-6 text-center shadow-sm">
+            <div className="justify-center">
+              {/* <div className="rounded-lg bg-white p-6 text-center shadow-sm">
                 <Eye className="mx-auto mb-3 h-8 w-8 text-blue-600" />
                 <h3 className="mb-2 font-semibold text-gray-900">Ver mis Datos</h3>
                 <p className="mb-4 text-sm text-gray-600">Solicite una copia de toda su información personal</p>
                 <button className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
                   Solicitar Datos
                 </button>
-              </div>
-              <div className="rounded-lg bg-white p-6 text-center shadow-sm">
+              </div> */}
+              {/* <div className="rounded-lg bg-white p-6 text-center shadow-sm">
                 <Lock className="mx-auto mb-3 h-8 w-8 text-green-600" />
                 <h3 className="mb-2 font-semibold text-gray-900">Configurar Privacidad</h3>
                 <p className="mb-4 text-sm text-gray-600">Ajuste sus preferencias de privacidad y cookies</p>
                 <button className="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
                   Configurar
                 </button>
-              </div>
+              </div> */}
               <div className="rounded-lg bg-white p-6 text-center shadow-sm">
                 <Mail className="mx-auto mb-3 h-8 w-8 text-purple-600" />
                 <h3 className="mb-2 font-semibold text-gray-900">Contactar Soporte</h3>
                 <p className="mb-4 text-sm text-gray-600">¿Preguntas sobre privacidad? Estamos aquí para ayudar</p>
+                <Link href={"/contact-us"}>
                 <button className="w-full rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700">
                   Contactar
                 </button>
+                </Link>
               </div>
             </div>
           </motion.div>
@@ -496,12 +499,16 @@ Si descubrimos que hemos recopilado datos de un menor sin consentimiento apropia
                 dude en contactarnos.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+                <Link href={"/contact-us"}>
                 <button className="rounded-full bg-white px-6 py-3 font-semibold text-blue-600 transition-all hover:bg-gray-100">
                   Contactar Privacidad
                 </button>
+                </Link>
+                <Link href={"/terms-of-service"}>
                 <button className="rounded-full border-2 border-white px-6 py-3 font-semibold text-white transition-all hover:bg-white hover:text-blue-600">
                   Ver Términos de Uso
                 </button>
+                </Link>
               </div>
             </div>
           </motion.div>

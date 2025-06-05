@@ -214,7 +214,7 @@ export default function TermsOfService() {
                     </p>
                     <p>
                       <strong>
-                        Línea Nacional de Prevención del Suicidio:
+                        Línea Nacional de Prevención del Suicidio: 988
                       </strong>{" "}
                     </p>
                     <p>

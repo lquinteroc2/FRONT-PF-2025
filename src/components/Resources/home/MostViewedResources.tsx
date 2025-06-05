@@ -12,27 +12,27 @@ const cardsData = [
     imageAlt: "Image 1",
     href: "/resources/card10",
   },
-  {
-    title: "hablar con personas",
-    description: "Description for card 3",
-    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960116/hablarconpersonas_e25pf1.jpg",
-    imageAlt: "Image 3",
-    href: "/resources/card11",
-  },
-  {
-    title: "Joga",
-    description: "Description for card 4",
-    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/Joga_q93kis.jpg",
-    imageAlt: "Image 4",
-    href: "/resources/card12",
-  },
-  {
-    title: "Meditación",
-    description: "Description for card 4",
-    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/meditaci%C3%B3n_yjjllb.jpg",
-    imageAlt: "Image 5",
-    href: "/resources/card13",
-  },
+  // {
+  //   title: "hablar con personas",
+  //   description: "Description for card 3",
+  //   imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960116/hablarconpersonas_e25pf1.jpg",
+  //   imageAlt: "Image 3",
+  //   href: "/resources/card11",
+  // },
+  // {
+  //   title: "Joga",
+  //   description: "Description for card 4",
+  //   imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/Joga_q93kis.jpg",
+  //   imageAlt: "Image 4",
+  //   href: "/resources/card12",
+  // },
+  // {
+  //   title: "Meditación",
+  //   description: "Description for card 4",
+  //   imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/meditaci%C3%B3n_yjjllb.jpg",
+  //   imageAlt: "Image 5",
+  //   href: "/resources/card13",
+  // },
 ];
 
 export function MostViewedResources() {
