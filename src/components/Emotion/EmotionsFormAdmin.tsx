@@ -115,6 +115,7 @@ const isFormValid = () => {
           onChange={handleChange}
           className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Ej: Nostalgia"
+          maxLength={20}
           required
         />{error && (
     <p className="mt-1 text-sm text-primary-dark font-bold">{error.name}</p>
@@ -130,27 +131,36 @@ const isFormValid = () => {
           onChange={handleChange}
           className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Ej: 😌"
+          maxLength={20}
           required
         />{error && (
     <p className="mt-1 text-sm text-primary-dark font-bold">{error.emoji}</p>
   )}
       </div>
 
-      <div className="flex flex-col items-center">
-  <label className="block text-sm font-medium text-gray-700">Valor clínico (MIN -3 / MAX 3)</label>
-  <input
-    type="number"
-    name="clinicalValue"
-    value={formData.clinicalValue}
-    onChange={handleChange}
-    min={-3}
-    max={3}
-    className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    required
-  />{error && (
-    <p className="mt-1 text-sm text-primary-dark font-bold">{error.clinicalValue}</p>
-  )}
-</div>
+    <div className="flex flex-col items-center">
+      <label className="block text-sm font-medium text-gray-700">
+        Valor clínico
+      </label>
+        <span className="text-xs text-gray-500 mb-1">
+        Usa las flechas para ajustar el valor clínico entre -3 (muy bajo) y 3 (muy alto).
+      </span>
+      <input
+        type="number"
+        name="clinicalValue"
+        value={formData.clinicalValue}
+        onChange={handleChange}
+        min={-3}
+        max={3}
+        step={1}
+        onKeyDown={(e) => e.preventDefault()} // bloquea escritura manual
+        className="w-20 text-center border rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-default"
+        required
+      />
+      {error?.clinicalValue && (
+        <p className="mt-1 text-sm text-primary-dark font-bold">{error.clinicalValue}</p>
+      )}
+    </div>
 
       <div className="flex flex-col items-center">
         <label className="block text-sm font-medium text-gray-700">Significado</label>
@@ -161,6 +171,7 @@ const isFormValid = () => {
           rows={3}
           className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="¿Qué representa esta emoción?"
+          maxLength={200}
           required
         />{error && (
     <p className="mt-1 text-sm text-primary-dark font-bold">{error.significado}</p>
@@ -176,6 +187,7 @@ const isFormValid = () => {
           rows={3}
           className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Mensaje de apoyo personalizado"
+          maxLength={300}
           required
         />{error && (
     <p className="mt-1 text-sm text-primary-dark font-bold">{error.reflexion}</p>

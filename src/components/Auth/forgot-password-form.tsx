@@ -178,6 +178,7 @@ export default function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProp
                       id="email"
                       type="email"
                       placeholder="tu@email.com"
+                      maxLength={40}
                       className={`pl-10 ${
                         meta.touched && meta.error
                           ? "border-red-500 focus:border-red-500 focus:ring-red-500"

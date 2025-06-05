@@ -82,6 +82,7 @@ useEffect(() => {
             placeholder="Buscar por nombre, categoría o ubicación..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            maxLength={100}
             className="pl-10"
           />
         </div>
@@ -143,12 +144,10 @@ useEffect(() => {
               className="border rounded px-4 py-2"
             >
               <option value={1000}>1 km</option>
-              <option value={3000}>3 km</option>
-              <option value={5000}>5 km</option>
               <option value={10000}>10 km</option>
-              <option value={20000}>20 km</option>
-              <option value={30000}>30 km</option>
+              <option value={50000}>50 km</option>
               <option value={100000}>100 km</option>
+              <option value={1000000}>1000 km</option>
             </select>
           )}
           <select

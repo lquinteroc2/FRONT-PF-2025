@@ -147,6 +147,7 @@ export default function HelpCenterPage() {
             placeholder="Buscar puntos..."
             className="pl-8"
             value={searchTerm}
+            maxLength={100}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>

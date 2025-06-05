@@ -199,6 +199,7 @@ export default function ResetPasswordForm() {
                       id="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Crea una contraseña segura"
+                      maxLength={40}
                       className={`pl-10 pr-10 ${
                         meta.touched && meta.error
                           ? "border-red-500 focus:border-red-500 focus:ring-red-500"
@@ -236,6 +237,7 @@ export default function ResetPasswordForm() {
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Confirma tu contraseña"
+                      maxLength={40}
                       className={`pl-10 pr-10 ${
                         meta.touched && meta.error
                           ? "border-red-500 focus:border-red-500 focus:ring-red-500"

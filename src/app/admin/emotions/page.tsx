@@ -145,6 +145,7 @@ function getCategoryColor(category: string) {
         placeholder="Buscar emociones..."
         className="pl-9 h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         value={searchTerm}
+        maxLength={100}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
     </div>

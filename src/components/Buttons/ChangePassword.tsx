@@ -105,6 +105,7 @@ const handleChangePassword = async (e: FormEvent) => {
               id="currentPassword"
               type="password"
               value={currentPassword}
+              maxLength={40}
               onChange={(e) => setCurrentPassword(e.target.value)}
               className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               required
@@ -118,6 +119,7 @@ const handleChangePassword = async (e: FormEvent) => {
               id="newPassword"
               type="password"
               value={newPassword}
+              maxLength={40}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               required
@@ -131,6 +133,7 @@ const handleChangePassword = async (e: FormEvent) => {
               id="confirmNewPassword"
               type="password"
               value={confirmNewPassword}
+              maxLength={40}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
               className="w-full px-3 py-2 bg-neutro-light border border-neutro-light rounded-md text-neutro-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
               required

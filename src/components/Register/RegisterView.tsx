@@ -114,7 +114,7 @@ const RegisterView = () => {
                         <div className='text-center w-full'>
                             <label className="block text-sm font-semibold text-neutro-dark ">Nombre</label>
                             <div className="mx-auto text-center w-[40%]">
-                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="text" name="name" placeholder="Nombre" />
+                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="text" name="name" placeholder="Nombre" maxLength={20} />
                                 <ErrorMessage name="name" component="div" className="text-sm text-primary-dark font-bold" />
                             </div>
                         </div>
@@ -123,7 +123,7 @@ const RegisterView = () => {
                         <div className='text-center'>
                             <label className="block text-sm font-semibold text-neutro-dark">Correo Electrónico</label>
                             <div className="mx-auto text-center w-[40%]">
-                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="email" name="email" placeholder="Correo Electrónico" />
+                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="email" name="email" placeholder="Correo Electrónico" maxLength={40} />
                                 <ErrorMessage name="email" component="div" className="text-sm text-primary-dark font-bold" />
                             </div>
                         </div>
@@ -132,7 +132,7 @@ const RegisterView = () => {
                         <div className='text-center'>
                             <label className="block text-sm font-semibold text-neutro-dark">Contraseña</label>
                             <div className="mx-auto text-center w-[40%]">
-                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="password" name="password" placeholder="Contraseña" />
+                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="password" name="password" placeholder="Contraseña" maxLength={30}/>
                                 <ErrorMessage name="password" component="div" className="text-sm text-primary-dark font-bold" />
                             </div>
                         </div>
@@ -141,7 +141,7 @@ const RegisterView = () => {
                         <div className='text-center'>
                             <label className="block text-sm font-semibold text-neutro-dark">Confirmar Contraseña</label>
                             <div className="mx-auto text-center w-[40%]">
-                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="password" name="confirmPassword" placeholder="Confirmar Contraseña" />
+                                <Field className="w-full text-center text-sm border border-neutro-dark rounded-sm" type="password" name="confirmPassword" placeholder="Confirmar Contraseña" maxLength={30} />
                                 <ErrorMessage name="confirmPassword" component="div" className="text-sm text-primary-dark font-bold" />
                             </div>
                         </div>
