@@ -21,17 +21,17 @@ const HelpCentersView = () => {
     <>
       {/* Hero */}
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        viewport={{ once: true }}
-        className="w-full max-w-6xl mx-auto text-center mt-56 px-4"
-      >
+  initial={{ opacity: 0, y: 50 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1, ease: "easeOut" }}
+  viewport={{ once: true }}
+  className="w-full max-w-6xl mx-auto text-center mt-32 sm:mt-56 px-4"
+>
         <motion.h1
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight drop-shadow-[0_0_15px_rgba(109,40,217,0.4)]"
+          className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-primary mb-4 leading-tight drop-shadow-[0_0_15px_rgba(109,40,217,0.4)]"
         >
           🏥✨ Centros de Ayuda
         </motion.h1>
@@ -40,7 +40,7 @@ const HelpCentersView = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-          className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto"
+          className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto"
         >
           Encuentra fácilmente los centros de ayuda más cercanos y accede a recursos
           valiosos para tu bienestar. 🚑
@@ -50,10 +50,13 @@ const HelpCentersView = () => {
       </motion.div>
 
       {/* Contenido principal */}
-      <div
-        id="emotion-list"
-        className="p-4 min-h-[60vh] flex flex-col items-center justify-start mt-36 mb-24 space-y-12"
-      >
+     <div
+  id="emotion-list"
+  className="w-full max-w-4xl px-4 sm:px-6 min-h-[60vh] flex flex-col items-center justify-start mt-24 sm:mt-36 mb-16 sm:mb-24 space-y-6 sm:space-y-12 overflow-x-hidden"
+>
+
+
+
         {canAccess ? (
           <motion.section
             initial="hidden"
