@@ -238,9 +238,6 @@ export default function ResourcesPage() {
           <div className="flex w-full items-center justify-between">
             <span className="text-sm font-medium text-green-600">Gratis</span>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
-                <Heart className="h-4 w-4" />
-              </Button>
               <Button
                 size="sm"
                 className="bg-teal-600 hover:bg-teal-700"
@@ -302,7 +299,7 @@ export default function ResourcesPage() {
   return (
     <div className="min-h-screen  font-[family-name:var(--font-geist-sans)">
       {/* Header */}
-      <motion.section
+      {/* <motion.section
   initial={{ opacity: 0, y: 50 }}
   whileInView={{ opacity: 1, y: 0 }}
   transition={{ duration: 1, ease: "easeOut" }}
@@ -343,92 +340,80 @@ export default function ResourcesPage() {
 
   </div>
   <AnimatedArrow />
-</motion.section>
+</motion.section> */}
 
 
       {/* Filtros */}
       <section className="border-b bg-white py-6">
-        <div id="emotion-list" className="container mx-auto px-4">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            {/* Búsqueda */}
-            <div className="relative flex-1 lg:max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <Input
-                placeholder="Buscar recursos..."
-                value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                className="pl-10"
-              />
-            </div>
+  <div id="emotion-list" className="container mx-auto px-4">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-x-6 lg:gap-y-4 lg:justify-start">
+      {/* Búsqueda */}
+      <div className="relative w-full lg:max-w-md">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <Input
+          placeholder="Buscar recursos..."
+          value={filters.search}
+          onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          className="pl-10"
+        />
+      </div>
 
-            {/* Filtros */}
-            <div className="flex flex-wrap gap-4">
-              {/* Actualizar la sección de filtros en el JSX */}
-              <Select
-                value={filters.fileType}
-                onValueChange={(value: any) => setFilters({ ...filters, fileType: value })}
-              >
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Tipo de archivo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos</SelectItem>
-                  {fileTypes.map((type) => (
-                    <SelectItem key={type} value={type} className="capitalize">
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      {/* Filtros */}
+      <div className="flex flex-wrap items-center gap-4">
+        <Select
+          value={filters.fileType}
+          onValueChange={(value: any) => setFilters({ ...filters, fileType: value })}
+        >
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Tipo de archivo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            {fileTypes.map((type) => (
+              <SelectItem key={type} value={type} className="capitalize">
+                {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-              <Select
-                value={filters.showInCardList}
-                onValueChange={(value: any) => setFilters({ ...filters, showInCardList: value })}
-              >
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Visibilidad" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos</SelectItem>
-                  <SelectItem value="true">Destacados</SelectItem>
-                  <SelectItem value="false">No destacados</SelectItem>
-                </SelectContent>
-              </Select>
+        <Select
+          value={filters.sortBy}
+          onValueChange={(value: any) => setFilters({ ...filters, sortBy: value })}
+        >
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Ordenar por" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">Más recientes</SelectItem>
+            <SelectItem value="oldest">Más antiguos</SelectItem>
+            <SelectItem value="name">Nombre A-Z</SelectItem>
+          </SelectContent>
+        </Select>
 
-              <Select value={filters.sortBy} onValueChange={(value: any) => setFilters({ ...filters, sortBy: value })}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Ordenar por" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Más recientes</SelectItem>
-                  <SelectItem value="oldest">Más antiguos</SelectItem>
-                  <SelectItem value="name">Nombre A-Z</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Botones de vista */}
-              <div className="flex rounded-md border">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="rounded-r-none"
-                >
-                  <Grid className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="rounded-l-none"
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
+        {/* Botones de vista */}
+        <div className="flex rounded-md border">
+          <Button
+            variant={viewMode === "grid" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("grid")}
+            className="rounded-r-none"
+          >
+            <Grid className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === "list" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("list")}
+            className="rounded-l-none"
+          >
+            <List className="h-4 w-4" />
+          </Button>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Contenido principal */}
       <section className="py-12">

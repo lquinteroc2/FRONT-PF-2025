@@ -42,11 +42,13 @@ export default function AboutUs() {
     {
       name: "Leonado Quintero",
       role: "Fundador CEO Front-End Developer",
+      image:"/leo.png",
       description: "Full Satck, Especialista en Front-End con 5 años de experiencia.",
     },
     {
       name: "Carla Taormina",
       role: "Back-End Developer",
+      image:"/carli.png",
       description: "Experto en desarrollo de plataformas digitales para el sector salud.",
     },
     {
