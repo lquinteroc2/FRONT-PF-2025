@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Send, X, Minimize2, Bot } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import { usePathname } from "next/navigation"
-
+import { useAuth } from "@/context/Auth";
 
 interface Message {
   sender: "user" | "bot"
@@ -16,7 +16,7 @@ export default function GlobalChatbot() {
 const pathname = usePathname();
 const shouldHide = pathname === "/" || pathname === "/login" || pathname === "/register";
 const [isPremiumUser, setIsPremiumUser] = useState(false)
-
+const [isCheckingRole, setIsCheckingRole] = useState(true)
   const words = [
     "Inteligente",
     "Eficiente",
@@ -30,7 +30,7 @@ const [isPremiumUser, setIsPremiumUser] = useState(false)
   const [messages, setMessages] = useState<Message[]>([{ sender: "bot", text: "Hola 👋, ¿cómo puedo ayudarte hoy?" }])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-
+  const { user } = useAuth();
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -50,17 +50,20 @@ const [isPremiumUser, setIsPremiumUser] = useState(false)
     }
   }, [messages])
 
-  useEffect(() => {
-  const storedUser = localStorage.getItem("loginUser");
-  if (storedUser) {
+useEffect(() => {
+  if (user) {
     try {
-      const parsedUser = JSON.parse(storedUser);
-      setIsPremiumUser(parsedUser?.user?.role === "premium");
+      const role = user?.user?.role;
+      setIsPremiumUser(role === "premium" || role === "admin");
     } catch (err) {
       console.error("Error al parsear el usuario:", err);
+    } finally {
+      setIsCheckingRole(false)
     }
+  } else {
+    setIsCheckingRole(false)
   }
-  }, []);
+}, [user]);
 
   const sendMessage = useCallback(async () => {
     if (!input.trim() || isLoading) return
@@ -114,7 +117,7 @@ const [isPremiumUser, setIsPremiumUser] = useState(false)
     setIsMinimized(false)
   }
 
-  if (!isPremiumUser || shouldHide) return null;
+  if (isCheckingRole || !isPremiumUser || shouldHide) return null;
 
   return (
     <>
