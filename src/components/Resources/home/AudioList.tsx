@@ -15,20 +15,20 @@ const cardsData = [
     href: "/resources/card1",
   },
   
-  {
-    title: "terapia cognitivo conductual",
-    description: "La TCC es una terapia eficaz para abordar los patrones negativos y distorsiones de pensamiento que contribuyen a la ansiedad.  ",
-    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960117/rugbi_frlosd.jpg",
-    imageAlt: "Image 3",
-    href: "/resources/card2",
-  },
-  {
-    title: "Rutinas relajantes",
-    description: "Dar un baño caliente, leer un libro, practicar aromaterapia o cocinar pueden crear un ambiente relajante que ayuda a reducir la ansiedad. ",
-    imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/leer_kyttfv.jpg",
-    imageAlt: "Image 4",
-    href: "/resources/card3",
-  },
+  // {
+  //   title: "terapia cognitivo conductual",
+  //   description: "La TCC es una terapia eficaz para abordar los patrones negativos y distorsiones de pensamiento que contribuyen a la ansiedad.  ",
+  //   imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960117/rugbi_frlosd.jpg",
+  //   imageAlt: "Image 3",
+  //   href: "/resources/card2",
+  // },
+  // {
+  //   title: "Rutinas relajantes",
+  //   description: "Dar un baño caliente, leer un libro, practicar aromaterapia o cocinar pueden crear un ambiente relajante que ayuda a reducir la ansiedad. ",
+  //   imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960119/leer_kyttfv.jpg",
+  //   imageAlt: "Image 4",
+  //   href: "/resources/card3",
+  // },
 ];
 
 export function AudioList() {
