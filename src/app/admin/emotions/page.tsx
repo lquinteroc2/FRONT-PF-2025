@@ -21,35 +21,33 @@ export default function EmotionsPage() {
   const [isOpen, setIsOpen] = useState(false);
   
   const closeDialog = () => setIsOpen(false);
+  const { toast } = useToast();
 
-  const handleCreateEmotion = async (
+ const handleCreateEmotion = async (
   emotion: Omit<EmotionAdmin, "id">,
   token: string | undefined,
   onClose: () => void
 ) => {
-  const { toast } = useToast();
-
-
-  if (!token) {
+  if (!user?.token) {
     toast({
-        title: "Error al crear emoción",
-        description: "No tienes autorización para crear una emoción.",
-        variant: "destructive",
-      });
+      title: "Error al crear emoción",
+      description: "No tienes autorización para crear una emoción.",
+      variant: "destructive",
+    });
     return;
   }
 
-try {
-    const result = await emotionsHelperAdmin(token, emotion);
-    const createdEmotion = result[0];
-
-    toast({
-      title: "Emoción creada",
-      description: `La emoción "${createdEmotion.name}" fue añadida correctamente.`,
-      variant: "default", // puedes omitirlo o personalizarlo
-    });
-
-    onClose();
+ try {
+  const createdEmotion = await emotionsHelperAdmin(user.token, emotion);
+  console.log("Resultado de creación de emoción:", createdEmotion);
+  
+  toast({
+    title: "Emoción creada",
+    description: `La emoción "${createdEmotion.name}" fue añadida correctamente.`,
+    variant: "default",
+  });
+  window.location.reload();
+  onClose();
   } catch (error) {
     console.error("Error al crear la emoción:", error);
     toast({
@@ -59,7 +57,6 @@ try {
     });
   }
 };
-
 
   useEffect(() => {
     async function fetchEmotions() {

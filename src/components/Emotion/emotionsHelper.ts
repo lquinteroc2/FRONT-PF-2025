@@ -45,10 +45,11 @@ export const emotionsHelper = async (token: string): Promise<EmotionAdmin[]> => 
   }
 };
 
-
-export type CreateEmotionDto = Omit<EmotionAdmin, 'id'>;
-
-export const emotionsHelperAdmin = async (token: string, emotion: CreateEmotionDto) => {
+export type CreateEmotionDto = Omit<EmotionAdmin, "id">;
+export const emotionsHelperAdmin = async (
+  token: string,
+  emotion: CreateEmotionDto
+): Promise<EmotionAdmin> => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/emotions`;
 
@@ -57,21 +58,25 @@ export const emotionsHelperAdmin = async (token: string, emotion: CreateEmotionD
       throw new Error("No hay token");
     }
 
-    const response = await axios.post(
-      url,
-      emotion, // cuerpo de la petición POST
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        validateStatus: () => true, // evitar que axios lance error por status HTTP
-      }
-    );
+    console.debug("[API] POST Emoción", emotion);
+
+    const response = await axios.post(url, emotion, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      validateStatus: () => true,
+    });
+
+    console.debug("[API] Response status:", response.status);
 
     if (response.status >= 200 && response.status < 300) {
-      return response.data as EmotionAdmin[];
+      console.debug("[API] Emoción creada con éxito:", response.data);
+      return response.data as EmotionAdmin; // aquí cambio a objeto único
     } else {
-      console.warn("⚠️ El servidor respondió con un status no exitoso:", response.status);
+      console.warn(
+        "⚠️ El servidor respondió con un status no exitoso:",
+        response.status
+      );
       throw new Error("Error al obtener las emociones");
     }
   } catch (error: any) {
@@ -82,7 +87,6 @@ export const emotionsHelperAdmin = async (token: string, emotion: CreateEmotionD
     } else {
       console.error("❌ Error al configurar la petición:", error.message);
     }
-
     throw new Error("No se pudieron cargar las emociones.");
   }
 };
