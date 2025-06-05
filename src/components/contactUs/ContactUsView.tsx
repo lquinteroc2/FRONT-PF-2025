@@ -109,6 +109,7 @@ const ContactUs = () => {
                 type="text"
                 name="name"
                 placeholder="Nombre"
+                maxLength={20}
                 className="w-full p-2 border border-neutro-light rounded-md focus:outline-none focus:ring-2 focus:ring-secundary"
               />
               <ErrorMessage
@@ -127,6 +128,7 @@ const ContactUs = () => {
                 type="email"
                 name="email"
                 placeholder="Correo"
+                maxLength={40}
                 className="w-full p-2 border border-neutro-light rounded-md focus:outline-none focus:ring-2 focus:ring-secundary"
               />
               <ErrorMessage
@@ -143,6 +145,7 @@ const ContactUs = () => {
                 type="text"
                 name="subject"
                 placeholder="Asunto"
+                maxLength={100}
                 className="w-full p-2 border border-neutro-light rounded-md focus:outline-none focus:ring-2 focus:ring-secundary"
               />
               <ErrorMessage
@@ -160,6 +163,7 @@ const ContactUs = () => {
                 name="message"
                 rows={4}
                 placeholder="Mensaje"
+                maxLength={200}
                 className="w-full p-2 border border-neutro-light rounded-md focus:outline-none focus:ring-2 focus:ring-secundary"
               />
               <ErrorMessage

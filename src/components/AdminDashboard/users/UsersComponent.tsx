@@ -168,6 +168,7 @@ export default function UserForm({ user: editingUser, onSubmit, onCancel, isLoad
             value={formData.name || ""}
             onChange={(e) => handleInputChange("name", e.target.value)}
             placeholder="Nombre completo"
+            maxLength={40}
             className={errors.name ? "border-red-500" : ""}
           />
           {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
@@ -182,6 +183,7 @@ export default function UserForm({ user: editingUser, onSubmit, onCancel, isLoad
             value={formData.email || ""}
             onChange={(e) => handleInputChange("email", e.target.value)}
             placeholder="usuario@ejemplo.com"
+            maxLength={40}
             className={errors.email ? "border-red-500" : ""}
           />
           {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
@@ -212,6 +214,7 @@ export default function UserForm({ user: editingUser, onSubmit, onCancel, isLoad
           value={formData.address || ""}
           onChange={(e) => handleInputChange("address", e.target.value)}
           placeholder="Dirección completa (opcional)"
+          maxLength={40}
           rows={3}
         />
       </div>

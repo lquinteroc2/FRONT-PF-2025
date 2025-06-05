@@ -215,6 +215,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     onChange={handleChange}
                     placeholder="Centro de bienestar emocional"
                     className="mt-1"
+                    maxLength={20}
                     required
                   />
                 </div>
@@ -228,6 +229,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     onChange={handleChange}
                     placeholder="Describe los servicios que ofrece este lugar..."
                     className="mt-1 min-h-[100px]"
+                    maxLength={100}
                     required
                   />
                 </div>
@@ -242,6 +244,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       onChange={handleChange}
                       placeholder="Teléfono o email"
                       className="mt-1"
+                      maxLength={20}
                       required
                     />
                   </div>
@@ -276,6 +279,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     onChange={handleChange}
                     placeholder="Calle, número, etc."
                     className="mt-1"
+                    maxLength={40}
                     required
                   />
                 </div>
@@ -290,6 +294,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       onChange={handleChange}
                       placeholder="Ciudad"
                       className="mt-1"
+                      maxLength={20}
                       required
                     />
                   </div>
@@ -303,6 +308,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                       onChange={handleChange}
                       placeholder="País"
                       className="mt-1"
+                      maxLength={20}
                       required
                     />
                   </div>

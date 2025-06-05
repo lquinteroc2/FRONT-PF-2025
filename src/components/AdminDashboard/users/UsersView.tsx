@@ -225,6 +225,7 @@ export default function UsersPageView() {
           <Input
             placeholder="Buscar usuario por nombre o email"
             value={searchTerm}
+            maxLength={100}
             onChange={e => setSearchTerm(e.target.value)}
           />
         </div>

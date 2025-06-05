@@ -7,7 +7,7 @@ import { Resource } from "@/lib/types";
 const cardsData = [
   {
     title: "Ejercicios de respiración al aire libre",
-    description: "Description for card 1",
+    description: "Son una serie de ejercicios para aprender a respirar y contar hasta 100",
     imageSrc: "https://res.cloudinary.com/dv8q9lnuf/image/upload/v1747960117/ejerciciosderespiraci%C3%B3nalairelibre_fgtste.jpg",
     imageAlt: "Image 1",
     href: "/resources/card10",
