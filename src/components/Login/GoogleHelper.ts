@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "../ui/use-toast";
 
 
 const googleHelper = async (userData: {
@@ -25,7 +26,11 @@ const googleHelper = async (userData: {
     return response.data;
   } catch (error: any) {
     const message = error.response?.data?.message || error.message || "Error desconocido";
-    alert(` ${message} Contactate con soporte, para dar mayor informacion`);
+    toast({
+        title: "Error al loguear",
+        description: ` ${message} Contactate con soporte, para dar mayor informacion`,
+        variant: "destructive",
+      });
     throw new Error(message);
   }
 };

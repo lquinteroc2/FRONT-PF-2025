@@ -27,9 +27,10 @@ const LoginView = () => {
   const { toast } = useToast();
 
   const onSubmit = async (
-    values: { email: string; password: string },
-    { resetForm, setSubmitting }: FormikHelpers<{ email: string; password: string }>
-  ) => {
+  values: { email: string; password: string },
+  { resetForm, setSubmitting }: FormikHelpers<{ email: string; password: string }>
+) => {
+  try {
     const result = await loginHelper(values);
 
     if (result.success) {
@@ -43,20 +44,30 @@ const LoginView = () => {
 
       setTimeout(() => {
         router.push("/home");
-      }, 3000);
-      resetForm();
-      setSubmitting(false);
+      }, 1000);
 
+      resetForm();
     } else {
+    
       toast({
         title: "Error al loguear",
-        description: result.error || "Intenta nuevamente",
+        description: `${result.error} Contactate con soporte para más información.`,
         variant: "destructive",
       });
-
-      setSubmitting(false);
     }
-  };
+  } catch (error: any) {
+    const message =
+      error.response?.data?.message || error.message || "Error desconocido";
+
+    toast({
+      title: "Error inesperado",
+      description: `${message} Contactate con soporte.`,
+      variant: "destructive",
+    });
+  } finally {
+    setSubmitting(false);
+  }
+};
 
 return (
     <>
