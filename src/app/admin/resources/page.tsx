@@ -236,6 +236,7 @@ const toggleShowInCardList = async (id: string, show: boolean) => {
             placeholder="Buscar recursos..."
             className="pl-8"
             value={searchTerm}
+            maxLength={100}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>

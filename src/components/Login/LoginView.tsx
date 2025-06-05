@@ -114,6 +114,7 @@ return (
     type="email"
     name="email"
     placeholder="Correo Electronico"
+    maxLength={40}
     className="w-[60%] text-center border border-neutro-dark rounded"/>
     <ErrorMessage name="email" component="div" className="text-sm text-primary-dark font-bold" />
         </div>
@@ -124,6 +125,7 @@ return (
     type="password"
     name="password"
     placeholder="Contraseña"
+    maxLength={30}
     className="w-[60%] text-center border border-neutro-dark rounded"
   />
   <ErrorMessage name="password" component="div" className="text-sm text-primary-dark font-bold" />

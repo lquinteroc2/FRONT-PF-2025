@@ -260,6 +260,7 @@ if (
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   placeholder="Ej: Me siento así porque..."
+                  maxLength={300}
                   className="w-full p-3 border border-neutro rounded-lg resize-none h-28 sm:h-32 focus:ring-2 focus:ring-primary focus:border-primary-dark transition-shadow"
                 />
                 <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">

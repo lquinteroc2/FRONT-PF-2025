@@ -78,6 +78,7 @@ if (!isValidExtensionForType(data.fileType, extension)) {
           value={data.name}
           onChange={(e) => onChange("name", e.target.value)}
           required
+          maxLength={20}
           className="col-span-3"
         />
       </div>
@@ -155,6 +156,7 @@ if (!isValidExtensionForType(data.fileType, extension)) {
           value={data.description}
           onChange={(e) => onChange("description", e.target.value)}
           rows={3}
+          maxLength={200}
           className="col-span-3"
         />
       </div>
