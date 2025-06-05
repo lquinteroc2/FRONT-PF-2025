@@ -1,4 +1,4 @@
-import ResourcesPage from "@/components/Recursos/resources-page"
+import ResourcesPageView from "@/components/Recursos/resourcesPageView"
 
 export const metadata = {
   title: "Recursos - Séntia",
@@ -8,7 +8,7 @@ export const metadata = {
 export default function RecursosPage() {
   return (
     <div className="min-h-screen">
-      <ResourcesPage />
+      <ResourcesPageView />
     </div>
   )
 }
