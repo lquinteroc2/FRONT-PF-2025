@@ -102,6 +102,7 @@ useEffect(() => {
             <MapPin className="h-4 w-4" />
             <span className="sr-only">Vista de mapa</span>
           </Button>
+           <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 gap-4 w-full max-w-xl">
           <Button
             variant={isUsingLocation ? "default" : "outline"}
             onClick={() => {
@@ -164,6 +165,7 @@ useEffect(() => {
           ))}
         </select>
         </div>
+      </div>
       </div>
 
       <AnimatePresence mode="wait">

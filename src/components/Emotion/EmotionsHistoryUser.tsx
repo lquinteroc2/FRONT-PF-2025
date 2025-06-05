@@ -76,21 +76,26 @@ const router = useRouter()
   };
 
   // Componente interno para mostrar los puntos de intensidad
-  const IntensityDots = ({ level }: { level: number }) => (
-    <div className="flex space-x-1 items-center">
-      <span className="text-sm font-semibold text-neutro-dark mr-1">Intensidad:</span>
-      {[...Array(5)].map((_, i) => (
-        <span
-          key={i}
-          className={`h-3 w-3 rounded-full inline-block transition-colors duration-300 ${
-            i < level ? 'bg-primary-dark' : 'bg-neutro-light'
-          }`}
-          title={`Intensidad ${i + 1} de 5`} // Tooltip en español
-        ></span>
-      ))}
-      <span className="text-sm font-medium text-primary-dark ml-1">({level}/5)</span>
-    </div>
-  );
+const IntensityDots = ({ level }: { level: number }) => (
+  <div className="flex flex-wrap items-center gap-x-1 gap-y-1 text-xs md:text-sm">
+    <span className="font-semibold text-neutro-dark mr-1">Intensidad:</span>
+    {[...Array(5)].map((_, i) => (
+      <span
+        key={i}
+        className={`
+          inline-block rounded-full transition-colors duration-300
+          ${i < level ? 'bg-primary-dark' : 'bg-neutro-light'}
+          w-2.5 h-2.5 md:w-3 md:h-3
+        `}
+        title={`Intensidad ${i + 1} de 5`}
+      ></span>
+    ))}
+    <span className="font-medium text-primary-dark ml-1">
+      ({level}/5)
+    </span>
+  </div>
+);
+
 
   if (isLoading) {
     return (
@@ -174,9 +179,9 @@ return (
 
 
     {/* Lista de emociones */}
-   <ul
+  <ul
   id="emotion-list"
-  className="space-y-4 max-w-4xl mx-auto w-full px-4 py-12 min-h-[60vh] flex flex-col justify-start"
+  className="space-y-4 max-w-4xl mx-auto w-full px-2 sm:px-4 py-6 sm:py-12 min-h-[60vh] flex flex-col justify-start"
 >
 
       {emotionsToShow.map((e) => (
@@ -214,9 +219,11 @@ return (
               </div>
 
               {/* Intensidad */}
-              <div className="mt-2">
-                <IntensityDots level={e.intensity} />
-              </div>
+              <div className="mt-2 w-full max-w-full overflow-x-auto">
+  <div className="inline-flex items-center gap-1">
+    <IntensityDots level={e.intensity} />
+  </div>
+</div>
 
               {/* Comentario expandible */}
               <AnimatePresence initial={false}>
