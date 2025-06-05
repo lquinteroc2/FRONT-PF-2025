@@ -59,7 +59,7 @@ export default function RecursosPageView() {
             whileInView="visible"
             viewport={{ once: true }}
             variants={sectionVariants}
-            className="w-full max-w-4xl text-center space-y-2 mb-8"
+            className="w-full max-w-7xl text-center space-y-2 mb-8 px-4"
           >
             <ResourcesPage />
           </motion.section>

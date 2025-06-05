@@ -109,8 +109,10 @@ const fetchResources = async () => {
   }
 
   const handleEdit = (resource: Resource) => {
-  setEditingResource(resource)
-  setIsEditModalOpen(true)
+  setTimeout(() => {
+    setEditingResource(resource)
+    setIsEditModalOpen(true)
+  }, 0)
   }
 
 const handleDelete = async (id: string) => {
@@ -243,10 +245,10 @@ const toggleShowInCardList = async (id: string, show: boolean) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos los tipos</SelectItem>
-            <SelectItem value="DOCUMENT">Documentos</SelectItem>
-            <SelectItem value="IMAGE">Imágenes</SelectItem>
-            <SelectItem value="AUDIO">Audio</SelectItem>
-            <SelectItem value="VIDEO">Video</SelectItem>
+            <SelectItem value="document">Documentos</SelectItem>
+            <SelectItem value="image">Imágenes</SelectItem>
+            <SelectItem value="audio">Audio</SelectItem>
+            <SelectItem value="video">Video</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -371,8 +373,12 @@ const toggleShowInCardList = async (id: string, show: boolean) => {
         <CreateResourceModal open={isCreateModalOpen} onClose={handleModalClose} />
       )}
 
-      {isEditModalOpen && editingResource && (
-        <EditResourceModal resource={editingResource} onClose={handleModalClose} />
+      {editingResource && (
+        <EditResourceModal
+          open={isEditModalOpen}
+          resource={editingResource}
+          onClose={handleModalClose}
+        />
       )}
     </motion.div>
   )

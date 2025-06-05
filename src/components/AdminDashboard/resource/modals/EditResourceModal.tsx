@@ -3,11 +3,16 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useEffect, useState } from 'react'
 import ResourceForm from '../forms/ResourceForm'
-import { Props, ResourceFormData } from "@/lib/types"
+import { Resource, ResourceFormData } from "@/lib/types"
 import { useToast } from "@/components/ui/use-toast"
 
+type Props = {
+  open: boolean
+  onClose: () => void
+  resource: Resource
+}
 
-const EditResourceModal = ({ resource, onClose }: Props) => {
+const EditResourceModal = ({ open, onClose, resource }: Props) => {
   const [formData, setFormData] = useState<ResourceFormData>({
     name: '',
     fileType: '',
@@ -49,78 +54,89 @@ const EditResourceModal = ({ resource, onClose }: Props) => {
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+      e.preventDefault()
 
-    const { name, fileType, fileExtension, description, files, thumbnailFile } = formData
-    const uploadedById = 'admin-id' // o quien edita
+      const { name, fileType, fileExtension, description, files, thumbnailFile } = formData
+      const uploadedById = 'admin-id'
 
-    if (!name || !fileType || !fileExtension || !uploadedById) {
-      toast({
-        title: "Campos incompletos",
-        description: "Por favor completa todos los campos obligatorios.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      if (files) {
-        const form = new FormData()
-        form.append("file", files)
-        if (thumbnailFile) {
-          form.append("thumbnail", thumbnailFile) // ← clave esperada por tu backend
-        }
-        form.append("name", name)
-        form.append("fileType", fileType)
-        form.append("fileExtension", fileExtension)
-        form.append("description", description)
-        form.append("uploadedById", uploadedById)
-        const token = getToken()
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${resource.id}`, {
-          method: "PATCH",
-          body: form,
-          headers: {
-          Authorization: `Bearer ${token}`,
-      },
+      if (!name || !fileType || !fileExtension || !uploadedById) {
+        toast({
+          title: "Campos incompletos",
+          description: "Por favor completa todos los campos obligatorios.",
+          variant: "destructive",
         })
-      } else {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${resource.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            fileType,
-            fileExtension,
-            description,
-            uploadedById,
-          }),
-        })
+        return
       }
-      
-      toast({
-        title: "Recurso actualizado",
-        description: "El recurso fue editado exitosamente.",
-      })
 
-      onClose()
-    } catch (err) {
-      console.error("Error al editar el recurso:", err)
-      toast({
-        title: "Error al editar",
-        description: "Ocurrió un error al editar el recurso.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(true)
+
+      try {
+        const token = getToken()
+
+        if (files || thumbnailFile) {
+          // ✅ Usamos FormData si hay archivo nuevo o thumbnail
+          const form = new FormData()
+          form.append("name", name)
+          form.append("fileType", fileType)
+          form.append("fileExtension", fileExtension)
+          form.append("description", description)
+          form.append("uploadedById", uploadedById)
+
+          if (files) form.append("file", files)
+          if (thumbnailFile) form.append("thumbnail", thumbnailFile)
+
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${resource.id}`, {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: form,
+          })
+
+          const result = await res.json()
+          console.log("✅ Respuesta del backend (FormData):", result)
+        } else {
+          // ✅ Usamos JSON si no hay archivos nuevos
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resources/${resource.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name,
+              fileType,
+              fileExtension,
+              description,
+              uploadedById,
+            }),
+          })
+
+          const result = await res.json()
+          console.log("✅ Respuesta del backend (JSON):", result)
+        }
+
+        toast({
+          title: "Recurso actualizado",
+          description: "El recurso fue editado exitosamente.",
+        })
+
+        onClose()
+      } catch (err) {
+        console.error("❌ Error al editar el recurso:", err)
+        toast({
+          title: "Error al editar",
+          description: "Ocurrió un error al editar el recurso.",
+          variant: "destructive",
+        })
+      } finally {
+        setIsSubmitting(false)
+      }
     }
-  }
+
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar Recurso</DialogTitle>
