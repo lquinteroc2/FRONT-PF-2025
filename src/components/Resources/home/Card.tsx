@@ -14,9 +14,9 @@ interface CardProps {
 export default function CardHome({ title, description, imageSrc, imageAlt, href }: CardProps) {
   
   const CardContent = () => (
-    <div className="group overflow-hidden rounded-xl  bg-white shadow-lg transition-all duration-300 hover:shadow-2xl">
+    <div className="group flex flex-col h-full overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-2xl">
       {/* Imagen */}
-      <div className="relative h-48 w-full overflow-hidden">
+      <div className="relative h-40 w-full">
         <Image
           src={imageSrc || "/placeholder.svg"}
           alt={imageAlt}
@@ -26,12 +26,14 @@ export default function CardHome({ title, description, imageSrc, imageAlt, href 
       </div>
 
       {/* Contenido */}
-      <div className="p-5">
-        <h3 className="mb-2 text-xl font-semibold text-gray-800">{title}</h3>
-        <p className="mb-3 text-gray-600">{description}</p>
+      <div className="flex flex-col flex-grow p-5 justify-between">
+        <div>
+          <h3 className="mb-2 text-lg font-semibold text-gray-800 line-clamp-2">{title}</h3>
+          <p className="text-sm text-gray-600 line-clamp-3">{description}</p>
+        </div>
 
         {href && (
-          <div className="pt-2">
+          <div className="mt-4 pt-2">
             <span className="inline-flex items-center text-sm font-medium text-secondary hover:text-secondary-dark">
               Aprender más
               <svg
@@ -50,13 +52,11 @@ export default function CardHome({ title, description, imageSrc, imageAlt, href 
     </div>
   )
 
-  if (href) {
-    return (
-      <Link href={href} className="block">
-        <CardContent />
-      </Link>
-    )
-  }
-
-  return <CardContent />
+  return href ? (
+    <Link href={href} className="block h-full">
+      <CardContent />
+    </Link>
+  ) : (
+    <CardContent />
+  )
 }
