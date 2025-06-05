@@ -9,14 +9,11 @@ export default function ConfirmSubscriptionPage({
 }: {
   params: Promise<{ sessionId: string }>;
 }) {
-  // Desempaquetar params (promesa) con use()
-  const { sessionId } = use(params);
-  const { user } = useAuth()
-  const token = user?.token
+  const resolvedParams = use(params);
+  const sessionId = resolvedParams.sessionId;
 
-  if (!user?.user.id || !token) {
-  return <p>Cargando datos del usuario...</p>; // o null, spinner, etc.
-}
+  const { user } = useAuth();
+  const token = user?.token;
 
   const [planType, setPlanType] = useState<"normal" | "extended" | "trial">("normal");
 
@@ -27,8 +24,9 @@ export default function ConfirmSubscriptionPage({
     }
   }, []);
 
-  console.log("🔍 sessionId:", sessionId);
-  console.log("🔍 planType (desde localStorage):", planType);
+  if (!user?.user.id || !token) {
+    return <p>Cargando datos del usuario...</p>;
+  }
 
   if (!sessionId) {
     return (
@@ -38,5 +36,13 @@ export default function ConfirmSubscriptionPage({
     );
   }
 
-  return <SubscriptionConfirmSelector sessionId={sessionId} planType={planType} userId={user?.user.id} token={token}/>;
+
+  return (
+    <SubscriptionConfirmSelector
+      sessionId={sessionId}
+      planType={planType}
+      userId={user.user.id}
+      token={token}
+    />
+  );
 }
