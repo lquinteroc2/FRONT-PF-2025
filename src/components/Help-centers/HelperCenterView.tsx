@@ -49,24 +49,23 @@ const HelpCentersView = () => {
         <AnimatedArrow />
       </motion.div>
 
-      {/* Contenido principal */}
-     <div
-  id="emotion-list"
-  className="w-full max-w-4xl px-4 sm:px-6 min-h-[60vh] flex flex-col items-center justify-start mt-24 sm:mt-36 mb-16 sm:mb-24 space-y-6 sm:space-y-12 overflow-x-hidden"
->
+      <div
+        id="emotion-list"
+        className="p-4 min-h-[60vh] flex flex-col items-center justify-start mt-36 mb-24 space-y-12"
+      >
 
 
 
         {canAccess ? (
-          <motion.section
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={sectionVariants}
-            className="w-full max-w-4xl text-center space-y-2 mb-8"
-          >
-            <HelpCenters />
-          </motion.section>
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={sectionVariants}
+          className="w-full max-w-7xl px-4 sm:px-6 mx-auto space-y-2 mb-8"
+        >
+          <HelpCenters />
+        </motion.section>
         ) : (
           <motion.div
             className="bg-neutro-light rounded-lg p-8 max-w-xl w-full shadow-lg text-center mt-16"
